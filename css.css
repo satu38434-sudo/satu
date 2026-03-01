@@ -1,0 +1,81 @@
+/* Modern Palette & Variables */
+:root {
+    --bg-deep: #0f172a;
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --accent-gold: #fbbf24;
+    --accent-red: #ef4444;
+    --text-dim: #94a3b8;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 100%);
+    color: #ffffff;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+/* Section Title - Modern Gradient Text */
+.s10 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    text-align: center;
+    background: linear-gradient(to right, var(--accent-gold), var(--accent-red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 40px 0 20px;
+    font-weight: 700;
+}
+
+/* Glassmorphism Cards */
+.s1, .s11, .li, .lila {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.s1 {
+    font-size: 1.8rem;
+    padding: 40px;
+    margin: 30px auto;
+    max-width: 800px;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    color: var(--accent-gold);
+    text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+/* Interactive List Items */
+.li, .lila {
+    display: block;
+    padding: 18px;
+    margin: 10px auto;
+    max-width: 700px;
+    border-radius: 15px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.li:hover, .lila:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--accent-gold);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+/* Footer Styling */
+.footer {
+    margin-top: 60px;
+    padding: 40px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 25px 25px 0 0;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+}
