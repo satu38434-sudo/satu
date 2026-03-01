@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>SMATE by SATU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #020617;
+            --bg-gradient: radial-gradient(circle at 50% -20%, #064e3b 0%, #020617 80%);
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --border: rgba(251, 191, 36, 0.2);
+            --accent-gold: #fbbf24;
+            --text-bright: #f8fafc;
+            --text-dim: #94a3b8;
+            
+            /* Section Colors */
+            --color-ai: #a78bfa;
+            --color-wp: #fb7185;
+            --color-news: #38bdf8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-base) var(--bg-gradient) fixed;
+            color: var(--text-bright);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* --- Masthead Section --- */
+        .masthead {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 25px 15px;
+            border-bottom: 4px double var(--border);
+            text-align: center;
+        }
+
+        .banner-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .main-banner {
+            max-width: 400px;
+            width: 85%;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.15));
+        }
+
+        .masthead-info-row {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* --- Search Bar --- */
+        .search-wrapper {
+            max-width: 550px;
+            margin: 30px auto 10px;
+            padding: 0 20px;
+        }
+
+        #linkSearch {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        #linkSearch:focus {
+            border-color: var(--accent-gold);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Main Content --- */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px 80px;
+        }
+
+        .section-label {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--accent-gold);
+            margin: 45px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+        }
+
+        .section-label::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--border), transparent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: var(--text-bright);
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent-gold);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-dim);
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            border-top: 1px solid var(--border);
+            text-transform: uppercase;
+        }
+
+        /* --- Mobile Adjustments --- */
+        @media (max-width: 600px) {
+            .main-banner { max-width: 280px; }
+            .grid { grid-template-columns: 1fr; }
+            .masthead-info-row { font-size: 0.6rem; letter-spacing: 1px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="masthead">
+        <div class="banner-container">
+            <img src="/images/logo.gif" alt="SMATE Banner" class="main-banner">
+        </div>
+        
+        <div class="masthead-info-row" id="currentDate">
+            GOPALGANJ, BANGLADESH • FEBRUARY 24, 2026
+        </div>
+    </header>
+
+    <div class="search-wrapper">
+        <input type="text" id="linkSearch" placeholder="Search resources..." onkeyup="filterLinks()">
+    </div>
+
+    <main>
+        <div class="section-label">AI Intelligence</div>
+        <div class="grid">
+            <a href="https://chatgpt.com" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-ai); background:var(--color-ai)"></div> <span>ChatGPT (OpenAI)</span>
+            </a>
+            <a href="https://claude.ai" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-ai); background:var(--color-ai)"></div> <span>Claude (Anthropic)</span>
+            </a>
+            <a href="https://gemini.google.com" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-ai); background:var(--color-ai)"></div> <span>Google Gemini</span>
+            </a>
+        </div>
+
+        <div class="section-label">Wallpaper Zone</div>
+        <div class="grid">
+            <a href="https://wallhaven.cc" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-wp); background:var(--color-wp)"></div> <span>Wallhaven (Ultra HD)</span>
+            </a>
+            <a href="https://unsplash.com/wallpapers" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-wp); background:var(--color-wp)"></div> <span>Unsplash Desktop</span>
+            </a>
+            <a href="https://microsoft.design/wallpapers/" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-wp); background:var(--color-wp)"></div> <span>Microsoft Design</span>
+            </a>
+            <a href="https://wallpaperflare.com" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-wp); background:var(--color-wp)"></div> <span>Wallpaper Flare</span>
+            </a>
+        </div>
+
+        <div class="section-label">Services & Portals</div>
+        <div class="grid">
+            <a href="https://login.ipemis.dpe.gov.bd/login" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-news); background:var(--color-news)"></div> <span>IPEMIS Dashboard</span>
+            </a>
+            <a href="https://payfixation.gov.bd/" class="card" target="_blank">
+                <div class="dot" style="color:var(--color-news); background:var(--color-news)"></div> <span>Payfixation Info</span>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        © 2026 S&D • Quality & Efficiency
+    </footer>
+
+    <script>
+        function filterLinks() {
+            let input = document.getElementById('linkSearch').value.toLowerCase();
+            let cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                let text = card.innerText.toLowerCase();
+                card.style.display = text.includes(input) ? "flex" : "none";
+            });
+        }
+        
+        // Auto-refresh Date display
+        const d = new Date();
+        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+        document.getElementById('currentDate').innerText = "GOPALGANJ, BANGLADESH • " + d.toLocaleDateString(undefined, options).toUpperCase();
+    </script>
+</body>
+</html>
