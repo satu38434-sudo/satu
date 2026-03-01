@@ -34,11 +34,50 @@
 
         /* --- Masthead Section --- */
         .masthead {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 25px 15px;
             border-bottom: 4px double var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Side Menu Styling */
+        .side-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 120px;
+        }
+
+        .side-nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s ease;
+        }
+
+        .side-nav a:hover {
+            color: var(--accent-gold);
+            transform: translateX(5px);
+        }
+
+        /* Center Content Group */
+        .banner-center-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
+        }
+
+        /* Invisible spacer to keep logo centered */
+        .masthead-spacer {
+            min-width: 120px;
         }
 
         .banner-container {
@@ -164,23 +203,44 @@
         }
 
         /* --- Mobile Adjustments --- */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .masthead {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .side-nav {
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .masthead-spacer { display: none; }
             .main-banner { max-width: 280px; }
             .grid { grid-template-columns: 1fr; }
-            .masthead-info-row { font-size: 0.6rem; letter-spacing: 1px; }
         }
     </style>
 </head>
 <body>
 
     <header class="masthead">
-        <div class="banner-container">
-            <img src="logo.svg" alt="SATU Banner" class="main-banner">
+        <nav class="side-nav">
+            <a href="#">Home</a>
+            <a href="#">Resources</a>
+            <a href="#">Wallpapers</a>
+            <a href="#">About</a>
+        </nav>
+
+        <div class="banner-center-group">
+            <div class="banner-container">
+                <img src="logo.svg" alt="SATU Banner" class="main-banner">
+            </div>
+            
+            <div class="masthead-info-row" id="currentDate">
+                GOPALGANJ, BANGLADESH • MARCH 1, 2026
+            </div>
         </div>
-        
-        <div class="masthead-info-row" id="currentDate">
-            GOPALGANJ, BANGLADESH • FEBRUARY 24, 2026
-        </div>
+
+        <div class="masthead-spacer"></div>
     </header>
 
     <div class="search-wrapper">
@@ -243,9 +303,12 @@
         }
         
         // Auto-refresh Date display
-        const d = new Date();
-        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-        document.getElementById('currentDate').innerText = "GOPALGANJ, BANGLADESH • " + d.toLocaleDateString(undefined, options).toUpperCase();
+        function updateDate() {
+            const d = new Date();
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('currentDate').innerText = "GOPALGANJ, BANGLADESH • " + d.toLocaleDateString(undefined, options).toUpperCase();
+        }
+        updateDate();
     </script>
 </body>
 </html>
