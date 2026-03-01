@@ -34,7 +34,7 @@
         .side-menu {
             position: fixed;
             top: 0;
-            left: -300px; /* Width of menu */
+            left: -300px;
             width: 300px;
             height: 100%;
             background: rgba(2, 6, 23, 0.98);
@@ -45,7 +45,7 @@
             padding: 30px 20px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto; /* Allow scrolling if many links */
+            overflow-y: auto;
         }
 
         .side-menu.active {
@@ -91,9 +91,6 @@
             padding-left: 20px;
         }
 
-        .menu-item i { width: 18px; height: 18px; opacity: 0.8; }
-
-        /* Overlay */
         .overlay {
             position: fixed;
             inset: 0;
@@ -103,15 +100,15 @@
         }
         .overlay.active { display: block; }
 
-        /* --- Masthead --- */
+        /* --- Masthead Fixed for Mobile --- */
         .masthead {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 25px 15px;
+            padding: 20px 15px;
             border-bottom: 4px double var(--border);
             display: flex;
             align-items: center;
-            position: relative;
+            justify-content: space-between;
         }
 
         .menu-trigger {
@@ -121,12 +118,12 @@
             padding: 10px;
             border-radius: 10px;
             cursor: pointer;
-            position: absolute;
-            left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
             transition: 0.3s;
         }
-
-        .menu-trigger:hover { background: rgba(251, 191, 36, 0.15); }
 
         .banner-center-group {
             flex: 1;
@@ -134,40 +131,93 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+            /* Balanced Margin to keep logo centered */
+            margin-right: 45px; 
         }
 
-        .main-banner { max-width: 400px; width: 80%; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.15)); }
+        .main-banner {
+            max-width: 350px;
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.15));
+        }
 
         .masthead-info-row {
-            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 2px; color: var(--accent-gold); padding-top: 8px;
-            margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-gold);
+            padding-top: 8px;
+            margin-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.08);
         }
 
-        /* --- Grid & Content --- */
-        .search-wrapper { max-width: 550px; margin: 30px auto 10px; padding: 0 20px; }
-        #linkSearch {
-            width: 100%; padding: 15px; background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border); border-radius: 12px; color: white;
-            text-align: center; outline: none;
+        /* --- Pro Search Bar --- */
+        .search-wrapper {
+            max-width: 550px;
+            margin: 30px auto 10px;
+            padding: 0 20px;
+            position: relative;
         }
+
+        .search-icon {
+            position: absolute;
+            left: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+
+        #linkSearch {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        #linkSearch:focus {
+            border-color: var(--accent-gold);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Main Content --- */
         main { max-width: 1000px; margin: 0 auto; padding: 0 15px 80px; }
+        
         .section-label {
             font-family: 'Playfair Display', serif; font-style: italic;
             color: var(--accent-gold); margin: 45px 0 15px;
             display: flex; align-items: center; gap: 12px;
         }
+        
         .section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+        
         .card {
             background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
             padding: 20px; display: flex; align-items: center; gap: 15px; text-decoration: none;
             color: var(--text-bright); font-weight: 600; transition: 0.3s;
         }
+        
         .card:hover { border-color: var(--accent-gold); transform: translateY(-2px); }
+        
         .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
         
         footer { text-align: center; padding: 50px 20px; color: var(--text-dim); font-size: 0.65rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 600px) {
+            .main-banner { max-width: 200px; }
+            .banner-center-group { margin-right: 42px; } /* Adjust centering for mobile */
+            .masthead-info-row { font-size: 0.55rem; letter-spacing: 1px; }
+            .grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -182,23 +232,17 @@
             </button>
         </div>
 
-        <div class="menu-category">Main</div>
-        <a href="index.html" class="menu-item"><i data-lucide="home"></i> Home</a>
-        <a href="#" class="menu-item"><i data-lucide="star"></i> Favorites</a>
-
-        <div class="menu-category">Calculators & Tools</div>
+        <div class="menu-category">Calculators</div>
         <a href="age.html" class="menu-item"><i data-lucide="calendar"></i> Age Calculator</a>
         <a href="salary.html" class="menu-item"><i data-lucide="banknote"></i> Salary Fixation</a>
-        <a href="gpa.html" class="menu-item"><i data-lucide="graduation-cap"></i> GPA Calculator</a>
-
-        <div class="menu-category">Resources</div>
-        <a href="wallpapers.html" class="menu-item"><i data-lucide="image"></i> Wallpaper HD</a>
-        <a href="ai-tools.html" class="menu-item"><i data-lucide="bot"></i> AI Directory</a>
-        <a href="government.html" class="menu-item"><i data-lucide="landmark"></i> Govt. Portals</a>
-
-        <div class="menu-category">Account</div>
-        <a href="profile.html" class="menu-item"><i data-lucide="user"></i> My Profile</a>
-        <a href="settings.html" class="menu-item"><i data-lucide="settings-2"></i> Preferences</a>
+        
+        <div class="menu-category">Intelligence</div>
+        <a href="https://chatgpt.com" class="menu-item" target="_blank"><i data-lucide="bot"></i> ChatGPT</a>
+        <a href="https://claude.ai" class="menu-item" target="_blank"><i data-lucide="brain"></i> Claude AI</a>
+        
+        <div class="menu-category">Media</div>
+        <a href="#" class="menu-item"><i data-lucide="image"></i> Wallpapers</a>
+        <a href="#" class="menu-item"><i data-lucide="video"></i> Video Portals</a>
     </nav>
 
     <header class="masthead">
@@ -208,13 +252,14 @@
 
         <div class="banner-center-group">
             <div class="banner-container">
-                <img src="logo.svg" alt="SATU" class="main-banner">
+                <img src="logo.svg" alt="Satu.pro.bd" class="main-banner">
             </div>
-            <div class="masthead-info-row" id="currentDate">Loading Date...</div>
+            <div class="masthead-info-row" id="currentDate">LOADING...</div>
         </div>
     </header>
 
     <div class="search-wrapper">
+        <i data-lucide="search" class="search-icon" size="18"></i>
         <input type="text" id="linkSearch" placeholder="Search resources..." onkeyup="filterLinks()">
     </div>
 
@@ -254,10 +299,13 @@
 
         lucide.createIcons();
 
-        // Dynamic Date
-        const d = new Date();
-        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-        document.getElementById('currentDate').innerText = "GOPALGANJ, BANGLADESH • " + d.toLocaleDateString(undefined, options).toUpperCase();
+        // Dynamic Date Refresh
+        function updateDate() {
+            const d = new Date();
+            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            document.getElementById('currentDate').innerText = "GOPALGANJ, BANGLADESH • " + d.toLocaleDateString(undefined, options).toUpperCase();
+        }
+        updateDate();
     </script>
 </body>
 </html>
