@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SATU- News Hub</title>
+    <title>SATU - News Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -95,10 +95,10 @@
     <header class="masthead">
         <img src="logo.svg" alt="SATU" class="main-banner">
         <nav class="nav-grid">
-            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="map-pin" size="16"></i> Gopalganj</a>
-            <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="bell" size="16"></i> National</a>
-            <a href="age.html" class="nav-item"><i data-lucide="calculator" size="16"></i> Age Calc</a>
-            <a href="salary.html" class="nav-item"><i data-lucide="banknote" size="16"></i> Salary</a>
+            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="map-pin" size="12"></i>DPE Gopalganj</a>
+            <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="bell" size="12"></i> DPE</a>
+            <a href="age.html" class="nav-item"><i data-lucide="calculator" size="12"></i> Age Calc</a>
+            <a href="salary.html" class="nav-item"><i data-lucide="banknote" size="12"></i> Salary</a>
         </nav>
         
         <div class="search-container">
@@ -117,8 +117,7 @@
     <script>
         const feeds = [
             // 1-10
-            { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/collection/latest" },
-            { name: "Daily Star", url: "https://bangla.thedailystar.net/rss.xml" },
+  
             { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
             { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
             { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
@@ -128,7 +127,7 @@
             { name: "Banglanews24", url: "https://www.banglanews24.com/rss/rss.xml" },
             { name: "Jago News", url: "https://www.jagonews24.com/rss/rss.xml" },
             // 11-20
-            { name: "NTV Online", url: "https://www.ntvbd.com/rss.xml" },
+   
             { name: "RTV Online", url: "https://www.rtvonline.com/feed/bangladesh" },
             { name: "Channel 24", url: "https://www.channel24bd.tv/rss/rss.xml" },
             { name: "Inqilab", url: "https://www.dailyinqilab.com/rss.xml" },
@@ -190,7 +189,7 @@
                     }
                 } catch (e) { console.log("Error: " + feed.name); }
             }
-            document.getElementById('statusLabel').innerText = "Live Mega Feed (200 News Cards)";
+            document.getElementById('statusLabel').innerText = "Live Mega Feed";
         }
 
         // Search Logic
