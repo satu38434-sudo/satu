@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SATU - News Hub</title>
+    <title>SATU - Ultimate News Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -15,7 +15,6 @@
             --accent-gold: #fbbf24;
             --text-bright: #f8fafc;
             --color-news: #38bdf8;
-            --color-notice: #10b981;
         }
 
         * { box-sizing: border-box; }
@@ -25,79 +24,80 @@
             color: var(--text-bright); margin: 0; padding: 0; min-height: 100vh;
         }
 
-        /* --- HEADER & MENU BESIDE LOGO --- */
-        .masthead {
-            max-width: 1100px; margin: 0 auto; padding: 20px 15px;
-            display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 4px double var(--border);
+        /* --- TICKER --- */
+        .ticker-wrap {
+            width: 100%; background: rgba(0,0,0,0.7); border-bottom: 1px solid var(--border);
+            overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 35px;
+            position: sticky; top: 0; z-index: 1000;
         }
+        .ticker-label { background: #b91c1c; color: white; padding: 0 12px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; }
+        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker-move 180s linear infinite; }
+        .ticker-item { display: inline-block; padding: 0 30px; font-size: 0.8rem; }
+        @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        .logo-area { display: flex; flex-direction: column; align-items: flex-start; }
-        .main-banner { max-width: 220px; width: 100%; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.15)); }
+        /* --- HEADER --- */
+        .masthead {
+            max-width: 1100px; margin: 0 auto; padding: 25px 15px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .main-banner { max-width: 240px; width: 100%; margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.2)); }
 
-        .nav-links { display: flex; gap: 15px; }
+        /* Fix for Age Calc & Salary falling down */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+        }
         .nav-item {
             color: var(--text-bright); text-decoration: none; font-size: 0.75rem;
-            font-weight: 600; padding: 8px 12px; border: 1px solid var(--border);
-            border-radius: 8px; transition: 0.3s; display: flex; align-items: center; gap: 6px;
+            font-weight: 600; padding: 12px; border: 1px solid var(--border);
+            border-radius: 10px; transition: 0.3s; display: flex; align-items: center; 
+            justify-content: center; gap: 8px; background: rgba(255,255,255,0.03);
         }
         .nav-item:hover { background: rgba(251, 191, 36, 0.1); border-color: var(--accent-gold); color: var(--accent-gold); }
 
-        /* --- TICKER --- */
-        .ticker-wrap {
-            width: 100%; background: rgba(0,0,0,0.5); border-bottom: 1px solid var(--border);
-            overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 35px;
-        }
-        .ticker-label { background: #b91c1c; color: white; padding: 0 12px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; }
-        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker-move 100s linear infinite; }
-        .ticker-item { display: inline-block; padding: 0 30px; font-size: 0.8rem; opacity: 0.9; }
-        @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-
-        /* --- GRID LAYOUT --- */
+        /* --- NEWS GRID --- */
         main { max-width: 1100px; margin: 0 auto; padding: 20px 15px 80px; }
-        .section-label { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent-gold); margin: 30px 0 15px; display: flex; align-items: center; gap: 12px; }
+        .section-label { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent-gold); margin: 35px 0 15px; display: flex; align-items: center; gap: 12px; }
         .section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
         .card {
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
-            padding: 15px; display: flex; align-items: center; gap: 12px; text-decoration: none;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+            padding: 18px; display: flex; align-items: center; gap: 15px; text-decoration: none;
             color: var(--text-bright); transition: 0.3s;
         }
-        .card:hover { border-color: var(--accent-gold); transform: translateY(-2px); background: rgba(251,191,36,0.05); }
-        .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+        .card:hover { border-color: var(--accent-gold); transform: translateY(-2px); background: rgba(251,191,36,0.08); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-        @media (max-width: 768px) {
-            .masthead { flex-direction: column; gap: 15px; text-align: center; }
-            .nav-links { flex-wrap: wrap; justify-content: center; }
+        @media (min-width: 768px) {
+            .nav-grid { grid-template-columns: repeat(4, 1fr); max-width: 800px; }
         }
     </style>
 </head>
 <body>
 
     <div class="ticker-wrap">
-        <div class="ticker-label">Live</div>
-        <div class="ticker-content" id="newsTicker">Connecting to news servers...</div>
+        <div class="ticker-label">Live Feed</div>
+        <div class="ticker-content" id="newsTicker">Syncing with 10 major news networks...</div>
     </div>
 
     <header class="masthead">
-        <div class="logo-area">
-            <img src="logo.svg" alt="SATU" class="main-banner">
-            <div id="currentDate" style="font-size: 0.6rem; font-weight: 700; color: var(--accent-gold); margin-top: 5px;"></div>
-        </div>
-
-        <nav class="nav-links">
-            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="map-pin" size="14"></i> Gopalganj</a>
-            <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="bell" size="14"></i> National</a>
-            <a href="age.html" class="nav-item"><i data-lucide="calculator" size="14"></i> Age Calc</a>
-            <a href="salary.html" class="nav-item"><i data-lucide="banknote" size="14"></i> Salary</a>
+        <img src="logo.svg" alt="SATU" class="main-banner">
+        <nav class="nav-grid">
+            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="map-pin" size="16"></i> Gopalganj</a>
+            <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="bell" size="16"></i> National</a>
+            <a href="age.html" class="nav-item"><i data-lucide="calculator" size="16"></i> Age Calc</a>
+            <a href="salary.html" class="nav-item"><i data-lucide="banknote" size="16"></i> Salary</a>
         </nav>
+        <div id="currentDate" style="font-size: 0.65rem; font-weight: 700; color: var(--accent-gold); margin-top: 15px; text-transform: uppercase;"></div>
     </header>
 
     <main>
-        <div class="section-label">Top News Headlines (20 Cards)</div>
-        <div class="grid" id="newsGrid">
-            </div>
+        <div class="section-label">Top News Headlines (50 Cards)</div>
+        <div class="grid" id="newsGrid"></div>
     </main>
 
     <script>
@@ -105,14 +105,22 @@
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
             
+            // Expanded to 10 sources
             const feeds = [
                 { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/collection/latest" },
                 { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
                 { name: "Daily Star", url: "https://bangla.thedailystar.net/rss.xml" },
-                { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" }
+                { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
+                { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
+                { name: "bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
+                { name: "Banglanews24", url: "https://www.banglanews24.com/rss/rss.xml" },
+                { name: "NTV Online", url: "https://www.ntvbd.com/rss.xml" },
+                { name: "Somoy News", url: "https://www.somoynews.tv/rss" },
+                { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" }
             ];
 
             ticker.innerHTML = '';
+            grid.innerHTML = '';
 
             for (const feed of feeds) {
                 try {
@@ -121,36 +129,26 @@
 
                     if (data.status === 'ok') {
                         data.items.slice(0, 5).forEach(item => {
-                            // Update Ticker
                             ticker.innerHTML += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
-
-                            // Add Grid Card
                             const card = document.createElement('a');
-                            card.href = item.link;
-                            card.target = "_blank";
-                            card.className = "card";
+                            card.href = item.link; card.target = "_blank"; card.className = "card";
                             card.innerHTML = `
                                 <div class="dot" style="background:${item.title.includes('প্রাথমিক') ? '#ef4444' : 'var(--color-news)'}"></div>
                                 <div>
-                                    <div style="font-size: 0.55rem; color: var(--accent-gold); font-weight:700;">${feed.name.toUpperCase()}</div>
-                                    <div style="font-size: 0.8rem; font-weight:500; line-height:1.3;">${item.title}</div>
+                                    <div style="font-size: 0.55rem; color: var(--accent-gold); font-weight:700; margin-bottom:2px;">${feed.name.toUpperCase()}</div>
+                                    <div style="font-size: 0.85rem; font-weight:500; line-height:1.4;">${item.title}</div>
                                 </div>
                             `;
                             grid.appendChild(card);
                         });
                     }
-                } catch (e) {
-                    console.log("Error loading " + feed.name);
-                }
+                } catch (e) { console.log("Skip: " + feed.name); }
             }
         }
 
         lucide.createIcons();
         fetchNews();
-
-        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { 
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-        }).toUpperCase();
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     </script>
 </body>
 </html>
