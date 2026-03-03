@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SATU - Ultimate News Hub</title>
+    <title>SATU- News Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -18,7 +18,7 @@
             --color-alert: #ef4444;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; scroll-behavior: smooth; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-base) var(--bg-gradient) fixed;
@@ -32,7 +32,7 @@
             position: sticky; top: 0; z-index: 1000;
         }
         .ticker-label { background: #b91c1c; color: white; padding: 0 12px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; }
-        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker-move 200s linear infinite; }
+        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker-move 350s linear infinite; }
         .ticker-item { display: inline-block; padding: 0 30px; font-size: 0.8rem; }
         @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
@@ -42,7 +42,7 @@
 
         .nav-grid {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-            width: 100%; max-width: 500px;
+            width: 100%; max-width: 500px; margin-bottom: 20px;
         }
         .nav-item {
             color: var(--text-bright); text-decoration: none; font-size: 0.75rem;
@@ -51,6 +51,15 @@
             justify-content: center; gap: 8px; background: rgba(255,255,255,0.03);
         }
         .nav-item:hover { background: rgba(251, 191, 36, 0.1); border-color: var(--accent-gold); color: var(--accent-gold); }
+
+        /* --- SEARCH BAR --- */
+        .search-container { width: 100%; max-width: 500px; position: relative; margin-bottom: 10px; }
+        .search-input {
+            width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border);
+            padding: 12px 40px; border-radius: 25px; color: white; outline: none; transition: 0.3s;
+        }
+        .search-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+        .search-icon { position: absolute; left: 15px; top: 12px; color: var(--accent-gold); }
 
         /* --- NEWS GRID --- */
         main { max-width: 1100px; margin: 0 auto; padding: 20px 15px 80px; }
@@ -66,14 +75,21 @@
         .card:hover { border-color: var(--accent-gold); transform: translateY(-2px); background: rgba(251,191,36,0.08); }
         .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
+        /* --- BACK TO TOP --- */
+        .back-top {
+            position: fixed; bottom: 20px; right: 20px; background: var(--accent-gold);
+            color: black; padding: 10px; border-radius: 50%; cursor: pointer; display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 2000;
+        }
+
         @media (min-width: 768px) { .nav-grid { grid-template-columns: repeat(4, 1fr); max-width: 800px; } }
     </style>
 </head>
 <body>
 
     <div class="ticker-wrap">
-        <div class="ticker-label">Live Feed</div>
-        <div class="ticker-content" id="newsTicker">Syncing 75 news cards...</div>
+        <div class="ticker-label">Live</div>
+        <div class="ticker-content" id="newsTicker">Initializing Mega Feed...</div>
     </div>
 
     <header class="masthead">
@@ -84,42 +100,72 @@
             <a href="age.html" class="nav-item"><i data-lucide="calculator" size="16"></i> Age Calc</a>
             <a href="salary.html" class="nav-item"><i data-lucide="banknote" size="16"></i> Salary</a>
         </nav>
-        <div id="currentDate" style="font-size: 0.65rem; color: var(--accent-gold); margin-top: 15px; text-transform: uppercase;"></div>
+        
+        <div class="search-container">
+            <i data-lucide="search" class="search-icon" size="18"></i>
+            <input type="text" id="newsSearch" class="search-input" placeholder="Search 200 news headlines...">
+        </div>
     </header>
 
     <main>
-        <div class="section-label">All Bangladesh Top News (75 Cards)</div>
+        <div class="section-label" id="statusLabel">Loading 40 News Sources...</div>
         <div class="grid" id="newsGrid"></div>
     </main>
 
+    <div class="back-top" id="backTop" onclick="window.scrollTo(0,0)"><i data-lucide="arrow-up"></i></div>
+
     <script>
+        const feeds = [
+            // 1-10
+            { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/collection/latest" },
+            { name: "Daily Star", url: "https://bangla.thedailystar.net/rss.xml" },
+            { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
+            { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
+            { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
+            { name: "bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
+            { name: "Somoy News", url: "https://www.somoynews.tv/rss" },
+            { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
+            { name: "Banglanews24", url: "https://www.banglanews24.com/rss/rss.xml" },
+            { name: "Jago News", url: "https://www.jagonews24.com/rss/rss.xml" },
+            // 11-20
+            { name: "NTV Online", url: "https://www.ntvbd.com/rss.xml" },
+            { name: "RTV Online", url: "https://www.rtvonline.com/feed/bangladesh" },
+            { name: "Channel 24", url: "https://www.channel24bd.tv/rss/rss.xml" },
+            { name: "Inqilab", url: "https://www.dailyinqilab.com/rss.xml" },
+            { name: "Nayadiganta", url: "https://www.dailynayadiganta.com/rss.xml" },
+            { name: "Manab Zamin", url: "https://mzamin.com/rss.php" },
+            { name: "Bhorer Kagoj", url: "https://www.bhorerkagoj.com/feed" },
+            { name: "Daily Janakantha", url: "https://www.dailyjanakantha.com/rss.xml" },
+            { name: "Amader Shomoy", url: "https://www.dainikamadershomoy.com/rss.xml" },
+            { name: "Dhaka Tribune", url: "https://bangla.dhakatribune.com/feed" },
+            // 21-30
+            { name: "Bonik Barta", url: "https://bonikbarta.net/home/rss" },
+            { name: "Desh Rupantor", url: "https://www.deshrupantor.com/rss.xml" },
+            { name: "Daily Sun", url: "https://www.daily-sun.com/rss" },
+            { name: "Financial Express", url: "https://thefinancialexpress.com.bd/rss/home" },
+            { name: "Daily Observer", url: "https://www.observerbd.com/rss.php" },
+            { name: "Protidin", url: "https://www.bd-pratidin.com/rss.xml" },
+            { name: "Sangbad", url: "https://sangbad.net.bd/rss.xml" },
+            { name: "Dainik Azadi", url: "https://dainikazadi.net/feed" },
+            { name: "Daily Purbokone", url: "https://purbokone.net/feed" },
+            { name: "Sylhet View 24", url: "https://www.sylhetview24.net/rss.xml" },
+            // 31-40
+            { name: "Barisal Times", url: "https://www.barisaltimes.com/feed" },
+            { name: "RisingBD", url: "https://www.risingbd.com/rss/rss.xml" },
+            { name: "Varendra News", url: "https://varendranews.com/feed" },
+            { name: "Khulna News", url: "https://www.khulnanews.com/feed" },
+            { name: "Coxsbazar News", url: "https://www.coxsbazarnews.com/feed" },
+            { name: "Dainik Shiksha", url: "https://www.dainikshiksha.com/feed" },
+            { name: "Education BD", url: "https://educationbd.com/feed" },
+            { name: "Diganta News", url: "https://www.digantanews.com/feed" },
+            { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
+            { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
+        ];
+
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
-            
-            const feeds = [
-                // Set 1 (Originals)
-                { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/collection/latest" },
-                { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
-                { name: "Daily Star", url: "https://bangla.thedailystar.net/rss.xml" },
-                { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
-                { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
-                // Set 2 (The 5 new ones)
-                { name: "bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
-                { name: "Banglanews24", url: "https://www.banglanews24.com/rss/rss.xml" },
-                { name: "NTV Online", url: "https://www.ntvbd.com/rss.xml" },
-                { name: "Somoy News", url: "https://www.somoynews.tv/rss" },
-                { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
-                // Set 3 (Final 5 + Fixed RTV)
-                { name: "RTV Online", url: "https://www.rtvonline.com/feed/bangladesh" }, // FIXED LINK
-                { name: "Jago News", url: "https://www.jagonews24.com/rss/rss.xml" },
-                { name: "Channel 24", url: "https://www.channel24bd.tv/rss/rss.xml" },
-                { name: "Inqilab", url: "https://www.dailyinqilab.com/rss.xml" },
-                { name: "Nayadiganta", url: "https://www.dailynayadiganta.com/rss.xml" }
-            ];
-
             ticker.innerHTML = '';
-            grid.innerHTML = '';
 
             for (const feed of feeds) {
                 try {
@@ -131,23 +177,37 @@
                             ticker.innerHTML += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
                             const card = document.createElement('a');
                             card.href = item.link; card.target = "_blank"; card.className = "card";
+                            card.setAttribute('data-title', item.title.toLowerCase());
                             card.innerHTML = `
                                 <div class="dot" style="background:${item.title.includes('প্রাথমিক') ? 'var(--color-alert)' : 'var(--color-news)'}"></div>
                                 <div>
                                     <div style="font-size: 0.55rem; color: var(--accent-gold); font-weight:700;">${feed.name.toUpperCase()}</div>
-                                    <div style="font-size: 0.85rem; font-weight:500; line-height:1.4;">${item.title}</div>
+                                    <div style="font-size: 0.82rem; font-weight:500; line-height:1.4;">${item.title}</div>
                                 </div>
                             `;
                             grid.appendChild(card);
                         });
                     }
-                } catch (e) { console.log("Skip: " + feed.name); }
+                } catch (e) { console.log("Error: " + feed.name); }
             }
+            document.getElementById('statusLabel').innerText = "Live Mega Feed (200 News Cards)";
         }
+
+        // Search Logic
+        document.getElementById('newsSearch').oninput = function() {
+            let val = this.value.toLowerCase();
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.display = card.getAttribute('data-title').includes(val) ? 'flex' : 'none';
+            });
+        };
+
+        // Scroll Logic
+        window.onscroll = function() {
+            document.getElementById('backTop').style.display = window.scrollY > 500 ? 'block' : 'none';
+        };
 
         lucide.createIcons();
         fetchNews();
-        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
     </script>
 </body>
 </html>
