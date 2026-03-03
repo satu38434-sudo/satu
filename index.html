@@ -30,73 +30,63 @@
             overflow-x: hidden;
         }
 
-        /* --- NEW ALERT PULSE --- */
+        /* --- SMART ALERT ANIMATION --- */
         @keyframes pulse-gold {
-            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); border-color: var(--accent-gold); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); border-color: var(--accent-gold); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); border-color: var(--border); }
         }
-        .new-alert {
-            border-color: var(--accent-gold) !important;
-            animation: pulse-gold 2s infinite;
-            position: relative;
-        }
+        .new-alert { animation: pulse-gold 2s infinite; position: relative; }
         .badge-new {
-            background: var(--accent-gold);
-            color: black;
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 800;
-            position: absolute;
-            top: -10px; right: 10px;
+            background: var(--accent-gold); color: black; font-size: 0.55rem;
+            padding: 2px 6px; border-radius: 4px; font-weight: 800;
+            position: absolute; top: -8px; right: 8px; z-index: 5;
         }
 
-        /* --- SIDEBAR & OVERLAY --- */
+        /* --- TICKER --- */
+        .ticker-wrap {
+            width: 100%; background: rgba(0,0,0,0.6); border-bottom: 1px solid var(--border);
+            overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 40px;
+        }
+        .ticker-label { background: #b91c1c; color: white; padding: 0 15px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; z-index: 10; }
+        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker-move 80s linear infinite; }
+        .ticker-item { display: inline-block; padding: 0 40px; color: var(--text-bright); text-decoration: none; font-size: 0.85rem; }
+        @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+        /* --- LAYOUT --- */
+        .masthead { max-width: 1100px; margin: 0 auto; padding: 20px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px double var(--border); }
+        .menu-trigger { background: none; border: 1px solid var(--border); color: var(--accent-gold); padding: 10px; border-radius: 10px; cursor: pointer; }
+        .banner-center-group { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; margin-right: 45px; }
+        .main-banner { max-width: 250px; width: 100%; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.15)); }
+        
+        main { max-width: 1100px; margin: 0 auto; padding: 0 15px 80px; }
+        .section-label { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent-gold); margin: 40px 0 15px; display: flex; align-items: center; gap: 12px; }
+        .section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .card {
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+            padding: 16px; display: flex; align-items: center; gap: 15px; text-decoration: none;
+            color: var(--text-bright); transition: 0.3s; position: relative;
+        }
+        .card:hover { border-color: var(--accent-gold); transform: translateY(-3px); background: rgba(251,191,36,0.05); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+        /* --- SIDEBAR --- */
         .side-menu {
-            position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
+            position: fixed; top: 0; left: -320px; width: 320px; height: 100%;
             background: rgba(2, 6, 23, 0.98); backdrop-filter: blur(20px);
             border-right: 1px solid var(--border); z-index: 1000;
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 20px;
             display: flex; flex-direction: column; overflow-y: auto;
         }
-        .side-menu.active { left: 0; box-shadow: 20px 0 60px rgba(0,0,0,0.8); }
+        .side-menu.active { left: 0; }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 999; }
         .overlay.active { display: block; }
-
-        /* --- TICKER --- */
-        .ticker-wrap {
-            width: 100%; background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--border);
-            overflow: hidden; white-space: nowrap; display: flex; align-items: center;
-        }
-        .ticker-label { background: #b91c1c; color: white; padding: 8px 15px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; z-index: 10; }
-        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker-move 60s linear infinite; }
-        .ticker-item { display: inline-block; padding: 0 40px; color: var(--text-bright); text-decoration: none; font-size: 0.85rem; }
-        @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-
-        /* --- LAYOUT --- */
-        .masthead { max-width: 1000px; margin: 0 auto; padding: 20px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px double var(--border); }
-        .menu-trigger { background: none; border: 1px solid var(--border); color: var(--accent-gold); padding: 10px; border-radius: 10px; cursor: pointer; }
-        .banner-center-group { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; margin-right: 45px; }
-        .main-banner { max-width: 280px; width: 100%; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.15)); }
-        
-        main { max-width: 1000px; margin: 0 auto; padding: 0 15px 80px; }
-        .section-label { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent-gold); margin: 40px 0 15px; display: flex; align-items: center; gap: 12px; }
-        .section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        .card {
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
-            padding: 15px; display: flex; align-items: center; gap: 15px; text-decoration: none;
-            color: var(--text-bright); transition: 0.3s;
-        }
-        .card:hover { border-color: var(--accent-gold); transform: translateY(-2px); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        
-        .menu-item { display: flex; align-items: center; gap: 12px; color: var(--text-bright); text-decoration: none; padding: 12px 15px; border-radius: 10px; margin-bottom: 4px; }
+        .menu-item { display: flex; align-items: center; gap: 12px; color: var(--text-bright); text-decoration: none; padding: 12px; border-radius: 10px; margin-bottom: 5px; }
         .menu-item:hover { background: rgba(251, 191, 36, 0.1); color: var(--accent-gold); }
 
-        @media (max-width: 600px) { .main-banner { max-width: 180px; } .grid { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .main-banner { max-width: 160px; } .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -104,59 +94,63 @@
     <div class="overlay" id="overlay"></div>
 
     <nav class="side-menu" id="sideMenu">
-        <div class="menu-header"><span>Navigation</span><button onclick="toggleMenu()"><i data-lucide="x"></i></button></div>
-        <div style="color:var(--accent-gold); font-size:0.7rem; margin-bottom:10px;">OFFICIAL CHANNELS</div>
-        <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="menu-item"><i data-lucide="map-pin"></i> Gopalganj DPE</a>
-        <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="menu-item"><i data-lucide="landmark"></i> National DPE</a>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <span style="font-family:'Playfair Display'; color:var(--accent-gold); font-size:1.4rem;">Menu</span>
+            <button onclick="toggleMenu()" style="background:none; border:none; color:white;"><i data-lucide="x"></i></button>
+        </div>
+        <div style="color:var(--accent-gold); font-size:0.6rem; letter-spacing:1px; margin-bottom:10px;">GOVERNMENT PORTALS</div>
+        <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="menu-item"><i data-lucide="external-link"></i> Gopalganj DPE</a>
+        <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="menu-item"><i data-lucide="external-link"></i> National DPE</a>
+        <div style="margin-top:20px; color:var(--accent-gold); font-size:0.6rem; letter-spacing:1px; margin-bottom:10px;">TOOLS</div>
         <a href="age.html" class="menu-item"><i data-lucide="calculator"></i> Age Calculator</a>
+        <a href="salary.html" class="menu-item"><i data-lucide="banknote"></i> Salary Fixation</a>
     </nav>
 
     <div class="ticker-wrap">
-        <div class="ticker-label">Live</div>
-        <div class="ticker-content" id="newsTicker">Checking for news...</div>
+        <div class="ticker-label">Breaking</div>
+        <div class="ticker-content" id="newsTicker">Syncing with news servers...</div>
     </div>
 
     <header class="masthead">
         <button class="menu-trigger" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
         <div class="banner-center-group">
             <img src="logo.svg" alt="SATU" class="main-banner">
-            <div id="currentDate" style="font-size: 0.65rem; font-weight: 700; color: var(--accent-gold); margin-top: 5px;"></div>
+            <div id="currentDate" style="font-size: 0.6rem; font-weight: 700; color: var(--accent-gold); margin-top: 5px; letter-spacing: 1px;"></div>
         </div>
     </header>
 
     <main>
-        <div class="section-label">Important Notices</div>
-        <div class="grid" id="noticeGrid">
-            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="card" id="gopalganjNotice">
-                <div class="dot" style="background:var(--color-notice)"></div>
+        <div class="section-label">Official Education Notices</div>
+        <div class="grid">
+            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="card">
+                <div class="dot" style="background:var(--color-notice); box-shadow: 0 0 10px var(--color-notice)"></div>
                 <div>
-                    <div style="font-size: 0.65rem; opacity: 0.7;">GOPALGANJ</div>
-                    <div style="font-weight: 600;">District Education Notices</div>
+                    <div style="font-size: 0.6rem; color: var(--accent-gold);">GOPALGANJ</div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">District Education Office Notices</div>
                 </div>
             </a>
-            <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="card" id="nationalNotice">
-                <div class="dot" style="background:var(--color-notice)"></div>
+            <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="card">
+                <div class="dot" style="background:var(--color-notice); box-shadow: 0 0 10px var(--color-notice)"></div>
                 <div>
-                    <div style="font-size: 0.65rem; opacity: 0.7;">NATIONAL</div>
-                    <div style="font-weight: 600;">DPE Directorate Notices</div>
+                    <div style="font-size: 0.6rem; color: var(--accent-gold);">NATIONAL</div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">DPE Directorate Main Notices</div>
                 </div>
             </a>
         </div>
 
-        <div class="section-label">Live News Feed</div>
-        <div class="grid" id="liveNewsGrid"></div>
+        <div class="section-label">Live Headlines (5 Cards per Source)</div>
+        <div class="grid" id="liveNewsGrid">
+            </div>
     </main>
 
     <script>
-        // 1. Core Functions
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
         }
         document.getElementById('overlay').onclick = toggleMenu;
 
-        // 2. Fetch & Smart Alert Logic
-        async function updateDashboard() {
+        async function fetchSmartNews() {
             const ticker = document.getElementById('newsTicker');
             const newsGrid = document.getElementById('liveNewsGrid');
             const feeds = [
@@ -168,6 +162,9 @@
             ticker.innerHTML = '';
             newsGrid.innerHTML = '';
             const today = new Date().toDateString();
+            
+            // Notice keywords to watch for
+            const keywords = /প্রাথমিক|নিয়োগ|ফলাফল|পরীক্ষা|ছুটি|Primary|Result|Exam|Notice|DPE/i;
 
             for (const feed of feeds) {
                 try {
@@ -175,44 +172,51 @@
                     const data = await res.json();
 
                     if (data.status === 'ok') {
-                        data.items.slice(0, 4).forEach((item, idx) => {
+                        // Take 5 items per website
+                        data.items.slice(0, 5).forEach((item) => {
                             const isNew = new Date(item.pubDate).toDateString() === today;
-                            const isNotice = /প্রাথমিক|নিয়োগ|ফলাফল|Primary|Result|Exam/i.test(item.title);
+                            const hasKeyword = keywords.test(item.title);
 
-                            // Ticker
-                            const tSpan = document.createElement('span');
-                            tSpan.className = "ticker-item";
-                            tSpan.innerHTML = ` ● <b>${feed.name}:</b> ${item.title}`;
-                            ticker.appendChild(tSpan);
+                            // 1. Add to Ticker
+                            const tItem = document.createElement('span');
+                            tItem.className = "ticker-item";
+                            tItem.innerHTML = ` ● <b>${feed.name}:</b> ${item.title}`;
+                            ticker.appendChild(tItem);
 
-                            // Grid
-                            if (idx < 2) {
-                                const card = document.createElement('a');
-                                card.href = item.link; card.target = "_blank";
-                                card.className = `card ${isNew || isNotice ? 'new-alert' : ''}`;
-                                card.innerHTML = `
-                                    ${isNew ? '<span class="badge-new">NEW</span>' : ''}
-                                    <div class="dot" style="background:${isNotice ? 'var(--color-alert)' : 'var(--color-news)'}"></div>
-                                    <div>
-                                        <div style="font-size: 0.6rem; color: var(--accent-gold);">${feed.name.toUpperCase()}</div>
-                                        <div style="font-size: 0.85rem; font-weight: 500;">${item.title}</div>
-                                    </div>
-                                `;
-                                newsGrid.appendChild(card);
-                            }
+                            // 2. Add to Grid
+                            const card = document.createElement('a');
+                            card.href = item.link;
+                            card.target = "_blank";
+                            // If it has a keyword or is from today, make it pulse/alert
+                            card.className = `card ${(isNew || hasKeyword) ? 'new-alert' : ''}`;
+                            
+                            card.innerHTML = `
+                                ${isNew ? '<span class="badge-new">RECENT</span>' : ''}
+                                <div class="dot" style="background:${hasKeyword ? 'var(--color-alert)' : 'var(--color-news)'}"></div>
+                                <div>
+                                    <div style="font-size: 0.6rem; color: var(--accent-gold); font-weight:700;">${feed.name.toUpperCase()}</div>
+                                    <div style="font-size: 0.85rem; font-weight: 500; line-height:1.4;">${item.title}</div>
+                                </div>
+                            `;
+                            newsGrid.appendChild(card);
                         });
                     }
-                } catch (e) { console.log("Feed Error"); }
+                } catch (e) {
+                    console.error("Error fetching " + feed.name);
+                }
             }
         }
 
-        // 3. Initialize
+        // Initialize Lucide Icons
         lucide.createIcons();
-        updateDashboard();
-        setInterval(updateDashboard, 300000); // Check every 5 mins
 
-        const d = new Date();
-        document.getElementById('currentDate').innerText = d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
+        // Run functions
+        fetchSmartNews();
+        setInterval(fetchSmartNews, 600000); // Auto-refresh every 10 mins
+
+        // Set Date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', options).toUpperCase();
     </script>
 </body>
 </html>
