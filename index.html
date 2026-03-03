@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>SATU</title>
+    <title>SATU - Smart Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -16,12 +16,12 @@
             --text-bright: #f8fafc;
             --text-dim: #94a3b8;
             --color-ai: #a78bfa;
-            --color-wp: #fb7185;
             --color-news: #38bdf8;
+            --color-notice: #10b981;
+            --color-alert: #ef4444;
         }
 
         * { box-sizing: border-box; }
-
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-base) var(--bg-gradient) fixed;
@@ -30,194 +30,73 @@
             overflow-x: hidden;
         }
 
-        /* --- STRETCH MENU (SIDEBAR) --- */
-        .side-menu {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 300px;
-            height: 100%;
-            background: rgba(2, 6, 23, 0.98);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--border);
-            z-index: 1000;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+        /* --- NEW ALERT PULSE --- */
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
         }
-
-        .side-menu.active {
-            left: 0;
-            box-shadow: 20px 0 60px rgba(0,0,0,0.8);
-        }
-
-        .menu-header {
-            font-family: 'Playfair Display', serif;
-            color: var(--accent-gold);
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .menu-category {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent-gold);
-            margin: 20px 0 10px 10px;
-            opacity: 0.7;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-bright);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 12px 15px;
-            border-radius: 10px;
-            transition: 0.2s;
-            margin-bottom: 4px;
-        }
-
-        .menu-item:hover {
-            background: rgba(251, 191, 36, 0.1);
-            color: var(--accent-gold);
-            padding-left: 20px;
-        }
-
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            display: none;
-            z-index: 999;
-        }
-        .overlay.active { display: block; }
-
-        /* --- Masthead Fixed for Mobile --- */
-        .masthead {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px 15px;
-            border-bottom: 4px double var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .menu-trigger {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--accent-gold);
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: 0.3s;
-        }
-
-        .banner-center-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            /* Balanced Margin to keep logo centered */
-            margin-right: 45px; 
-        }
-
-        .main-banner {
-            max-width: 350px;
-            width: 100%;
-            height: auto;
-            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.15));
-        }
-
-        .masthead-info-row {
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--accent-gold);
-            padding-top: 8px;
-            margin-top: 8px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-        }
-
-        /* --- Pro Search Bar --- */
-        .search-wrapper {
-            max-width: 550px;
-            margin: 30px auto 10px;
-            padding: 0 20px;
+        .new-alert {
+            border-color: var(--accent-gold) !important;
+            animation: pulse-gold 2s infinite;
             position: relative;
         }
-
-        .search-icon {
+        .badge-new {
+            background: var(--accent-gold);
+            color: black;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
             position: absolute;
-            left: 35px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-dim);
-            pointer-events: none;
+            top: -10px; right: 10px;
         }
 
-        #linkSearch {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
+        /* --- SIDEBAR & OVERLAY --- */
+        .side-menu {
+            position: fixed; top: 0; left: -300px; width: 300px; height: 100%;
+            background: rgba(2, 6, 23, 0.98); backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border); z-index: 1000;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); padding: 30px 20px;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
+        .side-menu.active { left: 0; box-shadow: 20px 0 60px rgba(0,0,0,0.8); }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 999; }
+        .overlay.active { display: block; }
 
-        #linkSearch:focus {
-            border-color: var(--accent-gold);
-            background: rgba(0, 0, 0, 0.5);
+        /* --- TICKER --- */
+        .ticker-wrap {
+            width: 100%; background: rgba(0,0,0,0.4); border-bottom: 1px solid var(--border);
+            overflow: hidden; white-space: nowrap; display: flex; align-items: center;
         }
+        .ticker-label { background: #b91c1c; color: white; padding: 8px 15px; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; z-index: 10; }
+        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker-move 60s linear infinite; }
+        .ticker-item { display: inline-block; padding: 0 40px; color: var(--text-bright); text-decoration: none; font-size: 0.85rem; }
+        @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        /* --- Main Content --- */
+        /* --- LAYOUT --- */
+        .masthead { max-width: 1000px; margin: 0 auto; padding: 20px 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 4px double var(--border); }
+        .menu-trigger { background: none; border: 1px solid var(--border); color: var(--accent-gold); padding: 10px; border-radius: 10px; cursor: pointer; }
+        .banner-center-group { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; margin-right: 45px; }
+        .main-banner { max-width: 280px; width: 100%; filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.15)); }
+        
         main { max-width: 1000px; margin: 0 auto; padding: 0 15px 80px; }
-        
-        .section-label {
-            font-family: 'Playfair Display', serif; font-style: italic;
-            color: var(--accent-gold); margin: 45px 0 15px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        
+        .section-label { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent-gold); margin: 40px 0 15px; display: flex; align-items: center; gap: 12px; }
         .section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        
         .card {
             background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
-            padding: 20px; display: flex; align-items: center; gap: 15px; text-decoration: none;
-            color: var(--text-bright); font-weight: 600; transition: 0.3s;
+            padding: 15px; display: flex; align-items: center; gap: 15px; text-decoration: none;
+            color: var(--text-bright); transition: 0.3s;
         }
-        
         .card:hover { border-color: var(--accent-gold); transform: translateY(-2px); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         
-        .dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px currentColor; }
-        
-        footer { text-align: center; padding: 50px 20px; color: var(--text-dim); font-size: 0.65rem; border-top: 1px solid var(--border); }
+        .menu-item { display: flex; align-items: center; gap: 12px; color: var(--text-bright); text-decoration: none; padding: 12px 15px; border-radius: 10px; margin-bottom: 4px; }
+        .menu-item:hover { background: rgba(251, 191, 36, 0.1); color: var(--accent-gold); }
 
-        @media (max-width: 600px) {
-            .main-banner { max-width: 200px; }
-            .banner-center-group { margin-right: 42px; } /* Adjust centering for mobile */
-            .masthead-info-row { font-size: 0.55rem; letter-spacing: 1px; }
-            .grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 600px) { .main-banner { max-width: 180px; } .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -225,87 +104,115 @@
     <div class="overlay" id="overlay"></div>
 
     <nav class="side-menu" id="sideMenu">
-        <div class="menu-header">
-            <span>Navigation</span>
-            <button onclick="toggleMenu()" style="background:none; border:none; color:var(--text-dim); cursor:pointer;">
-                <i data-lucide="x"></i>
-            </button>
-        </div>
-
-        <div class="menu-category">Calculators</div>
-        <a href="age.html" class="menu-item"><i data-lucide="calendar"></i> Age Calculator</a>
-        <a href="salary.html" class="menu-item"><i data-lucide="banknote"></i> Salary Calculator</a>
-        
-        <div class="menu-category">Intelligence</div>
-        <a href="https://chatgpt.com" class="menu-item" target="_blank"><i data-lucide="bot"></i> ChatGPT</a>
-        <a href="https://claude.ai" class="menu-item" target="_blank"><i data-lucide="brain"></i> Claude AI</a>
-        
-        <div class="menu-category">Media</div>
-        <a href="#" class="menu-item"><i data-lucide="image"></i> Wallpapers</a>
-        <a href="#" class="menu-item"><i data-lucide="video"></i> Video Portals</a>
+        <div class="menu-header"><span>Navigation</span><button onclick="toggleMenu()"><i data-lucide="x"></i></button></div>
+        <div style="color:var(--accent-gold); font-size:0.7rem; margin-bottom:10px;">OFFICIAL CHANNELS</div>
+        <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="menu-item"><i data-lucide="map-pin"></i> Gopalganj DPE</a>
+        <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="menu-item"><i data-lucide="landmark"></i> National DPE</a>
+        <a href="age.html" class="menu-item"><i data-lucide="calculator"></i> Age Calculator</a>
     </nav>
 
-    <header class="masthead">
-        <button class="menu-trigger" onclick="toggleMenu()">
-            <i data-lucide="menu"></i>
-        </button>
+    <div class="ticker-wrap">
+        <div class="ticker-label">Live</div>
+        <div class="ticker-content" id="newsTicker">Checking for news...</div>
+    </div>
 
+    <header class="masthead">
+        <button class="menu-trigger" onclick="toggleMenu()"><i data-lucide="menu"></i></button>
         <div class="banner-center-group">
-            <div class="banner-container">
-                <img src="logo.svg" alt="Satu.pro.bd" class="main-banner">
-            </div>
-            <div class="masthead-info-row" id="currentDate">LOADING...</div>
+            <img src="logo.svg" alt="SATU" class="main-banner">
+            <div id="currentDate" style="font-size: 0.65rem; font-weight: 700; color: var(--accent-gold); margin-top: 5px;"></div>
         </div>
     </header>
 
-    <div class="search-wrapper">
-        <i data-lucide="search" class="search-icon" size="18"></i>
-        <input type="text" id="linkSearch" placeholder="Search resources..." onkeyup="filterLinks()">
-    </div>
-
     <main>
-        <div class="section-label">Featured Quick Links</div>
-        <div class="grid">
-            <a href="age.html" class="card">
-                <div class="dot" style="color:var(--color-news); background:var(--color-news)"></div> <span>Age Calculator</span>
+        <div class="section-label">Important Notices</div>
+        <div class="grid" id="noticeGrid">
+            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="card" id="gopalganjNotice">
+                <div class="dot" style="background:var(--color-notice)"></div>
+                <div>
+                    <div style="font-size: 0.65rem; opacity: 0.7;">GOPALGANJ</div>
+                    <div style="font-weight: 600;">District Education Notices</div>
+                </div>
             </a>
-            <a href="salary.html" class="card">
-                <div class="dot" style="color:var(--color-news); background:var(--color-news)"></div> <span>Salary Fixation</span>
-            </a>
-            <a href="https://chatgpt.com" class="card" target="_blank">
-                <div class="dot" style="color:var(--color-ai); background:var(--color-ai)"></div> <span>ChatGPT</span>
+            <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="card" id="nationalNotice">
+                <div class="dot" style="background:var(--color-notice)"></div>
+                <div>
+                    <div style="font-size: 0.65rem; opacity: 0.7;">NATIONAL</div>
+                    <div style="font-weight: 600;">DPE Directorate Notices</div>
+                </div>
             </a>
         </div>
+
+        <div class="section-label">Live News Feed</div>
+        <div class="grid" id="liveNewsGrid"></div>
     </main>
 
-    <footer>© 2026 Satu</footer>
-
     <script>
+        // 1. Core Functions
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
         }
-
         document.getElementById('overlay').onclick = toggleMenu;
 
-        function filterLinks() {
-            let input = document.getElementById('linkSearch').value.toLowerCase();
-            let cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                let text = card.innerText.toLowerCase();
-                card.style.display = text.includes(input) ? "flex" : "none";
-            });
+        // 2. Fetch & Smart Alert Logic
+        async function updateDashboard() {
+            const ticker = document.getElementById('newsTicker');
+            const newsGrid = document.getElementById('liveNewsGrid');
+            const feeds = [
+                { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/collection/latest" },
+                { name: "Daily Star", url: "https://bangla.thedailystar.net/rss.xml" },
+                { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" }
+            ];
+
+            ticker.innerHTML = '';
+            newsGrid.innerHTML = '';
+            const today = new Date().toDateString();
+
+            for (const feed of feeds) {
+                try {
+                    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`);
+                    const data = await res.json();
+
+                    if (data.status === 'ok') {
+                        data.items.slice(0, 4).forEach((item, idx) => {
+                            const isNew = new Date(item.pubDate).toDateString() === today;
+                            const isNotice = /প্রাথমিক|নিয়োগ|ফলাফল|Primary|Result|Exam/i.test(item.title);
+
+                            // Ticker
+                            const tSpan = document.createElement('span');
+                            tSpan.className = "ticker-item";
+                            tSpan.innerHTML = ` ● <b>${feed.name}:</b> ${item.title}`;
+                            ticker.appendChild(tSpan);
+
+                            // Grid
+                            if (idx < 2) {
+                                const card = document.createElement('a');
+                                card.href = item.link; card.target = "_blank";
+                                card.className = `card ${isNew || isNotice ? 'new-alert' : ''}`;
+                                card.innerHTML = `
+                                    ${isNew ? '<span class="badge-new">NEW</span>' : ''}
+                                    <div class="dot" style="background:${isNotice ? 'var(--color-alert)' : 'var(--color-news)'}"></div>
+                                    <div>
+                                        <div style="font-size: 0.6rem; color: var(--accent-gold);">${feed.name.toUpperCase()}</div>
+                                        <div style="font-size: 0.85rem; font-weight: 500;">${item.title}</div>
+                                    </div>
+                                `;
+                                newsGrid.appendChild(card);
+                            }
+                        });
+                    }
+                } catch (e) { console.log("Feed Error"); }
+            }
         }
 
+        // 3. Initialize
         lucide.createIcons();
+        updateDashboard();
+        setInterval(updateDashboard, 300000); // Check every 5 mins
 
-        // Dynamic Date Refresh
-        function updateDate() {
-            const d = new Date();
-            const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-            document.getElementById('currentDate').innerText = "" + d.toLocaleDateString(undefined, options).toUpperCase();
-        }
-        updateDate();
+        const d = new Date();
+        document.getElementById('currentDate').innerText = d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase();
     </script>
 </body>
 </html>
