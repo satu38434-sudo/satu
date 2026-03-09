@@ -1,169 +1,303 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SATU - News Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Feed Pro | Live News</title>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-base: #020617;
-            --bg-gradient: radial-gradient(circle at 50% -20%, #064e3b 0%, #020617 80%);
-            --card-bg: rgba(15, 23, 42, 0.7);
-            --border: rgba(251, 191, 36, 0.2);
+            --bg-dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --accent-gold: #fbbf24;
-            --text-bright: #f8fafc;
-            --color-news: #38bdf8;
+            --accent-blue: #3b82f6;
             --color-alert: #ef4444;
+            --color-news: #10b981;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
         }
 
-        * { box-sizing: border-box; scroll-behavior: smooth; }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background: var(--bg-base) var(--bg-gradient) fixed;
-            color: var(--text-bright); margin: 0; padding: 0; min-height: 100vh;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Hind Siliguri', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
         }
 
-        /* --- TICKER --- */
+        /* --- Header & Navigation --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-img {
+            height: 35px;
+            margin-bottom: 4px;
+        }
+
+        #statusLabel {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            margin: 0;
+        }
+
+        .icon-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover { background: var(--glass-border); }
+
+        /* --- Slide-out Menu --- */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background: #1e293b;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            z-index: 2000;
+            padding: 25px;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .side-menu.active { left: 0; }
+
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            z-index: 1500;
+        }
+
+        .menu-overlay.active { display: block; }
+
+        .side-menu h3 {
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 15px;
+            margin-top: 0;
+            color: var(--accent-gold);
+        }
+
+        .side-menu nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+
+        .side-menu nav a:hover { background: var(--glass); color: var(--accent-blue); }
+
+        /* --- Search Bar Toggle --- */
+        .search-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #1e293b;
+            padding: 15px;
+            display: none;
+            border-bottom: 2px solid var(--accent-blue);
+            animation: slideDown 0.3s ease;
+        }
+
+        .search-container.active { display: block; }
+
+        #newsSearch {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: block;
+            padding: 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            color: white;
+            outline: none;
+        }
+
+        /* --- Ticker --- */
         .ticker-wrap {
-            width: 100%; background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--border);
-            overflow: hidden; white-space: nowrap; display: flex; align-items: center; height: 35px;
-            position: sticky; top: 0; z-index: 1000;
+            background: #000;
+            padding: 8px 0;
+            overflow: hidden;
+            white-space: nowrap;
         }
-        .ticker-label { background: #b91c1c; color: white; padding: 0 12px; height: 100%; display: flex; align-items: center; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; }
-        .ticker-content { display: inline-block; padding-left: 100%; animation: ticker-move 350s linear infinite; }
-        .ticker-item { display: inline-block; padding: 0 30px; font-size: 0.8rem; }
-        @keyframes ticker-move { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-        /* --- HEADER --- */
-        .masthead { max-width: 1100px; margin: 0 auto; padding: 25px 15px; display: flex; flex-direction: column; align-items: center; }
-        .main-banner { max-width: 240px; width: 100%; margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.2)); }
-
-        .nav-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
-            width: 100%; max-width: 500px; margin-bottom: 20px;
+        .ticker-move {
+            display: inline-block;
+            animation: ticker 40s linear infinite;
         }
-        .nav-item {
-            color: var(--text-bright); text-decoration: none; font-size: 0.75rem;
-            font-weight: 600; padding: 12px; border: 1px solid var(--border);
-            border-radius: 10px; transition: 0.3s; display: flex; align-items: center; 
-            justify-content: center; gap: 8px; background: rgba(255,255,255,0.03);
-        }
-        .nav-item:hover { background: rgba(251, 191, 36, 0.1); border-color: var(--accent-gold); color: var(--accent-gold); }
 
-        /* --- SEARCH BAR --- */
-        .search-container { width: 100%; max-width: 500px; position: relative; margin-bottom: 10px; }
-        .search-input {
-            width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--border);
-            padding: 12px 40px; border-radius: 25px; color: white; outline: none; transition: 0.3s;
+        .ticker-item {
+            margin-right: 40px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
         }
-        .search-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
-        .search-icon { position: absolute; left: 15px; top: 12px; color: var(--accent-gold); }
 
-        /* --- NEWS GRID --- */
-        main { max-width: 1100px; margin: 0 auto; padding: 20px 15px 80px; }
-        .section-label { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent-gold); margin: 35px 0 15px; display: flex; align-items: center; gap: 12px; }
-        .section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--border), transparent); }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+        /* --- News Cards --- */
+        #newsGrid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
         .card {
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
-            padding: 18px; display: flex; align-items: center; gap: 15px; text-decoration: none;
-            color: var(--text-bright); transition: 0.3s;
-        }
-        .card:hover { border-color: var(--accent-gold); transform: translateY(-2px); background: rgba(251,191,36,0.08); }
-        .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-        /* --- BACK TO TOP --- */
-        .back-top {
-            position: fixed; bottom: 20px; right: 20px; background: var(--accent-gold);
-            color: black; padding: 10px; border-radius: 50%; cursor: pointer; display: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 2000;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 18px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
         }
 
-        @media (min-width: 768px) { .nav-grid { grid-template-columns: repeat(4, 1fr); max-width: 800px; } }
+        .card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .card-meta {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* --- Utilities --- */
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        #backTop {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
 
-    <div class="ticker-wrap">
-        <div class="ticker-label">Live</div>
-        <div class="ticker-content" id="newsTicker">Initializing Mega Feed...</div>
+    <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <div class="side-menu" id="sideMenu">
+        <h3>Quick Access</h3>
+        <nav>
+            <a href="#"><i data-lucide="building-2"></i> DPE Gopalganj</a>
+            <a href="#"><i data-lucide="graduation-cap"></i> DPE</a>
+            <a href="#"><i data-lucide="calendar"></i> Age Calculator</a>
+            <a href="#"><i data-lucide="calculator"></i> Salary Calculator</a>
+        </nav>
     </div>
 
-    <header class="masthead">
-        <img src="logo.svg" alt="SATU" class="main-banner">
-        <nav class="nav-grid">
-            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="map-pin" size="12"></i>DPE Gopalganj</a>
-            <a href="https://dpe.gov.bd/pages/notices" target="_blank" class="nav-item"><i data-lucide="bell" size="12"></i> DPE</a>
-            <a href="age.html" class="nav-item"><i data-lucide="calculator" size="12"></i> Age Calc</a>
-            <a href="salary.html" class="nav-item"><i data-lucide="banknote" size="12"></i> Salary</a>
-        </nav>
-        
-        <div class="search-container">
-            <i data-lucide="search" class="search-icon" size="18"></i>
-            <input type="text" id="newsSearch" class="search-input" placeholder="Search 200 news headlines...">
+    <header>
+        <button class="icon-btn" onclick="toggleMenu()">
+            <i data-lucide="menu"></i>
+        </button>
+
+        <div class="header-center">
+            <img src="https://via.placeholder.com/150x40/fbbf24/000000?text=LOGO" alt="Logo" class="header-img">
+            <div id="statusLabel">Loading Feeds...</div>
+        </div>
+
+        <button class="icon-btn" onclick="toggleSearch()">
+            <i data-lucide="search"></i>
+        </button>
+
+        <div class="search-container" id="searchContainer">
+            <input type="text" id="newsSearch" placeholder="টাইপ করে খুঁজুন...">
         </div>
     </header>
 
-    <main>
-        <div class="section-label" id="statusLabel">Loading 40 News Sources...</div>
-        <div class="grid" id="newsGrid"></div>
-    </main>
+    <div class="ticker-wrap">
+        <div class="ticker-move" id="newsTicker"></div>
+    </div>
 
-    <div class="back-top" id="backTop" onclick="window.scrollTo(0,0)"><i data-lucide="arrow-up"></i></div>
+    <div id="newsGrid"></div>
+
+    <button id="backTop" class="icon-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <i data-lucide="arrow-up-to-line"></i>
+    </button>
 
     <script>
         const feeds = [
-            // 1-10
-  
-            { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
-            { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
-            { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
-            { name: "bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
-            { name: "Somoy News", url: "https://www.somoynews.tv/rss" },
-            { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
-            { name: "Banglanews24", url: "https://www.banglanews24.com/rss/rss.xml" },
-            { name: "Jago News", url: "https://www.jagonews24.com/rss/rss.xml" },
-            // 11-20
-   
-            { name: "RTV Online", url: "https://www.rtvonline.com/feed/bangladesh" },
-            { name: "Channel 24", url: "https://www.channel24bd.tv/rss/rss.xml" },
-            { name: "Inqilab", url: "https://www.dailyinqilab.com/rss.xml" },
-            { name: "Nayadiganta", url: "https://www.dailynayadiganta.com/rss.xml" },
-            { name: "Manab Zamin", url: "https://mzamin.com/rss.php" },
-            { name: "Bhorer Kagoj", url: "https://www.bhorerkagoj.com/feed" },
-            { name: "Daily Janakantha", url: "https://www.dailyjanakantha.com/rss.xml" },
-            { name: "Amader Shomoy", url: "https://www.dainikamadershomoy.com/rss.xml" },
-            { name: "Dhaka Tribune", url: "https://bangla.dhakatribune.com/feed" },
-            // 21-30
-            { name: "Bonik Barta", url: "https://bonikbarta.net/home/rss" },
-            { name: "Desh Rupantor", url: "https://www.deshrupantor.com/rss.xml" },
-            { name: "Daily Sun", url: "https://www.daily-sun.com/rss" },
-            { name: "Financial Express", url: "https://thefinancialexpress.com.bd/rss/home" },
-            { name: "Daily Observer", url: "https://www.observerbd.com/rss.php" },
-            { name: "Protidin", url: "https://www.bd-pratidin.com/rss.xml" },
-            { name: "Sangbad", url: "https://sangbad.net.bd/rss.xml" },
-            { name: "Dainik Azadi", url: "https://dainikazadi.net/feed" },
-            { name: "Daily Purbokone", url: "https://purbokone.net/feed" },
-            { name: "Sylhet View 24", url: "https://www.sylhetview24.net/rss.xml" },
-            // 31-40
-            { name: "Barisal Times", url: "https://www.barisaltimes.com/feed" },
-            { name: "RisingBD", url: "https://www.risingbd.com/rss/rss.xml" },
-            { name: "Varendra News", url: "https://varendranews.com/feed" },
-            { name: "Khulna News", url: "https://www.khulnanews.com/feed" },
-            { name: "Coxsbazar News", url: "https://www.coxsbazarnews.com/feed" },
-            { name: "Dainik Shiksha", url: "https://www.dainikshiksha.com/feed" },
-            { name: "Education BD", url: "https://educationbd.com/feed" },
-            { name: "Diganta News", url: "https://www.digantanews.com/feed" },
             { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
             { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
         ];
 
+        // UI Interactions
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function toggleSearch() {
+            const container = document.getElementById('searchContainer');
+            container.classList.toggle('active');
+            if(container.classList.contains('active')) document.getElementById('newsSearch').focus();
+        }
+
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
+            grid.innerHTML = '';
             ticker.innerHTML = '';
 
             for (const feed of feeds) {
@@ -172,16 +306,24 @@
                     const data = await res.json();
 
                     if (data.status === 'ok') {
-                        data.items.slice(0, 5).forEach(item => {
+                        data.items.slice(0, 8).forEach(item => {
+                            // Add to Ticker
                             ticker.innerHTML += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
+                            
+                            // Create News Card
                             const card = document.createElement('a');
-                            card.href = item.link; card.target = "_blank"; card.className = "card";
+                            card.href = item.link; 
+                            card.target = "_blank"; 
+                            card.className = "card";
                             card.setAttribute('data-title', item.title.toLowerCase());
+                            
+                            const dotColor = item.title.includes('প্রাথমিক') ? 'var(--color-alert)' : 'var(--color-news)';
+                            
                             card.innerHTML = `
-                                <div class="dot" style="background:${item.title.includes('প্রাথমিক') ? 'var(--color-alert)' : 'var(--color-news)'}"></div>
+                                <div class="dot" style="background:${dotColor}"></div>
                                 <div>
-                                    <div style="font-size: 0.55rem; color: var(--accent-gold); font-weight:700;">${feed.name.toUpperCase()}</div>
-                                    <div style="font-size: 0.82rem; font-weight:500; line-height:1.4;">${item.title}</div>
+                                    <div class="card-meta">${feed.name}</div>
+                                    <div class="card-title">${item.title}</div>
                                 </div>
                             `;
                             grid.appendChild(card);
@@ -202,9 +344,10 @@
 
         // Scroll Logic
         window.onscroll = function() {
-            document.getElementById('backTop').style.display = window.scrollY > 500 ? 'block' : 'none';
+            document.getElementById('backTop').style.display = window.scrollY > 500 ? 'flex' : 'none';
         };
 
+        // Initialize
         lucide.createIcons();
         fetchNews();
     </script>
