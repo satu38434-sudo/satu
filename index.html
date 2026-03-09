@@ -20,7 +20,6 @@
             --text-dim: #94a3b8;
         }
 
-        /* Prevent Horizontal Scroll */
         html, body {
             overflow-x: hidden;
             width: 100%;
@@ -61,10 +60,18 @@
             text-align: center;
         }
 
+        /* Homepage Link Styles */
+        .home-link {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .header-img {
-            height: 30px;
+            height: 32px;
             width: auto;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
         }
 
@@ -72,83 +79,17 @@
             font-size: 0.75rem;
             color: var(--accent-emerald);
             font-weight: 600;
-            white-space: nowrap;
         }
 
-        /* --- Search Bar --- */
-        .search-container {
-            display: none;
-            padding: 15px;
-            background: #0d1117;
-            border-bottom: 2px solid var(--accent-emerald);
-            width: 100%;
-            animation: slideDown 0.3s ease;
-        }
-
-        .search-container.active { display: block; }
-
-        #newsSearch {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            background: var(--bg-dark);
-            color: white;
-            outline: none;
-            font-family: 'Hind Siliguri', sans-serif;
-        }
-
-        /* --- Side Menu --- */
-        .side-menu {
-            position: fixed;
-            top: 0;
-            left: -100%;
-            width: 280px;
-            height: 100%;
-            background: #0d1117;
-            box-shadow: 20px 0 50px rgba(0,0,0,0.9);
-            z-index: 2000;
-            padding: 30px 20px;
-            transition: 0.4s ease;
-        }
-
-        .side-menu.active { left: 0; }
-
-        .side-menu h3 {
-            color: var(--accent-gold);
-            border-left: 4px solid var(--accent-emerald);
-            padding-left: 15px;
-            margin-bottom: 25px;
-        }
-
-        .side-menu nav { display: flex; flex-direction: column; gap: 12px; }
-
-        .side-menu nav a {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            color: var(--text-main);
-            text-decoration: none;
-            border-radius: 12px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-        }
-
-        .side-menu nav a:hover {
-            border-color: var(--accent-gold);
-            color: var(--accent-gold);
-            transform: translateX(10px);
-        }
-
-        /* --- PROFESSIONAL TICKER --- */
+        /* --- Ticker Bar (Readable Speed) --- */
         .ticker-container {
             display: flex;
-            background: #111827;
-            border-bottom: 1px solid var(--accent-emerald);
+            background: #0d1117;
+            border-bottom: 2px solid var(--accent-emerald);
             overflow: hidden;
-            height: 45px;
+            height: 48px;
             align-items: center;
+            z-index: 999;
         }
 
         .ticker-label {
@@ -159,48 +100,44 @@
             display: flex;
             align-items: center;
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             z-index: 10;
-            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+            box-shadow: 10px 0 20px rgba(0,0,0,0.5);
             white-space: nowrap;
-        }
-
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            margin-right: 8px;
-            animation: blink 1s infinite;
         }
 
         .ticker-wrap {
             flex: 1;
             overflow: hidden;
             white-space: nowrap;
-            position: relative;
         }
 
         .ticker-move {
             display: inline-block;
             padding-left: 100%;
-            animation: ticker-crawl 60s linear infinite; /* Slower, professional speed */
+            /* Fallback duration if JS fails */
+            animation: ticker-crawl 180s linear infinite; 
+            will-change: transform;
         }
 
         .ticker-move:hover {
-            animation-play-state: paused; /* User can pause to read */
+            animation-play-state: paused;
+            cursor: pointer;
         }
 
         .ticker-item {
             display: inline-block;
-            margin-right: 50px;
-            font-size: 0.9rem;
+            margin-right: 80px;
+            font-size: 1rem;
             color: var(--text-main);
         }
 
         .ticker-item b {
             color: var(--accent-gold);
-            margin-right: 5px;
+            background: rgba(251, 191, 36, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 10px;
         }
 
         /* --- News Grid --- */
@@ -236,21 +173,13 @@
             transform: translateY(-5px);
         }
 
-        .breaking-badge {
-            background: var(--accent-red);
-            color: white;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
         .card-title {
             font-size: 1.05rem;
             font-weight: 500;
             line-height: 1.6;
         }
 
+        /* --- Icons & Utility --- */
         .icon-btn {
             background: var(--glass);
             border: 1px solid var(--glass-border);
@@ -262,54 +191,49 @@
             align-items: center;
         }
 
-        /* --- Footer --- */
-        footer {
-            background: rgba(13, 17, 23, 0.98);
-            border-top: 1px solid var(--glass-border);
-            padding: 30px 20px;
-            margin-top: auto;
-        }
-
-        .footer-bottom { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            flex-wrap: wrap; 
-            gap: 15px; 
-            color: var(--text-dim); 
-            font-size: 0.8rem; 
-        }
-
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
+        .search-container {
             display: none;
-            z-index: 1500;
-            backdrop-filter: blur(4px);
+            padding: 15px;
+            background: #0d1117;
+            border-bottom: 2px solid var(--accent-emerald);
+            width: 100%;
+            animation: slideDown 0.3s ease;
         }
 
+        .search-container.active { display: block; }
+
+        #newsSearch {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: var(--bg-dark);
+            color: white;
+            outline: none;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 280px;
+            height: 100%;
+            background: #0d1117;
+            box-shadow: 20px 0 50px rgba(0,0,0,0.9);
+            z-index: 2000;
+            padding: 30px 20px;
+            transition: 0.4s ease;
+        }
+
+        .side-menu.active { left: 0; }
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 1500; backdrop-filter: blur(4px); }
         .menu-overlay.active { display: block; }
 
-        /* --- Animations --- */
-        @keyframes ticker-crawl {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
+        @keyframes ticker-crawl { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        @keyframes slideDown { 
-            from { opacity: 0; transform: translateY(-10px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        @media (max-width: 600px) {
-            .footer-bottom { justify-content: center; text-align: center; }
-        }
+        footer { background: #0d1117; padding: 25px; border-top: 1px solid var(--glass-border); text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -318,37 +242,32 @@
 
     <div class="side-menu" id="sideMenu">
         <h3>Quick Access</h3>
-        <nav>
-            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank"><i data-lucide="map-pin"></i> DPE Gopalganj</a>
-            <a href="https://dpe.gov.bd/pages/notices" target="_blank"><i data-lucide="bell"></i> DPE Notice</a>
-            <a href="/age.html"><i data-lucide="calculator"></i> Age Calculator</a>
-            <a href="/salary.html"><i data-lucide="wallet"></i> Salary Calculator</a>
+        <nav style="display:flex; flex-direction:column; gap:12px;">
+            <a href="https://dpe.gopalganj.gov.bd/pages/notices" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;" target="_blank"><i data-lucide="map-pin"></i> DPE Gopalganj</a>
+            <a href="https://dpe.gov.bd/pages/notices" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;" target="_blank"><i data-lucide="bell"></i> DPE Notice</a>
+            <a href="/age.html" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;"><i data-lucide="calculator"></i> Age Calculator</a>
         </nav>
     </div>
 
     <header>
-        <button class="icon-btn" onclick="toggleMenu()">
-            <i data-lucide="menu" size="20"></i>
-        </button>
+        <button class="icon-btn" onclick="toggleMenu()"><i data-lucide="menu" size="20"></i></button>
 
         <div class="header-center">
-            <img src="/logo.svg" alt="satu.pro.bd" class="header-img">
-            <div id="currentDate" class="date-display"></div>
+            <a href="/" class="home-link">
+                <img src="/logo.svg" alt="satu.pro.bd" class="header-img">
+                <div id="currentDate" class="date-display"></div>
+            </a>
         </div>
 
-        <button class="icon-btn" onclick="toggleSearch()">
-            <i data-lucide="search" size="20"></i>
-        </button>
+        <button class="icon-btn" onclick="toggleSearch()"><i data-lucide="search" size="20"></i></button>
     </header>
 
     <div class="search-container" id="searchContainer">
-        <input type="text" id="newsSearch" placeholder="খবর খুঁজুন (যেমন: ঢাকা, খেলা)...">
+        <input type="text" id="newsSearch" placeholder="খবর খুঁজুন...">
     </div>
 
     <div class="ticker-container">
-        <div class="ticker-label">
-            <div class="live-dot"></div> সর্বশেষ
-        </div>
+        <div class="ticker-label">ব্রেকিং নিউজ</div>
         <div class="ticker-wrap">
             <div class="ticker-move" id="newsTicker">লোড হচ্ছে...</div>
         </div>
@@ -361,30 +280,16 @@
     </main>
 
     <footer>
-        <div class="footer-bottom">
-            <div>&copy; 2026 satu.pro.bd | All Rights Reserved.</div>
-            <div style="color: var(--accent-emerald);">System Online</div>
-        </div>
+        &copy; 2026 satu.pro.bd | All Rights Reserved.
     </footer>
 
     <script>
         const feeds = [
-            { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
+            { name: "BBC", url: "https://www.bbc.com/bengali/index.xml" },
             { name: "Prothom Alo", url: "https://news.google.com/publications/CAAqKQgKIiNDQklTRkFnTWFoQUtEbkJ5YjNSb2IyMWhiRzh1WTI5dEtBQVAB?hl=bn&gl=BD&ceid=BD:bn" },
-            { name: "Somoy News", url: "https://www.somoynews.tv/rss.xml" },
+            { name: "Somoy", url: "https://www.somoynews.tv/rss.xml" },
             { name: "Channel 24", url: "https://www.channel24bd.tv/rss/rss.xml" },
-            { name: "Ekattor TV", url: "https://www.ekattor.tv/rss.xml" },
-            { name: "News 24", url: "https://www.news24bd.tv/rss.xml" },
-            { name: "Jamuna TV", url: "https://www.jamuna.tv/rss.xml" },
-            { name: "Independent", url: "https://www.independent24.com/rss.xml" },
-            { name: "Dainik Shiksha", url: "https://www.dainikshiksha.com/rss.xml" },
-            { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
-            { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
-            { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
-            { name: "Bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
-            { name: "Bangla Tribune", url: "https://www.banglatribune.com/rss.xml" },
-            { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
-            { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
+            { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" }
         ];
 
         function toggleMenu() {
@@ -398,16 +303,10 @@
             if(sc.classList.contains('active')) document.getElementById('newsSearch').focus();
         }
 
-        function updateDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('currentDate').innerText = new Intl.DateTimeFormat('bn-BD', options).format(now);
-        }
-
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
-            let tickerContent = "";
+            let tickerHTML = "";
             
             const promises = feeds.map(async (feed) => {
                 try {
@@ -415,49 +314,40 @@
                     const data = await res.json();
                     if (data.status === 'ok') {
                         if(grid.innerText.includes('লোড হচ্ছে')) grid.innerHTML = '';
-                        
-                        data.items.slice(0, 4).forEach(item => {
-                            const isBreaking = item.title.includes('ব্রেকিং') || item.title.includes('জরুরি');
-                            
-                            // Add to Ticker String
-                            tickerContent += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
-                            
-                            // Create Grid Card
+                        data.items.slice(0, 5).forEach(item => {
+                            tickerHTML += `<span class="ticker-item"><b>${feed.name}</b> ${item.title}</span>`;
                             const card = document.createElement('a');
                             card.href = item.link; card.target = "_blank"; card.className = "card";
                             card.setAttribute('data-title', item.title.toLowerCase());
-                            card.innerHTML = `
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <span style="font-size:0.75rem; color:var(--accent-gold); font-weight:700;">${feed.name}</span>
-                                    ${isBreaking ? '<span class="breaking-badge">ব্রেকিং</span>' : ''}
-                                </div>
-                                <div class="card-title">${item.title}</div>
-                            `;
+                            card.innerHTML = `<span style="font-size:0.75rem; color:var(--accent-gold); font-weight:700;">${feed.name}</span><div class="card-title">${item.title}</div>`;
                             grid.appendChild(card);
                         });
                     }
-                } catch (e) { console.error("Source failed: " + feed.name); }
+                } catch (e) { console.error(feed.name + " failed"); }
             });
 
             await Promise.all(promises);
-            ticker.innerHTML = tickerContent;
-            
-            // Adjust ticker speed based on content length for professional feel
+            ticker.innerHTML = tickerHTML;
+
+            // SMART SPEED LOGIC:
+            // 80 pixels per second is standard readable speed.
             const scrollWidth = ticker.scrollWidth;
-            ticker.style.animationDuration = Math.max(60, scrollWidth / 80) + "s";
+            const readableDuration = scrollWidth / 80; 
+            ticker.style.animationDuration = readableDuration + "s";
         }
 
-        // Search Engine Logic
+        // Search logic
         document.getElementById('newsSearch').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                const title = card.getAttribute('data-title');
-                card.style.display = title.includes(term) ? "flex" : "none";
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.display = card.getAttribute('data-title').includes(term) ? "flex" : "none";
             });
         });
 
-        updateDate();
+        // Date Display
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').innerText = new Intl.DateTimeFormat('bn-BD', options).format(new Date());
+
         lucide.createIcons();
         fetchNews();
     </script>
