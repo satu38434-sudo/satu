@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>satu.pro.bd | News Feed</title>
+    <title>satu.pro.bd | Professional News Feed</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -141,29 +141,70 @@
             transform: translateX(10px);
         }
 
-        /* --- Ticker --- */
-        .ticker-wrap {
-            background: rgba(0,0,0,0.5);
-            padding: 10px 0;
-            margin-bottom: 35px;
-            border-bottom: 1px solid var(--glass-border);
+        /* --- PROFESSIONAL TICKER --- */
+        .ticker-container {
+            display: flex;
+            background: #111827;
+            border-bottom: 1px solid var(--accent-emerald);
             overflow: hidden;
+            height: 45px;
+            align-items: center;
+        }
+
+        .ticker-label {
+            background: var(--accent-red);
+            color: white;
+            padding: 0 15px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+            z-index: 10;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: blink 1s infinite;
+        }
+
+        .ticker-wrap {
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
         }
 
         .ticker-move {
             display: inline-block;
-            white-space: nowrap;
-            animation: ticker 30s linear infinite;
+            padding-left: 100%;
+            animation: ticker-crawl 60s linear infinite; /* Slower, professional speed */
+        }
+
+        .ticker-move:hover {
+            animation-play-state: paused; /* User can pause to read */
         }
 
         .ticker-item {
+            display: inline-block;
             margin-right: 50px;
-            font-size: 0.85rem;
-            color: var(--text-dim);
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .ticker-item b {
+            color: var(--accent-gold);
+            margin-right: 5px;
         }
 
         /* --- News Grid --- */
-        main { flex: 1; }
+        main { flex: 1; margin-top: 20px; }
         #newsGrid {
             display: grid;
             grid-template-columns: 1fr;
@@ -202,7 +243,6 @@
             font-weight: 800;
             padding: 2px 8px;
             border-radius: 4px;
-            animation: pulse 1.5s infinite;
         }
 
         .card-title {
@@ -226,13 +266,19 @@
         footer {
             background: rgba(13, 17, 23, 0.98);
             border-top: 1px solid var(--glass-border);
-            padding: 40px 20px 20px;
-            margin-top: 40px;
+            padding: 30px 20px;
+            margin-top: auto;
         }
 
-  .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; color: var(--text-dim); font-size: 0.8rem; }
-        .status-indicator { display: flex; align-items: center; gap: 8px; color: var(--accent-emerald); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; }
-        .pulse-dot { width: 7px; height: 7px; background: var(--accent-emerald); border-radius: 50%; box-shadow: 0 0 8px var(--accent-emerald); animation: pulse 2s infinite; }
+        .footer-bottom { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            color: var(--text-dim); 
+            font-size: 0.8rem; 
+        }
 
         .menu-overlay {
             position: fixed;
@@ -245,13 +291,24 @@
 
         .menu-overlay.active { display: block; }
 
-        @keyframes ticker { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        
+        /* --- Animations --- */
+        @keyframes ticker-crawl {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes slideDown { 
+            from { opacity: 0; transform: translateY(-10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
         @media (max-width: 600px) {
-            .footer-top { flex-direction: column; text-align: center; gap: 15px; }
-            .footer-bottom { justify-content: center; }
+            .footer-bottom { justify-content: center; text-align: center; }
         }
     </style>
 </head>
@@ -288,8 +345,13 @@
         <input type="text" id="newsSearch" placeholder="খবর খুঁজুন (যেমন: ঢাকা, খেলা)...">
     </div>
 
-    <div class="ticker-wrap">
-        <div class="ticker-move" id="newsTicker"></div>
+    <div class="ticker-container">
+        <div class="ticker-label">
+            <div class="live-dot"></div> সর্বশেষ
+        </div>
+        <div class="ticker-wrap">
+            <div class="ticker-move" id="newsTicker">লোড হচ্ছে...</div>
+        </div>
     </div>
 
     <main>
@@ -299,31 +361,31 @@
     </main>
 
     <footer>
-            <div class="footer-bottom">
-                <div>&copy; 2026 satu.pro.bd | All Rights Reserved.</div>
-                </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 satu.pro.bd | All Rights Reserved.</div>
+            <div style="color: var(--accent-emerald);">System Online</div>
         </div>
     </footer>
 
     <script>
-       const feeds = [
-    { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
-    { name: "Prothom Alo", url: "https://news.google.com/publications/CAAqKQgKIiNDQklTRkFnTWFoQUtEbkJ5YjNSb2IyMWhiRzh1WTI5dEtBQVAB?hl=bn&gl=BD&ceid=BD:bn" },
-    { name: "Somoy News", url: "https://www.somoynews.tv/rss.xml" },
-    { name: "Channel 24", url: "https://www.channel24bd.tv/rss/rss.xml" },
-    { name: "Ekattor TV", url: "https://www.ekattor.tv/rss.xml" },
-    { name: "News 24", url: "https://www.news24bd.tv/rss.xml" },
-    { name: "Jamuna TV", url: "https://www.jamuna.tv/rss.xml" },
-    { name: "Independent", url: "https://www.independent24.com/rss.xml" },
-    { name: "Dainik Shiksha", url: "https://www.dainikshiksha.com/rss.xml" },
-    { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
-    { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
-    { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
-    { name: "Bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
-    { name: "Bangla Tribune", url: "https://www.banglatribune.com/rss.xml" },
-    { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
-    { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
-];
+        const feeds = [
+            { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
+            { name: "Prothom Alo", url: "https://news.google.com/publications/CAAqKQgKIiNDQklTRkFnTWFoQUtEbkJ5YjNSb2IyMWhiRzh1WTI5dEtBQVAB?hl=bn&gl=BD&ceid=BD:bn" },
+            { name: "Somoy News", url: "https://www.somoynews.tv/rss.xml" },
+            { name: "Channel 24", url: "https://www.channel24bd.tv/rss/rss.xml" },
+            { name: "Ekattor TV", url: "https://www.ekattor.tv/rss.xml" },
+            { name: "News 24", url: "https://www.news24bd.tv/rss.xml" },
+            { name: "Jamuna TV", url: "https://www.jamuna.tv/rss.xml" },
+            { name: "Independent", url: "https://www.independent24.com/rss.xml" },
+            { name: "Dainik Shiksha", url: "https://www.dainikshiksha.com/rss.xml" },
+            { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
+            { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
+            { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
+            { name: "Bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
+            { name: "Bangla Tribune", url: "https://www.banglatribune.com/rss.xml" },
+            { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
+            { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
+        ];
 
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('active');
@@ -345,6 +407,7 @@
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
+            let tickerContent = "";
             
             const promises = feeds.map(async (feed) => {
                 try {
@@ -355,12 +418,14 @@
                         
                         data.items.slice(0, 4).forEach(item => {
                             const isBreaking = item.title.includes('ব্রেকিং') || item.title.includes('জরুরি');
-                            ticker.innerHTML += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
                             
+                            // Add to Ticker String
+                            tickerContent += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
+                            
+                            // Create Grid Card
                             const card = document.createElement('a');
                             card.href = item.link; card.target = "_blank"; card.className = "card";
                             card.setAttribute('data-title', item.title.toLowerCase());
-                            
                             card.innerHTML = `
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
                                     <span style="font-size:0.75rem; color:var(--accent-gold); font-weight:700;">${feed.name}</span>
@@ -373,7 +438,13 @@
                     }
                 } catch (e) { console.error("Source failed: " + feed.name); }
             });
+
             await Promise.all(promises);
+            ticker.innerHTML = tickerContent;
+            
+            // Adjust ticker speed based on content length for professional feel
+            const scrollWidth = ticker.scrollWidth;
+            ticker.style.animationDuration = Math.max(60, scrollWidth / 80) + "s";
         }
 
         // Search Engine Logic
@@ -391,4 +462,4 @@
         fetchNews();
     </script>
 </body>
-            </html>
+</html>
