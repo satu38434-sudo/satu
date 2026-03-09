@@ -3,163 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>satu.pro.bd | Live News Feed</title>
+    <title>satu.pro.bd | Premium News Feed</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --glass: rgba(255, 255, 255, 0.05);
+            --bg-dark: #07090f;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-hover: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.1);
             --accent-gold: #fbbf24;
-            --accent-blue: #3b82f6;
-            --color-alert: #ef4444;
-            --color-news: #10b981;
-            --text-main: #f8fafc;
+            --accent-emerald: #10b981;
+            --accent-red: #ef4444;
+            --text-main: #f1f5f9;
             --text-dim: #94a3b8;
         }
 
-        * { box-sizing: border-box; transition: all 0.2s ease; }
+        * { box-sizing: border-box; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
         body {
-            background-color: var(--bg-dark);
+            background: radial-gradient(circle at top right, #0d1117, #07090f);
             color: var(--text-main);
             font-family: 'Hind Siliguri', sans-serif;
             margin: 0;
-            overflow-x: hidden;
+            min-height: 100vh;
         }
 
+        /* --- Glass Header --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(15px);
+            padding: 15px 25px;
+            background: rgba(7, 9, 15, 0.85);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
             z-index: 1000;
-            margin-bottom: 30px; /* Added spacing here */
-        }
-
-        .header-center {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+            margin-bottom: 45px;
         }
 
         .header-img {
-            height: 32px;
-            filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.2));
+            height: 38px;
+            filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.3));
         }
 
         .date-display {
             font-size: 0.75rem;
-            color: var(--text-dim);
-            margin: 4px 0;
-            font-weight: 500;
+            color: var(--accent-emerald);
+            margin-top: 5px;
+            font-weight: 600;
         }
 
-        #statusLabel {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: var(--accent-gold);
-            font-weight: 700;
-        }
-
-        .icon-btn {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
+        /* --- Side Menu Fix --- */
         .side-menu {
             position: fixed;
             top: 0;
             left: -300px;
             width: 280px;
             height: 100%;
-            background: #1e293b;
-            box-shadow: 15px 0 40px rgba(0,0,0,0.6);
+            background: rgba(13, 17, 23, 0.98);
+            backdrop-filter: blur(15px);
+            box-shadow: 20px 0 50px rgba(0,0,0,0.9);
             z-index: 2000;
-            padding: 25px;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px 20px;
         }
 
         .side-menu.active { left: 0; }
 
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            display: none;
-            z-index: 1500;
-            backdrop-filter: blur(4px);
+        .side-menu h3 {
+            color: var(--accent-gold);
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--accent-emerald);
+            padding-left: 15px;
         }
 
-        .menu-overlay.active { display: block; }
+        .side-menu nav { display: flex; flex-direction: column; gap: 12px; }
 
-        .search-container {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: #1e293b;
-            padding: 15px;
-            display: none;
-            border-bottom: 2px solid var(--accent-blue);
-            animation: slideDown 0.3s ease;
-        }
-
-        .search-container.active { display: block; }
-
-        #newsSearch {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            display: block;
-            padding: 14px;
-            background: var(--bg-dark);
+        .side-menu nav a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px;
+            color: var(--text-main);
+            text-decoration: none;
+            border-radius: 14px;
+            background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            color: white;
-            outline: none;
         }
 
+        .side-menu nav a:hover {
+            background: var(--glass-hover);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            transform: translateX(10px);
+        }
+
+        /* --- Ticker --- */
         .ticker-wrap {
-            background: #000;
-            padding: 10px 0;
-            overflow: hidden;
+            background: rgba(0,0,0,0.5);
+            padding: 12px 0;
+            margin-bottom: 40px;
             border-bottom: 1px solid var(--glass-border);
-            margin-bottom: 20px; /* Added spacing here */
         }
 
         .ticker-move {
             display: inline-block;
             white-space: nowrap;
-            animation: ticker 60s linear infinite;
+            animation: ticker 55s linear infinite;
         }
 
         .ticker-item {
-            margin-right: 50px;
-            font-size: 0.85rem;
+            margin-right: 60px;
+            font-size: 0.9rem;
             color: var(--text-dim);
         }
 
+        /* --- Breaking Badge Animation --- */
+        .breaking-badge {
+            background: var(--accent-red);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+            animation: pulse-red 1.5s infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* --- News Cards --- */
         #newsGrid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            padding: 0 25px 60px;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -167,52 +155,68 @@
         .card {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 22px;
+            padding: 24px;
             text-decoration: none;
             color: inherit;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
+            position: relative;
         }
 
         .card:hover {
-            border-color: var(--accent-blue);
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.08);
+            background: var(--glass-hover);
+            border-color: var(--accent-emerald);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
-        .source-badge {
-            font-size: 0.65rem;
-            font-weight: 700;
+        .source-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .source-tag {
+            font-size: 0.75rem;
+            font-weight: 800;
             color: var(--accent-gold);
-            background: rgba(251, 191, 36, 0.1);
-            padding: 3px 8px;
-            border-radius: 4px;
             text-transform: uppercase;
         }
 
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            box-shadow: 0 0 8px currentColor;
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.6;
         }
+
+        /* --- Controls --- */
+        .icon-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 12px;
+            border-radius: 14px;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent-emerald);
+            box-shadow: 0 0 15px var(--accent-emerald);
+        }
+
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            z-index: 1500;
+        }
+
+        .menu-overlay.active { display: block; }
 
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        #backTop {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            display: none;
-            z-index: 100;
-        }
-
-        @media (max-width: 600px) {
-            #newsGrid { grid-template-columns: 1fr; padding: 15px; }
-        }
     </style>
 </head>
 <body>
@@ -222,10 +226,10 @@
     <div class="side-menu" id="sideMenu">
         <h3>Quick Links</h3>
         <nav>
-            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank"><i data-lucide="building-2"></i> DPE Gopalganj</a>
-            <a href="https://dpe.gov.bd/pages/notices" target="_blank"><i data-lucide="graduation-cap"></i> DPE</a>
-            <a href="/age.html"><i data-lucide="calendar"></i> Age Calculator</a>
-            <a href="/salary.html"><i data-lucide="calculator"></i> Salary Calculator</a>
+            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank"><i data-lucide="map-pin"></i> DPE Gopalganj</a>
+            <a href="https://dpe.gov.bd/pages/notices" target="_blank"><i data-lucide="bell"></i> DPE News</a>
+            <a href="/age.html"><i data-lucide="calculator"></i> Age Calculator</a>
+            <a href="/salary.html"><i data-lucide="wallet"></i> Salary Tool</a>
         </nav>
     </div>
 
@@ -234,19 +238,14 @@
             <i data-lucide="menu"></i>
         </button>
 
-        <div class="header-center">
-            <img src="/logo.svg" alt="satu.pro.bd" class="header-img" onerror="this.src='https://via.placeholder.com/120x30?text=SATU.PRO.BD'">
+        <div style="text-align: center;">
+            <img src="/logo.svg" alt="Satu.pro.bd" class="header-img" onerror="this.src='https://via.placeholder.com/150x40/10b981/ffffff?text=SATU.PRO.BD'">
             <div id="currentDate" class="date-display"></div>
-            <div id="statusLabel">Updating News...</div>
         </div>
 
         <button class="icon-btn" onclick="toggleSearch()">
             <i data-lucide="search"></i>
         </button>
-
-        <div class="search-container" id="searchContainer">
-            <input type="text" id="newsSearch" placeholder="খবর খুঁজুন...">
-        </div>
     </header>
 
     <div class="ticker-wrap">
@@ -254,10 +253,6 @@
     </div>
 
     <div id="newsGrid"></div>
-
-    <button id="backTop" class="icon-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-        <i data-lucide="arrow-up"></i>
-    </button>
 
     <script>
         const feeds = [
@@ -278,65 +273,42 @@
             document.getElementById('overlay').classList.toggle('active');
         }
 
-        function toggleSearch() {
-            const container = document.getElementById('searchContainer');
-            container.classList.toggle('active');
-            if(container.classList.contains('active')) document.getElementById('newsSearch').focus();
-        }
-
         function updateDate() {
             const now = new Date();
-            const bnDate = new Intl.DateTimeFormat('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(now);
-            const enDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(now);
-            document.getElementById('currentDate').innerText = `${bnDate} | ${enDate}`;
+            document.getElementById('currentDate').innerText = new Intl.DateTimeFormat('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(now);
         }
 
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
-            grid.innerHTML = '';
-            ticker.innerHTML = '';
-
+            
             const promises = feeds.map(async (feed) => {
                 try {
                     const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`);
                     const data = await res.json();
-
                     if (data.status === 'ok') {
-                        data.items.slice(0, 5).forEach(item => {
+                        data.items.slice(0, 4).forEach(item => {
+                            const isBreaking = item.title.includes('ব্রেকিং') || item.title.includes('Breaking') || item.title.includes('জরুরি');
+                            const breakingHtml = isBreaking ? `<span class="breaking-badge">ব্রেকিং</span>` : '';
+
                             ticker.innerHTML += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
+                            
                             const card = document.createElement('a');
                             card.href = item.link; card.target = "_blank"; card.className = "card";
-                            card.setAttribute('data-title', item.title.toLowerCase());
-                            const dotColor = (item.title.includes('ব্রেকিং') || item.title.includes('জরুরি')) ? 'var(--color-alert)' : 'var(--color-news)';
-                            
                             card.innerHTML = `
-                                <div class="card-header">
-                                    <span class="source-badge">${feed.name}</span>
-                                    <div class="dot" style="background:${dotColor}; color:${dotColor}"></div>
+                                <div class="source-row">
+                                    <div class="source-tag">${feed.name}</div>
+                                    ${breakingHtml}
                                 </div>
                                 <div class="card-title">${item.title}</div>
                             `;
                             grid.appendChild(card);
                         });
                     }
-                } catch (e) { console.error("Error: " + feed.name); }
+                } catch (e) { console.error(feed.name + " failed"); }
             });
-
             await Promise.all(promises);
-            document.getElementById('statusLabel').innerText = "Live Mega Feed • Active";
         }
-
-        document.getElementById('newsSearch').oninput = function() {
-            let val = this.value.toLowerCase();
-            document.querySelectorAll('.card').forEach(card => {
-                card.style.display = card.getAttribute('data-title').includes(val) ? 'flex' : 'none';
-            });
-        };
-
-        window.onscroll = function() {
-            document.getElementById('backTop').style.display = window.scrollY > 400 ? 'flex' : 'none';
-        };
 
         updateDate();
         lucide.createIcons();
