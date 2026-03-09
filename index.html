@@ -230,11 +230,7 @@
             margin-top: 40px;
         }
 
-        .footer-content { max-width: 1200px; margin: 0 auto; }
-        .footer-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .brand-name { font-size: 1.4rem; font-weight: 700; color: var(--accent-emerald); }
-        .footer-divider { height: 1px; background: var(--glass-border); margin-bottom: 20px; }
-        .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; color: var(--text-dim); font-size: 0.8rem; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; color: var(--text-dim); font-size: 0.8rem; }
         .status-indicator { display: flex; align-items: center; gap: 8px; color: var(--accent-emerald); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; }
         .pulse-dot { width: 7px; height: 7px; background: var(--accent-emerald); border-radius: 50%; box-shadow: 0 0 8px var(--accent-emerald); animation: pulse 2s infinite; }
 
@@ -310,18 +306,24 @@
     </footer>
 
     <script>
-        const feeds = [
-            { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
-            { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/rss" },
-            { name: "Somoy News", url: "https://www.somoynews.tv/rss.xml" },
-            { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
-            { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
-            { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
-            { name: "Bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
-            { name: "Bangla Tribune", url: "https://www.banglatribune.com/rss.xml" },
-            { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
-            { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
-        ];
+       const feeds = [
+    { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
+    { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/rss" },
+    { name: "Somoy News", url: "https://www.somoynews.tv/rss.xml" },
+    { name: "Channel 24", url: "https://www.channel24bd.tv/rss/rss.xml" },
+    { name: "Ekattor TV", url: "https://www.ekattor.tv/rss.xml" },
+    { name: "News 24", url: "https://www.news24bd.tv/rss.xml" },
+    { name: "Jamuna TV", url: "https://www.jamuna.tv/rss.xml" },
+    { name: "Independent", url: "https://www.independent24.com/rss.xml" },
+    { name: "Dainik Shiksha", url: "https://www.dainikshiksha.com/rss.xml" },
+    { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
+    { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
+    { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
+    { name: "Bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
+    { name: "Bangla Tribune", url: "https://www.banglatribune.com/rss.xml" },
+    { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
+    { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
+];
 
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('active');
