@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>satu.pro.bd | Live News</title>
+    <title>satu.pro.bd | Live News Feed</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -30,14 +30,14 @@
             overflow-x: hidden;
         }
 
-        /* --- Header & Navigation --- */
+        /* --- Header --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 20px;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
@@ -48,36 +48,46 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            text-align: center;
         }
 
         .header-img {
-            height: 35px;
-            margin-bottom: 4px;
+            height: 32px;
+            filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.2));
+        }
+
+        .date-display {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin: 4px 0;
+            font-weight: 500;
         }
 
         #statusLabel {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.2px;
             color: var(--accent-gold);
-            margin: 0;
+            font-weight: 700;
         }
 
         .icon-btn {
             background: var(--glass);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
         }
 
-        .icon-btn:hover { background: var(--glass-border); }
+        .icon-btn:hover { 
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
 
-        /* --- Slide-out Menu --- */
+        /* --- Side Menu --- */
         .side-menu {
             position: fixed;
             top: 0;
@@ -85,7 +95,7 @@
             width: 280px;
             height: 100%;
             background: #1e293b;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            box-shadow: 15px 0 40px rgba(0,0,0,0.6);
             z-index: 2000;
             padding: 25px;
             transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -96,9 +106,10 @@
         .menu-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             display: none;
             z-index: 1500;
+            backdrop-filter: blur(4px);
         }
 
         .menu-overlay.active { display: block; }
@@ -106,24 +117,28 @@
         .side-menu h3 {
             border-bottom: 1px solid var(--glass-border);
             padding-bottom: 15px;
-            margin-top: 0;
             color: var(--accent-gold);
+            margin-bottom: 20px;
         }
 
         .side-menu nav a {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             padding: 14px;
             color: var(--text-main);
             text-decoration: none;
-            border-radius: 8px;
-            margin-bottom: 5px;
+            border-radius: 12px;
+            margin-bottom: 8px;
         }
 
-        .side-menu nav a:hover { background: var(--glass); color: var(--accent-blue); }
+        .side-menu nav a:hover { 
+            background: var(--glass); 
+            color: var(--accent-gold);
+            transform: translateX(5px);
+        }
 
-        /* --- Search Bar Toggle --- */
+        /* --- Search System --- */
         .search-container {
             position: absolute;
             top: 100%;
@@ -140,13 +155,13 @@
 
         #newsSearch {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             display: block;
-            padding: 12px;
+            padding: 14px;
             background: var(--bg-dark);
             border: 1px solid var(--glass-border);
-            border-radius: 6px;
+            border-radius: 8px;
             color: white;
             outline: none;
         }
@@ -154,64 +169,74 @@
         /* --- Ticker --- */
         .ticker-wrap {
             background: #000;
-            padding: 8px 0;
+            padding: 10px 0;
             overflow: hidden;
-            white-space: nowrap;
+            border-bottom: 1px solid var(--glass-border);
         }
 
         .ticker-move {
             display: inline-block;
-            animation: ticker 40s linear infinite;
+            white-space: nowrap;
+            animation: ticker 60s linear infinite;
         }
 
         .ticker-item {
-            margin-right: 40px;
+            margin-right: 50px;
             font-size: 0.85rem;
             color: var(--text-dim);
         }
 
-        /* --- News Cards --- */
+        .ticker-item b { color: var(--accent-gold); }
+
+        /* --- Grid & Cards --- */
         #newsGrid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
-            padding: 20px;
-            max-width: 1300px;
+            padding: 25px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .card {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 16px;
+            padding: 20px;
             text-decoration: none;
             color: inherit;
             display: flex;
-            gap: 15px;
-            align-items: flex-start;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .card:hover {
             border-color: var(--accent-blue);
-            transform: translateY(-3px);
+            transform: translateY(-5px);
             background: rgba(255,255,255,0.08);
         }
 
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-top: 5px;
-            flex-shrink: 0;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .card-meta {
+        .source-badge {
             font-size: 0.65rem;
             font-weight: 700;
             color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
             text-transform: uppercase;
-            margin-bottom: 5px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
         }
 
         .card-title {
@@ -220,16 +245,21 @@
             line-height: 1.5;
         }
 
-        /* --- Utilities --- */
+        /* --- Animations & Responsive --- */
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
+
         #backTop {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             display: none;
             z-index: 100;
+        }
+
+        @media (max-width: 600px) {
+            #newsGrid { grid-template-columns: 1fr; padding: 15px; }
+            .date-display { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -238,10 +268,10 @@
     <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="side-menu" id="sideMenu">
-        <h3>Quick Access</h3>
+        <h3>Quick Links</h3>
         <nav>
-            <a href="https://dpe.gopalganj.gov.bd/pages/notices"><i data-lucide="building-2"></i> DPE Gopalganj</a>
-            <a href="https://dpe.gov.bd/pages/notices"><i data-lucide="graduation-cap"></i> DPE</a>
+            <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank"><i data-lucide="building-2"></i> DPE Gopalganj</a>
+            <a href="https://dpe.gov.bd/pages/notices" target="_blank"><i data-lucide="graduation-cap"></i> DPE</a>
             <a href="/age.html"><i data-lucide="calendar"></i> Age Calculator</a>
             <a href="/salary.html"><i data-lucide="calculator"></i> Salary Calculator</a>
         </nav>
@@ -253,8 +283,9 @@
         </button>
 
         <div class="header-center">
-            <img src="/logo.svg" class="header-img">
-            <div id="statusLabel"></div>
+            <img src="/logo.svg" alt="satu.pro.bd" class="header-img" onerror="this.src='https://via.placeholder.com/120x30?text=SATU.PRO.BD'">
+            <div id="currentDate" class="date-display"></div>
+            <div id="statusLabel">Updating News...</div>
         </div>
 
         <button class="icon-btn" onclick="toggleSearch()">
@@ -262,7 +293,7 @@
         </button>
 
         <div class="search-container" id="searchContainer">
-            <input type="text" id="newsSearch" placeholder="টাইপ করে খুঁজুন...">
+            <input type="text" id="newsSearch" placeholder="খবর খুঁজুন...">
         </div>
     </header>
 
@@ -273,16 +304,23 @@
     <div id="newsGrid"></div>
 
     <button id="backTop" class="icon-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-        <i data-lucide="arrow-up-to-line"></i>
+        <i data-lucide="arrow-up"></i>
     </button>
 
     <script>
         const feeds = [
+            { name: "BBC Bangla", url: "https://www.bbc.com/bengali/index.xml" },
+            { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/rss" },
+            { name: "Somoy News", url: "https://www.somoynews.tv/rss.xml" },
+            { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
+            { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
+            { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
+            { name: "Bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
+            { name: "Bangla Tribune", url: "https://www.banglatribune.com/rss.xml" },
             { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
             { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
         ];
 
-        // UI Interactions
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
@@ -294,47 +332,50 @@
             if(container.classList.contains('active')) document.getElementById('newsSearch').focus();
         }
 
+        function updateDate() {
+            const now = new Date();
+            const bnDate = new Intl.DateTimeFormat('bn-BD', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(now);
+            const enDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(now);
+            document.getElementById('currentDate').innerText = `${bnDate} | ${enDate}`;
+        }
+
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
             grid.innerHTML = '';
             ticker.innerHTML = '';
 
-            for (const feed of feeds) {
+            const promises = feeds.map(async (feed) => {
                 try {
                     const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`);
                     const data = await res.json();
 
                     if (data.status === 'ok') {
-                        data.items.slice(0, 8).forEach(item => {
-                            // Add to Ticker
+                        data.items.slice(0, 5).forEach(item => {
                             ticker.innerHTML += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
-                            
-                            // Create News Card
                             const card = document.createElement('a');
-                            card.href = item.link; 
-                            card.target = "_blank"; 
-                            card.className = "card";
+                            card.href = item.link; card.target = "_blank"; card.className = "card";
                             card.setAttribute('data-title', item.title.toLowerCase());
-                            
-                            const dotColor = item.title.includes('প্রাথমিক') ? 'var(--color-alert)' : 'var(--color-news)';
+                            const dotColor = (item.title.includes('ব্রেকিং') || item.title.includes('জরুরি')) ? 'var(--color-alert)' : 'var(--color-news)';
                             
                             card.innerHTML = `
-                                <div class="dot" style="background:${dotColor}"></div>
-                                <div>
-                                    <div class="card-meta">${feed.name}</div>
-                                    <div class="card-title">${item.title}</div>
+                                <div class="card-header">
+                                    <span class="source-badge">${feed.name}</span>
+                                    <div class="dot" style="background:${dotColor}; color:${dotColor}"></div>
                                 </div>
+                                <div class="card-title">${item.title}</div>
                             `;
                             grid.appendChild(card);
                         });
                     }
-                } catch (e) { console.log("Error: " + feed.name); }
-            }
-            document.getElementById('statusLabel').innerText = "Live Mega Feed";
+                } catch (e) { console.error("Error: " + feed.name); }
+            });
+
+            await Promise.all(promises);
+            document.getElementById('statusLabel').innerText = "Live Mega Feed • Active";
         }
 
-        // Search Logic
+        // Search Engine Logic
         document.getElementById('newsSearch').oninput = function() {
             let val = this.value.toLowerCase();
             document.querySelectorAll('.card').forEach(card => {
@@ -342,12 +383,12 @@
             });
         };
 
-        // Scroll Logic
         window.onscroll = function() {
-            document.getElementById('backTop').style.display = window.scrollY > 500 ? 'flex' : 'none';
+            document.getElementById('backTop').style.display = window.scrollY > 400 ? 'flex' : 'none';
         };
 
-        // Initialize
+        // Execution
+        updateDate();
         lucide.createIcons();
         fetchNews();
     </script>
