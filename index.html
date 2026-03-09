@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>satu.pro.bd | Mobile Optimized News</title>
+    <title>satu.pro.bd | News Feed</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -20,21 +20,23 @@
             --text-dim: #94a3b8;
         }
 
-        /* Essential Mobile Fix: Prevent Horizontal Scroll */
+        /* Prevent Horizontal Scroll */
         html, body {
             overflow-x: hidden;
             width: 100%;
             margin: 0;
             padding: 0;
+            background: var(--bg-dark);
         }
 
-        * { box-sizing: border-box; transition: all 0.2s ease-in-out; }
+        * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
         body {
-            background: #07090f;
             color: var(--text-main);
             font-family: 'Hind Siliguri', sans-serif;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* --- Header --- */
@@ -42,132 +44,199 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 15px;
-            background: rgba(7, 9, 15, 0.9);
+            padding: 12px 15px;
+            background: rgba(7, 9, 15, 0.95);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
             z-index: 1000;
-            margin-bottom: 25px; /* Red Mark Space */
+        }
+
+        .header-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            text-align: center;
         }
 
         .header-img {
             height: 30px;
-            max-width: 150px;
-            object-fit: contain;
+            width: auto;
+            margin-bottom: 4px;
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
         }
 
         .date-display {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--accent-emerald);
             font-weight: 600;
-            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        /* --- Search Bar --- */
+        .search-container {
+            display: none;
+            padding: 15px;
+            background: #0d1117;
+            border-bottom: 2px solid var(--accent-emerald);
+            width: 100%;
+            animation: slideDown 0.3s ease;
+        }
+
+        .search-container.active { display: block; }
+
+        #newsSearch {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: var(--bg-dark);
+            color: white;
+            outline: none;
+            font-family: 'Hind Siliguri', sans-serif;
         }
 
         /* --- Side Menu --- */
         .side-menu {
             position: fixed;
             top: 0;
-            left: -100%; /* Fully hidden */
-            width: 80%; /* Takes most of screen on mobile */
-            max-width: 300px;
+            left: -100%;
+            width: 280px;
             height: 100%;
             background: #0d1117;
-            box-shadow: 20px 0 50px rgba(0,0,0,0.8);
+            box-shadow: 20px 0 50px rgba(0,0,0,0.9);
             z-index: 2000;
             padding: 30px 20px;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 0.4s ease;
         }
 
         .side-menu.active { left: 0; }
 
-        .side-menu nav { display: flex; flex-direction: column; gap: 10px; }
+        .side-menu h3 {
+            color: var(--accent-gold);
+            border-left: 4px solid var(--accent-emerald);
+            padding-left: 15px;
+            margin-bottom: 25px;
+        }
+
+        .side-menu nav { display: flex; flex-direction: column; gap: 12px; }
 
         .side-menu nav a {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 14px;
+            gap: 15px;
+            padding: 15px;
             color: var(--text-main);
             text-decoration: none;
-            border-radius: 10px;
+            border-radius: 12px;
             background: var(--glass);
-            font-size: 0.9rem;
+            border: 1px solid var(--glass-border);
         }
 
-        /* --- Ticker (Restricted Width) --- */
+        .side-menu nav a:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            transform: translateX(10px);
+        }
+
+        /* --- Ticker --- */
         .ticker-wrap {
             background: rgba(0,0,0,0.5);
             padding: 10px 0;
-            margin-bottom: 25px;
+            margin-bottom: 35px;
             border-bottom: 1px solid var(--glass-border);
-            width: 100%;
             overflow: hidden;
         }
 
         .ticker-move {
             display: inline-block;
             white-space: nowrap;
-            animation: ticker 40s linear infinite;
+            animation: ticker 60s linear infinite;
         }
 
         .ticker-item {
-            margin-right: 40px;
+            margin-right: 50px;
             font-size: 0.85rem;
             color: var(--text-dim);
         }
 
-        /* --- News Grid (Mobile First) --- */
+        /* --- News Grid --- */
+        main { flex: 1; }
         #newsGrid {
             display: grid;
-            grid-template-columns: 1fr; /* Single column for mobile */
-            gap: 15px;
+            grid-template-columns: 1fr;
+            gap: 20px;
             padding: 0 15px 40px;
-            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         @media (min-width: 768px) {
-            #newsGrid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+            #newsGrid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
         }
 
         .card {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 18px;
+            border-radius: 20px;
+            padding: 22px;
             text-decoration: none;
             color: inherit;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            width: 100%; /* Ensures it stays in bounds */
+            gap: 12px;
+        }
+
+        .card:hover {
+            border-color: var(--accent-emerald);
+            background: var(--glass-hover);
+            transform: translateY(-5px);
         }
 
         .breaking-badge {
             background: var(--accent-red);
             color: white;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             font-weight: 800;
-            padding: 2px 6px;
+            padding: 2px 8px;
             border-radius: 4px;
-            animation: pulse-red 1.5s infinite;
+            animation: pulse 1.5s infinite;
         }
 
         .card-title {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 500;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
-        /* --- UI Elements --- */
         .icon-btn {
             background: var(--glass);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 8px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
         }
+
+        /* --- Footer --- */
+        footer {
+            background: rgba(13, 17, 23, 0.98);
+            border-top: 1px solid var(--glass-border);
+            padding: 40px 20px 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content { max-width: 1200px; margin: 0 auto; }
+        .footer-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .brand-name { font-size: 1.4rem; font-weight: 700; color: var(--accent-emerald); }
+        .footer-divider { height: 1px; background: var(--glass-border); margin-bottom: 20px; }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; color: var(--text-dim); font-size: 0.8rem; }
+        .status-indicator { display: flex; align-items: center; gap: 8px; color: var(--accent-emerald); font-weight: 700; font-size: 0.65rem; text-transform: uppercase; }
+        .pulse-dot { width: 7px; height: 7px; background: var(--accent-emerald); border-radius: 50%; box-shadow: 0 0 8px var(--accent-emerald); animation: pulse 2s infinite; }
 
         .menu-overlay {
             position: fixed;
@@ -175,19 +244,18 @@
             background: rgba(0,0,0,0.7);
             display: none;
             z-index: 1500;
+            backdrop-filter: blur(4px);
         }
 
         .menu-overlay.active { display: block; }
 
-        @keyframes ticker { 
-            0% { transform: translateX(100vw); } 
-            100% { transform: translateX(-100%); } 
-        }
-
-        @keyframes pulse-red {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        @keyframes ticker { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        @media (max-width: 600px) {
+            .footer-top { flex-direction: column; text-align: center; gap: 15px; }
+            .footer-bottom { justify-content: center; }
         }
     </style>
 </head>
@@ -196,7 +264,7 @@
     <div class="menu-overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="side-menu" id="sideMenu">
-        <h3 style="color:var(--accent-gold); border-left:3px solid var(--accent-emerald); padding-left:10px;">Menu</h3>
+        <h3>Quick Access</h3>
         <nav>
             <a href="https://dpe.gopalganj.gov.bd/pages/notices" target="_blank"><i data-lucide="map-pin"></i> DPE Gopalganj</a>
             <a href="https://dpe.gov.bd/pages/notices" target="_blank"><i data-lucide="bell"></i> DPE News</a>
@@ -210,7 +278,7 @@
             <i data-lucide="menu" size="20"></i>
         </button>
 
-        <div style="text-align: center;">
+        <div class="header-center">
             <img src="/logo.svg" alt="Satu.pro.bd" class="header-img" onerror="this.src='https://via.placeholder.com/120x30/10b981/ffffff?text=SATU.PRO.BD'">
             <div id="currentDate" class="date-display"></div>
         </div>
@@ -220,13 +288,40 @@
         </button>
     </header>
 
+    <div class="search-container" id="searchContainer">
+        <input type="text" id="newsSearch" placeholder="খবর খুঁজুন (যেমন: ঢাকা, খেলা)...">
+    </div>
+
     <div class="ticker-wrap">
         <div class="ticker-move" id="newsTicker"></div>
     </div>
 
-    <div id="newsGrid">
-        <div style="text-align:center; color:var(--text-dim); padding:20px;">খবর লোড হচ্ছে...</div>
-    </div>
+    <main>
+        <div id="newsGrid">
+            <div style="text-align:center; color:var(--text-dim); padding:40px;">সর্বশেষ সংবাদ লোড হচ্ছে...</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <span class="brand-name">satu.pro.bd</span>
+                    <p style="color:var(--text-dim); margin-top:5px; font-size:0.85rem;">আপনার প্রতিদিনের খবরের সঙ্গী</p>
+                </div>
+                <button class="icon-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                    <i data-lucide="arrow-up" size="18"></i>
+                </button>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <div>&copy; 2026 satu.pro.bd | All Rights Reserved.</div>
+                <div class="status-indicator">
+                    <span class="pulse-dot"></span> Live System Active
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const feeds = [
@@ -234,7 +329,12 @@
             { name: "Prothom Alo", url: "https://www.prothomalo.com/feed/rss" },
             { name: "Somoy News", url: "https://www.somoynews.tv/rss.xml" },
             { name: "Jugantor", url: "https://www.jugantor.com/rss.xml" },
-            { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" }
+            { name: "Ittefaq", url: "https://www.ittefaq.com.bd/rss.xml" },
+            { name: "Kaler Kantho", url: "https://www.kalerkantho.com/rss.xml" },
+            { name: "Bdnews24", url: "https://bangla.bdnews24.com/?widgetName=rssfeed&widgetId=1151&getXmlFeed=true" },
+            { name: "Bangla Tribune", url: "https://www.banglatribune.com/rss.xml" },
+            { name: "Barta24", url: "https://barta24.com/rss/rss.xml" },
+            { name: "Dainik Bangla", url: "https://www.dainikbangla.com.bd/rss.xml" }
         ];
 
         function toggleMenu() {
@@ -242,34 +342,40 @@
             document.getElementById('overlay').classList.toggle('active');
         }
 
+        function toggleSearch() {
+            const sc = document.getElementById('searchContainer');
+            sc.classList.toggle('active');
+            if(sc.classList.contains('active')) document.getElementById('newsSearch').focus();
+        }
+
         function updateDate() {
             const now = new Date();
-            document.getElementById('currentDate').innerText = new Intl.DateTimeFormat('bn-BD', { weekday: 'long', day: 'numeric', month: 'short', year:'numeric' }).format(now);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').innerText = new Intl.DateTimeFormat('bn-BD', options).format(now);
         }
 
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
             
-            // Limit sources for better mobile performance
-            const activeFeeds = feeds.slice(0, 5); 
-            
-            const promises = activeFeeds.map(async (feed) => {
+            const promises = feeds.map(async (feed) => {
                 try {
                     const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`);
                     const data = await res.json();
                     if (data.status === 'ok') {
-                        if(grid.innerHTML.includes('লোড হচ্ছে')) grid.innerHTML = '';
+                        if(grid.innerText.includes('লোড হচ্ছে')) grid.innerHTML = '';
                         
                         data.items.slice(0, 4).forEach(item => {
                             const isBreaking = item.title.includes('ব্রেকিং') || item.title.includes('জরুরি');
-                            ticker.innerHTML += `<span class="ticker-item">● ${item.title}</span>`;
+                            ticker.innerHTML += `<span class="ticker-item">● <b>${feed.name}:</b> ${item.title}</span>`;
                             
                             const card = document.createElement('a');
                             card.href = item.link; card.target = "_blank"; card.className = "card";
+                            card.setAttribute('data-title', item.title.toLowerCase());
+                            
                             card.innerHTML = `
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <span style="font-size:0.7rem; color:var(--accent-gold); font-weight:700;">${feed.name}</span>
+                                    <span style="font-size:0.75rem; color:var(--accent-gold); font-weight:700;">${feed.name}</span>
                                     ${isBreaking ? '<span class="breaking-badge">ব্রেকিং</span>' : ''}
                                 </div>
                                 <div class="card-title">${item.title}</div>
@@ -277,10 +383,20 @@
                             grid.appendChild(card);
                         });
                     }
-                } catch (e) { console.log("Feed error"); }
+                } catch (e) { console.error("Source failed: " + feed.name); }
             });
             await Promise.all(promises);
         }
+
+        // Search Engine Logic
+        document.getElementById('newsSearch').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                card.style.display = title.includes(term) ? "flex" : "none";
+            });
+        });
 
         updateDate();
         lucide.createIcons();
