@@ -234,9 +234,12 @@
         }
 
         .side-menu.active { left: 0; }
+        .side-menu h3 { color: var(--accent-gold); border-left: 4px solid var(--accent-emerald); padding-left: 15px; margin-bottom: 25px; }
+
         .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 1500; backdrop-filter: blur(4px); }
         .menu-overlay.active { display: block; }
 
+        /* --- Centered Footer --- */
         footer { 
             background: #0d1117; 
             padding: 30px 20px; 
@@ -269,6 +272,8 @@
         <nav style="display:flex; flex-direction:column; gap:12px;">
             <a href="https://dpe.gopalganj.gov.bd/pages/notices" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;" target="_blank"><i data-lucide="map-pin"></i> DPE Gopalganj</a>
             <a href="https://dpe.gov.bd/pages/notices" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;" target="_blank"><i data-lucide="bell"></i> DPE Notice</a>
+            <a href="/age.html" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;"><i data-lucide="calculator"></i> Age Calculator</a>
+            <a href="/salary.html" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;"><i data-lucide="wallet"></i> Salary Calculator</a>
         </nav>
     </div>
 
@@ -362,7 +367,6 @@
             await Promise.all(promises);
             ticker.innerHTML = tickerHTML;
 
-            // Maintain steady readable speed
             const scrollWidth = ticker.scrollWidth;
             const readableDuration = scrollWidth / 80; 
             ticker.style.animationDuration = readableDuration + "s";
