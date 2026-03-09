@@ -244,7 +244,7 @@
 
         function updateDate() {
             const now = new Date();
-            document.getElementById('currentDate').innerText = new Intl.DateTimeFormat('bn-BD', { weekday: 'short', day: 'numeric', month: 'short' }).format(now);
+            document.getElementById('currentDate').innerText = new Intl.DateTimeFormat('bn-BD', { weekday: 'long', day: 'numeric', month: 'short', year:'numeric' }).format(now);
         }
 
         async function fetchNews() {
