@@ -30,7 +30,6 @@
             overflow-x: hidden;
         }
 
-        /* --- Header --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -42,6 +41,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
+            margin-bottom: 30px; /* Added spacing here */
         }
 
         .header-center {
@@ -82,12 +82,6 @@
             align-items: center;
         }
 
-        .icon-btn:hover { 
-            background: var(--accent-blue);
-            border-color: var(--accent-blue);
-        }
-
-        /* --- Side Menu --- */
         .side-menu {
             position: fixed;
             top: 0;
@@ -114,31 +108,6 @@
 
         .menu-overlay.active { display: block; }
 
-        .side-menu h3 {
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 15px;
-            color: var(--accent-gold);
-            margin-bottom: 20px;
-        }
-
-        .side-menu nav a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px;
-            color: var(--text-main);
-            text-decoration: none;
-            border-radius: 12px;
-            margin-bottom: 8px;
-        }
-
-        .side-menu nav a:hover { 
-            background: var(--glass); 
-            color: var(--accent-gold);
-            transform: translateX(5px);
-        }
-
-        /* --- Search System --- */
         .search-container {
             position: absolute;
             top: 100%;
@@ -166,12 +135,12 @@
             outline: none;
         }
 
-        /* --- Ticker --- */
         .ticker-wrap {
             background: #000;
             padding: 10px 0;
             overflow: hidden;
             border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 20px; /* Added spacing here */
         }
 
         .ticker-move {
@@ -186,9 +155,6 @@
             color: var(--text-dim);
         }
 
-        .ticker-item b { color: var(--accent-gold); }
-
-        /* --- Grid & Cards --- */
         #newsGrid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -216,12 +182,6 @@
             background: rgba(255,255,255,0.08);
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .source-badge {
             font-size: 0.65rem;
             font-weight: 700;
@@ -239,13 +199,6 @@
             box-shadow: 0 0 8px currentColor;
         }
 
-        .card-title {
-            font-size: 0.95rem;
-            font-weight: 500;
-            line-height: 1.5;
-        }
-
-        /* --- Animations & Responsive --- */
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
@@ -259,7 +212,6 @@
 
         @media (max-width: 600px) {
             #newsGrid { grid-template-columns: 1fr; padding: 15px; }
-            .date-display { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -375,7 +327,6 @@
             document.getElementById('statusLabel').innerText = "Live Mega Feed • Active";
         }
 
-        // Search Engine Logic
         document.getElementById('newsSearch').oninput = function() {
             let val = this.value.toLowerCase();
             document.querySelectorAll('.card').forEach(card => {
@@ -387,7 +338,6 @@
             document.getElementById('backTop').style.display = window.scrollY > 400 ? 'flex' : 'none';
         };
 
-        // Execution
         updateDate();
         lucide.createIcons();
         fetchNews();
