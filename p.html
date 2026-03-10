@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prothom Alo News Ticker</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f4; padding: 20px; }
-        .news-container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2 { border-bottom: 2px solid #ed1c24; padding-bottom: 10px; color: #333; }
-        .news-item { padding: 15px 0; border-bottom: 1px solid #eee; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; padding: 20px; }
+        .news-container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { border-bottom: 3px solid #ed1c24; padding-bottom: 10px; color: #333; font-size: 22px; margin-top: 0; }
+        .news-item { padding: 12px 0; border-bottom: 1px solid #eee; transition: background 0.2s; }
+        .news-item:hover { background: #fafafa; }
         .news-item:last-child { border-bottom: none; }
-        .news-item a { text-decoration: none; color: #1a0dab; font-weight: bold; font-size: 18px; }
-        .news-item a:hover { text-decoration: underline; color: #ed1c24; }
-        .loading { color: #888; font-style: italic; }
+        .news-item a { text-decoration: none; color: #1a0dab; font-weight: 600; font-size: 16px; display: block; line-height: 1.4; }
+        .news-item a:hover { color: #ed1c24; }
+        .loading { color: #888; font-style: italic; text-align: center; padding: 20px; }
+        .error { color: #d93025; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -23,34 +25,48 @@
 </div>
 
 <script>
-    // We use a proxy to bypass CORS restrictions
-    const proxyUrl = "https://api.allorigins.win/get?url=";
-    const targetUrl = encodeURIComponent("https://www.prothomalo.com/api/v1/advanced-search?limit=5");
+    // Using a more stable collection endpoint
+    const targetUrl = "https://www.prothomalo.com/api/v1/collections/latest-news?limit=5";
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
 
     async function fetchNews() {
+        const listContainer = document.getElementById('news-list');
         try {
-            const response = await fetch(proxyUrl + targetUrl);
-            const data = await response.json();
+            const response = await fetch(proxyUrl);
+            if (!response.ok) throw new Error('Network response was not ok');
             
-            // The actual JSON from Prothom Alo is inside data.contents
-            const newsData = JSON.parse(data.contents);
-            const listContainer = document.getElementById('news-list');
+            const rawData = await response.json();
+            // AllOrigins wraps the response in a 'contents' string
+            const data = JSON.parse(rawData.contents);
             
-            listContainer.innerHTML = ''; // Clear loading text
+            // Prothom Alo's collection API puts items in 'items' or 'stories'
+            const items = data.items || data.stories || [];
+            
+            if (items.length === 0) {
+                listContainer.innerHTML = "No news found at the moment.";
+                return;
+            }
 
-            newsData.items.forEach(item => {
+            listContainer.innerHTML = ''; 
+
+            items.forEach(item => {
+                // Ensure we grab the nested story object if it exists
+                const story = item.story || item; 
                 const articleDiv = document.createElement('div');
                 articleDiv.className = 'news-item';
                 
-                // Construct the full URL
-                const fullLink = `https://www.prothomalo.com${item.url}`;
+                // Constructing the URL correctly
+                const slug = story.slug || '';
+                const fullLink = `https://www.prothomalo.com/${slug}`;
+                const headline = story.headline || "Untitled Story";
                 
-                articleDiv.innerHTML = `<a href="${fullLink}" target="_blank">${item.headline}</a>`;
+                articleDiv.innerHTML = `<a href="${fullLink}" target="_blank">${headline}</a>`;
                 listContainer.appendChild(articleDiv);
             });
         } catch (error) {
-            console.error("Error fetching news:", error);
-            document.getElementById('news-list').innerHTML = "Failed to load news. Please try again later.";
+            console.error("Fetch Error:", error);
+            listContainer.className = "loading error";
+            listContainer.innerHTML = "Unable to reach the news source. Check your connection or the proxy.";
         }
     }
 
