@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্কুল ফলাফল জেনারেটর | CSV to PDF</title>
+    <title>স্মার্ট রেজাল্ট মেকার | Form & Excel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
         }
         .result-card {
             border: 2px solid #1e40af;
-            padding: 30px;
+            padding: 40px;
             width: 100%;
             max-width: 800px;
             margin: 20px auto;
@@ -25,17 +25,40 @@
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100">
 
-    <div class="no-print max-w-2xl mx-auto py-10 px-5 text-center">
-        <h1 class="text-3xl font-bold text-blue-800 mb-2">স্মার্ট রেজাল্ট জেনারেটর</h1>
-        <p class="mb-6 text-gray-600 font-semibold">Excel ফাইলে অবশ্যই <span class="text-red-500">"স্কুল"</span> নামে একটি কলাম থাকতে হবে।</p>
+    <div class="no-print max-w-4xl mx-auto py-10 px-5">
+        <h1 class="text-4xl font-bold text-center text-blue-900 mb-8">স্মার্ট রেজাল্ট জেনারেটর</h1>
         
-        <div class="bg-white p-8 rounded-xl shadow-lg border-2 border-dashed border-blue-300">
-            <input type="file" id="fileInput" accept=".csv, .xlsx" class="mb-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-            <div class="flex flex-wrap justify-center gap-3">
-                <button onclick="generateResults()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition">ফলাফল তৈরি করুন</button>
-                <button onclick="window.print()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition">প্রিন্ট / PDF</button>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-600">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-blue-700">
+                    📝 ফরম পূরণ করুন
+                </h2>
+                <form id="resultForm" class="space-y-3">
+                    <input type="text" id="sName" placeholder="স্কুলের নাম" class="w-full p-2 border rounded" required>
+                    <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded" required>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="roll" placeholder="রোল" class="p-2 border rounded" required>
+                        <input type="text" id="class" placeholder="শ্রেণি" class="p-2 border rounded" required>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="number" id="bn" placeholder="বাংলা" class="p-2 border rounded" required>
+                        <input type="number" id="en" placeholder="ইংরেজি" class="p-2 border rounded" required>
+                        <input type="number" id="math" placeholder="গণিত" class="p-2 border rounded" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition">রেজাল্ট তৈরি করুন</button>
+                </form>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-600">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-green-700">
+                    📊 এক্সেল ফাইল আপলোড
+                </h2>
+                <p class="text-sm text-gray-500 mb-4">একসাথে অনেক রেজাল্ট তৈরি করতে Excel/CSV ব্যবহার করুন।</p>
+                <input type="file" id="fileInput" accept=".csv, .xlsx" class="mb-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                <button onclick="generateFromExcel()" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700 transition">Excel থেকে তৈরি করুন</button>
+                <button onclick="window.print()" class="w-full mt-3 bg-gray-800 text-white font-bold py-2 rounded hover:bg-black transition">সবগুলো প্রিন্ট / PDF</button>
             </div>
         </div>
     </div>
@@ -43,89 +66,76 @@
     <div id="resultsContainer"></div>
 
     <script>
-        function generateResults() {
+        // ফরম থেকে রেজাল্ট তৈরি
+        document.getElementById('resultForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = {
+                স্কুল: document.getElementById('sName').value,
+                নাম: document.getElementById('stName').value,
+                রোল: document.getElementById('roll').value,
+                শ্রেণি: document.getElementById('class').value,
+                বাংলা: document.getElementById('bn').value,
+                ইংরেজি: document.getElementById('en').value,
+                গণিত: document.getElementById('math').value
+            };
+            document.getElementById('resultsContainer').innerHTML = createCardHTML(data);
+        });
+
+        // এক্সেল থেকে রেজাল্ট তৈরি
+        function generateFromExcel() {
             const fileInput = document.getElementById('fileInput');
-            const container = document.getElementById('resultsContainer');
-            
-            if (!fileInput.files[0]) {
-                alert("অনুগ্রহ করে একটি Excel বা CSV ফাইল সিলেক্ট করুন!");
-                return;
-            }
+            if (!fileInput.files[0]) return alert("ফাইল সিলেক্ট করুন!");
 
             const reader = new FileReader();
             reader.onload = (e) => {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
-
-                container.innerHTML = ""; 
-
-                jsonData.forEach((student) => {
-                    // এক্সেল থেকে ডেটা নেওয়া
-                    const schoolName = student.স্কুল || student.School || "আপনার স্কুলের নাম";
-                    const bangla = Number(student.বাংলা) || 0;
-                    const english = Number(student.ইংরেজি) || 0;
-                    const math = Number(student.গণিত) || 0;
-                    const total = bangla + english + math;
-                    const avg = (total / 3).toFixed(2);
-
-                    const card = `
-                        <div class="result-card page-break relative">
-                            <div class="text-center border-b-2 border-blue-800 pb-4 mb-6">
-                                <h2 class="text-3xl font-bold text-blue-900">${schoolName}</h2>
-                                <p class="text-lg text-gray-700 italic">একাডেমিক ট্রান্সক্রিপ্ট - ২০২৬</p>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4 mb-8 text-lg">
-                                <div>
-                                    <p><strong>নাম:</strong> ${student.নাম || student.Name}</p>
-                                    <p><strong>রোল:</strong> ${student.রোল || student.Roll}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p><strong>শ্রেণি:</strong> ${student.শ্রেণি || student.Class}</p>
-                                    <p><strong>তারিখ:</strong> ${new Date().toLocaleDateString('bn-BD')}</p>
-                                </div>
-                            </div>
-
-                            <table class="w-full text-left border-collapse border border-gray-400 text-lg">
-                                <thead class="bg-blue-50">
-                                    <tr>
-                                        <th class="border border-gray-400 p-3">বিষয়</th>
-                                        <th class="border border-gray-400 p-3 text-center">নম্বর</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td class="border border-gray-400 p-3">বাংলা</td><td class="border border-gray-400 p-3 text-center">${bangla}</td></tr>
-                                    <tr><td class="border border-gray-400 p-3">ইংরেজি</td><td class="border border-gray-400 p-3 text-center">${english}</td></tr>
-                                    <tr><td class="border border-gray-400 p-3">গণিত</td><td class="border border-gray-400 p-3 text-center">${math}</td></tr>
-                                    <tr class="font-bold bg-gray-100">
-                                        <td class="border border-gray-400 p-3 text-right">মোট:</td>
-                                        <td class="border border-gray-400 p-3 text-center">${total}</td>
-                                    </tr>
-                                    <tr class="font-bold bg-blue-100 text-blue-900">
-                                        <td class="border border-gray-400 p-3 text-right">গড়:</td>
-                                        <td class="border border-gray-400 p-3 text-center">${avg}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div class="mt-20 flex justify-between">
-                                <div class="text-center">
-                                    <div class="w-40 border-t border-black mb-1"></div>
-                                    <p>অভিভাবক</p>
-                                </div>
-                                <div class="text-center">
-                                    <div class="w-40 border-t border-black mb-1"></div>
-                                    <p>প্রধান শিক্ষক</p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.innerHTML += card;
-                });
+                const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                let allCards = "";
+                jsonData.forEach(student => allCards += createCardHTML(student));
+                document.getElementById('resultsContainer').innerHTML = allCards;
             };
             reader.readAsArrayBuffer(fileInput.files[0]);
+        }
+
+        // রেজাল্ট কার্ডের HTML টেমপ্লেট
+        function createCardHTML(s) {
+            const bn = Number(s.বাংলা) || 0;
+            const en = Number(s.ইংরেজি) || 0;
+            const ma = Number(s.গণিত) || 0;
+            const total = bn + en + ma;
+            const avg = (total / 3).toFixed(2);
+
+            return `
+                <div class="result-card page-break">
+                    <div class="text-center border-b-2 border-blue-800 pb-4 mb-6">
+                        <h2 class="text-3xl font-bold text-blue-900">${s.স্কুল || s.School || 'শিক্ষা প্রতিষ্ঠান'}</h2>
+                        <p class="text-lg text-gray-700 italic">বার্ষিক ফলাফল - ২০২৬</p>
+                    </div>
+                    <div class="grid grid-cols-2 mb-6 text-lg">
+                        <p><strong>শিক্ষার্থীর নাম:</strong> ${s.নাম || s.Name}</p>
+                        <p class="text-right"><strong>শ্রেণি:</strong> ${s.শ্রেণি || s.Class}</p>
+                        <p><strong>রোল:</strong> ${s.রোল || s.Roll}</p>
+                        <p class="text-right"><strong>তারিখ:</strong> ${new Date().toLocaleDateString('bn-BD')}</p>
+                    </div>
+                    <table class="w-full border-collapse border border-gray-400 text-lg">
+                        <tr class="bg-blue-50">
+                            <th class="border border-gray-400 p-2">বিষয়</th>
+                            <th class="border border-gray-400 p-2 text-center">নম্বর</th>
+                        </tr>
+                        <tr><td class="border border-gray-400 p-2">বাংলা</td><td class="border border-gray-400 p-2 text-center">${bn}</td></tr>
+                        <tr><td class="border border-gray-400 p-2">ইংরেজি</td><td class="border border-gray-400 p-2 text-center">${en}</td></tr>
+                        <tr><td class="border border-gray-400 p-2">গণিত</td><td class="border border-gray-400 p-2 text-center">${ma}</td></tr>
+                        <tr class="font-bold bg-gray-100">
+                            <td class="border border-gray-400 p-2 text-right">মোট:</td>
+                            <td class="border border-gray-400 p-2 text-center">${total}</td>
+                        </tr>
+                    </table>
+                    <div class="mt-20 flex justify-between">
+                        <p class="border-t border-black px-4">অভিভাবক</p>
+                        <p class="border-t border-black px-4">প্রধান শিক্ষক</p>
+                    </div>
+                </div>
+            `;
         }
     </script>
 </body>
