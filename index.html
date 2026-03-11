@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>satu.pro.bd | News</title>
+    <title>satu.pro.bd | News Feed</title>
     <link rel="icon" type="image/svg+xml" href="/icon.svg">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Midnight Aurora Theme */
-            --bg-dark: #0a0f1d;           /* Deep Midnight Navy */
-            --glass: rgba(30, 41, 59, 0.7); /* Frosted Slate */
+            --bg-dark: #0a0f1d;
+            --glass: rgba(30, 41, 59, 0.7);
             --glass-hover: rgba(51, 65, 85, 0.9);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --accent-cyan: #22d3ee;       /* Cyber Cyan */
-            --accent-gold: #fbbf24;       /* Amber Gold */
-            --accent-red: #f43f5e;        /* Rose Red */
-            --text-main: #f1f5f9;         /* Ghost White */
-            --text-dim: #94a3b8;          /* Cool Grey */
+            --accent-cyan: #22d3ee;
+            --accent-gold: #fbbf24;
+            --accent-red: #f43f5e;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
         }
 
         html, body {
@@ -27,8 +26,6 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            background: var(--bg-dark);
-            /* Subtle radial gradient for depth */
             background: radial-gradient(circle at top right, #1e293b, #0a0f1d);
             background-attachment: fixed;
         }
@@ -73,17 +70,20 @@
         }
 
         .header-img {
-            height: 32px;
+            height: 35px;
             width: auto;
-            margin-bottom: 2px;
+            margin-bottom: 5px;
             filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.4));
         }
 
+        /* Improved Bengali Date Styling */
         .date-display {
-            font-size: 0.75rem;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 0.85rem;
             color: var(--accent-cyan);
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            font-weight: 500;
+            line-height: 1.4;
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
         }
 
         /* --- Ticker Bar --- */
@@ -188,7 +188,6 @@
             font-size: 1.1rem;
             font-weight: 500;
             line-height: 1.6;
-            color: var(--text-main);
         }
 
         /* --- UI Elements --- */
@@ -202,8 +201,6 @@
             display: flex;
             align-items: center;
         }
-
-        .icon-btn:hover { background: var(--accent-cyan); color: var(--bg-dark); }
 
         .search-container {
             display: none;
@@ -290,7 +287,7 @@
         <div class="header-center">
             <a href="/" class="home-link">
                 <img src="/logo.svg" alt="satu.pro.bd" class="header-img">
-                <div id="currentDate" class="date-display"></div>
+                <div id="currentDate" class="date-display">সময় লোড হচ্ছে...</div>
             </a>
         </div>
 
@@ -345,6 +342,22 @@
             if(sc.classList.contains('active')) document.getElementById('newsSearch').focus();
         }
 
+        // --- Improved Bengali Clock Function ---
+        function updateBengaliClock() {
+            const now = new Date();
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            
+            const bengaliDate = new Intl.DateTimeFormat('bn-BD', dateOptions).format(now);
+            const bengaliTime = new Intl.DateTimeFormat('bn-BD', timeOptions).format(now);
+            
+            document.getElementById('currentDate').innerHTML = `${bengaliDate} | ${bengaliTime}`;
+        }
+
+        // Update clock every second
+        setInterval(updateBengaliClock, 1000);
+        updateBengaliClock();
+
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
@@ -382,9 +395,6 @@
                 card.style.display = card.getAttribute('data-title').includes(term) ? "flex" : "none";
             });
         });
-
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('currentDate').innerText = new Intl.DateTimeFormat('bn-BD', options).format(new Date());
 
         lucide.createIcons();
         fetchNews();
