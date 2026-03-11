@@ -12,8 +12,8 @@
         @media print {
             .no-print { display: none; }
             .page-break { page-break-after: always; }
-            body { background: white; }
-            .result-card { border: 1px solid #000; box-shadow: none; margin-bottom: 0; }
+            body { background: white; padding: 0; }
+            .result-card { border: 1px solid #000; box-shadow: none; margin: 0; width: 100%; }
         }
         .result-card {
             border: 2px solid #1e40af;
@@ -28,14 +28,14 @@
 <body class="bg-gray-50">
 
     <div class="no-print max-w-2xl mx-auto py-10 px-5 text-center">
-        <h1 class="text-3xl font-bold text-blue-800 mb-2">ফলাফল জেনারেটর (Result Generator)</h1>
-        <p class="mb-6 text-gray-600">Excel বা CSV ফাইল আপলোড করুন (কলামগুলো হবে: নাম, রোল, শ্রেণি, বাংলা, ইংরেজি, গণিত)</p>
+        <h1 class="text-3xl font-bold text-blue-800 mb-2">স্মার্ট রেজাল্ট জেনারেটর</h1>
+        <p class="mb-6 text-gray-600 font-semibold">Excel ফাইলে অবশ্যই <span class="text-red-500">"স্কুল"</span> নামে একটি কলাম থাকতে হবে।</p>
         
         <div class="bg-white p-8 rounded-xl shadow-lg border-2 border-dashed border-blue-300">
             <input type="file" id="fileInput" accept=".csv, .xlsx" class="mb-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
             <div class="flex flex-wrap justify-center gap-3">
                 <button onclick="generateResults()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition">ফলাফল তৈরি করুন</button>
-                <button onclick="window.print()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition">প্রিন্ট / PDF সেভ করুন</button>
+                <button onclick="window.print()" class="bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition">প্রিন্ট / PDF</button>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@
             const container = document.getElementById('resultsContainer');
             
             if (!fileInput.files[0]) {
-                alert("অনুগ্রহ করে একটি ফাইল সিলেক্ট করুন!");
+                alert("অনুগ্রহ করে একটি Excel বা CSV ফাইল সিলেক্ট করুন!");
                 return;
             }
 
@@ -62,20 +62,25 @@
                 container.innerHTML = ""; 
 
                 jsonData.forEach((student) => {
-                    const total = (Number(student.বাংলা) || 0) + (Number(student.ইংরেজি) || 0) + (Number(student.গণিত) || 0);
+                    // এক্সেল থেকে ডেটা নেওয়া
+                    const schoolName = student.স্কুল || student.School || "আপনার স্কুলের নাম";
+                    const bangla = Number(student.বাংলা) || 0;
+                    const english = Number(student.ইংরেজি) || 0;
+                    const math = Number(student.গণিত) || 0;
+                    const total = bangla + english + math;
                     const avg = (total / 3).toFixed(2);
 
                     const card = `
                         <div class="result-card page-break relative">
                             <div class="text-center border-b-2 border-blue-800 pb-4 mb-6">
-                                <h2 class="text-3xl font-bold text-blue-900">আপনার স্কুলের নাম এখানে</h2>
-                                <p class="text-lg text-gray-700">বার্ষিক পরীক্ষা ফলাফল - ২০২৬</p>
+                                <h2 class="text-3xl font-bold text-blue-900">${schoolName}</h2>
+                                <p class="text-lg text-gray-700 italic">একাডেমিক ট্রান্সক্রিপ্ট - ২০২৬</p>
                             </div>
                             
                             <div class="grid grid-cols-2 gap-4 mb-8 text-lg">
                                 <div>
-                                    <p><strong>শিক্ষার্থীর নাম:</strong> ${student.নাম || student.Name}</p>
-                                    <p><strong>রোল নম্বর:</strong> ${student.রোল || student.Roll}</p>
+                                    <p><strong>নাম:</strong> ${student.নাম || student.Name}</p>
+                                    <p><strong>রোল:</strong> ${student.রোল || student.Roll}</p>
                                 </div>
                                 <div class="text-right">
                                     <p><strong>শ্রেণি:</strong> ${student.শ্রেণি || student.Class}</p>
@@ -87,19 +92,19 @@
                                 <thead class="bg-blue-50">
                                     <tr>
                                         <th class="border border-gray-400 p-3">বিষয়</th>
-                                        <th class="border border-gray-400 p-3 text-center">প্রাপ্ত নম্বর</th>
+                                        <th class="border border-gray-400 p-3 text-center">নম্বর</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td class="border border-gray-400 p-3">বাংলা</td><td class="border border-gray-400 p-3 text-center">${student.বাংলা || 0}</td></tr>
-                                    <tr><td class="border border-gray-400 p-3">ইংরেজি</td><td class="border border-gray-400 p-3 text-center">${student.ইংরেজি || 0}</td></tr>
-                                    <tr><td class="border border-gray-400 p-3">গণিত</td><td class="border border-gray-400 p-3 text-center">${student.গণিত || 0}</td></tr>
+                                    <tr><td class="border border-gray-400 p-3">বাংলা</td><td class="border border-gray-400 p-3 text-center">${bangla}</td></tr>
+                                    <tr><td class="border border-gray-400 p-3">ইংরেজি</td><td class="border border-gray-400 p-3 text-center">${english}</td></tr>
+                                    <tr><td class="border border-gray-400 p-3">গণিত</td><td class="border border-gray-400 p-3 text-center">${math}</td></tr>
                                     <tr class="font-bold bg-gray-100">
-                                        <td class="border border-gray-400 p-3 text-right">মোট নম্বর:</td>
+                                        <td class="border border-gray-400 p-3 text-right">মোট:</td>
                                         <td class="border border-gray-400 p-3 text-center">${total}</td>
                                     </tr>
                                     <tr class="font-bold bg-blue-100 text-blue-900">
-                                        <td class="border border-gray-400 p-3 text-right">গড় নম্বর:</td>
+                                        <td class="border border-gray-400 p-3 text-right">গড়:</td>
                                         <td class="border border-gray-400 p-3 text-center">${avg}</td>
                                     </tr>
                                 </tbody>
@@ -108,11 +113,11 @@
                             <div class="mt-20 flex justify-between">
                                 <div class="text-center">
                                     <div class="w-40 border-t border-black mb-1"></div>
-                                    <p>অভিভাবকের স্বাক্ষর</p>
+                                    <p>অভিভাবক</p>
                                 </div>
                                 <div class="text-center">
                                     <div class="w-40 border-t border-black mb-1"></div>
-                                    <p>প্রধান শিক্ষকের স্বাক্ষর</p>
+                                    <p>প্রধান শিক্ষক</p>
                                 </div>
                             </div>
                         </div>
