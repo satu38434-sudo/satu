@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Result Generator | CSV to PDF</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            .page-break { page-break-after: always; }
+            body { background: white; }
+        }
+        .result-card {
+            border: 2px solid #333;
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="no-print max-w-2xl mx-auto py-10 px-5 text-center">
+        <h1 class="text-3xl font-bold text-blue-800 mb-4">Student Result Generator</h1>
+        <p class="mb-6 text-gray-600">Upload a CSV/Excel file with columns: <b>Name, Roll, Class, Bangla, English, Math</b></p>
+        
+        <div class="bg-white p-8 rounded-lg shadow-md border-2 border-dashed border-blue-300">
+            <input type="file" id="fileInput" accept=".csv, .xlsx" class="mb-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <button onclick="generateResults()" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 transition">Generate All Results</button>
+            <button onclick="window.print()" class="ml-2 bg-green-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-700 transition">Print / Save PDF</button>
+        </div>
+    </div>
+
+    <div id="resultsContainer">
+        </div>
+
+    <script>
+        function generateResults() {
+            const fileInput = document.getElementById('fileInput');
+            const container = document.getElementById('resultsContainer');
+            
+            if (!fileInput.files[0]) {
+                alert("Please upload a file first!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+                container.innerHTML = ""; // Clear old results
+
+                jsonData.forEach((student, index) => {
+                    const total = (student.Bangla || 0) + (student.English || 0) + (student.Math || 0);
+                    const avg = (total / 3).toFixed(2);
+
+                    const card = `
+                        <div class="result-card bg-white shadow-sm page-break">
+                            <div class="text-center border-b-2 border-gray-800 pb-4 mb-4">
+                                <h2 class="text-2xl font-bold uppercase">Academic Transcript</h2>
+                                <p class="text-gray-600">Annual Examination 2026</p>
+                            </div>
+                            
+                            <div class="flex justify-between mb-6">
+                                <div>
+                                    <p><strong>Name:</strong> ${student.Name}</p>
+                                    <p><strong>Roll No:</strong> ${student.Roll}</p>
+                                </div>
+                                <div>
+                                    <p><strong>Class:</strong> ${student.Class}</p>
+                                    <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                                </div>
+                            </div>
+
+                            <table class="w-full text-left border-collapse border border-gray-400">
+                                <thead class="bg-gray-200">
+                                    <tr>
+                                        <th class="border border-gray-400 p-2">Subject</th>
+                                        <th class="border border-gray-400 p-2 text-center">Marks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="border border-gray-400 p-2">Bangla</td><td class="border border-gray-400 p-2 text-center">${student.Bangla}</td></tr>
+                                    <tr><td class="border border-gray-400 p-2">English</td><td class="border border-gray-400 p-2 text-center">${student.English}</td></tr>
+                                    <tr><td class="border border-gray-400 p-2">Mathematics</td><td class="border border-gray-400 p-2 text-center">${student.Math}</td></tr>
+                                    <tr class="font-bold bg-blue-50">
+                                        <td class="border border-gray-400 p-2">Average Score</td>
+                                        <td class="border border-gray-400 p-2 text-center text-blue-700">${avg}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="mt-12 flex justify-between italic">
+                                <p class="border-t border-black pt-1">Parent's Signature</p>
+                                <p class="border-t border-black pt-1">Principal's Signature</p>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            };
+            reader.readAsArrayBuffer(fileInput.files[0]);
+        }
+    </script>
+</body>
+</html>
