@@ -261,7 +261,7 @@
 
     <main>
         <div id="newsGrid">
-            <div style="text-align:center; color:var(--text-dim); padding:40px;">সর্বশেষ সংবাদ লোড হচ্ছে...</div>
+            <div id="loader" style="text-align:center; color:var(--text-dim); padding:40px;">সর্বশেষ সংবাদ লোড হচ্ছে...</div>
         </div>
     </main>
 
@@ -311,35 +311,76 @@
         async function fetchNews() {
             const grid = document.getElementById('newsGrid');
             const ticker = document.getElementById('newsTicker');
-            let tickerHTML = "";
+            let allNewsItems = [];
             
+            // Map each feed to a fetch promise
             const promises = feeds.map(async (feed) => {
                 try {
-                    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`);
+                    // Added a cache-busting timestamp to prevent stale data
+                    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}&t=${Date.now()}`);
                     const data = await res.json();
+                    
                     if (data.status === 'ok') {
-                        if(grid.innerText.includes('লোড হচ্ছে')) grid.innerHTML = '';
-                        data.items.slice(0, 3).forEach(item => {
-                            tickerHTML += `<span class="ticker-item"><b>${feed.name}</b> ${item.title}</span>`;
-                            const card = document.createElement('a');
-                            card.href = item.link; card.target = "_blank"; card.className = "card";
-                            card.setAttribute('data-title', item.title.toLowerCase());
-                            card.innerHTML = `<span style="font-size:0.85rem; color:var(--accent-cyan); font-weight:700;">${feed.name}</span><div class="card-title">${item.title}</div>`;
-                            grid.appendChild(card);
-                        });
+                        return data.items.map(item => ({
+                            ...item,
+                            source: feed.name,
+                            // Ensure there is a date to sort by
+                            timestamp: new Date(item.pubDate || Date.now()).getTime()
+                        }));
                     }
-                } catch (e) { console.error(feed.name + " failed"); }
+                } catch (e) { 
+                    console.error(feed.name + " load failed"); 
+                }
+                return [];
             });
 
-            await Promise.all(promises);
-            ticker.innerHTML = tickerHTML;
-            ticker.style.animationDuration = (ticker.scrollWidth / 70) + "s";
+            // Wait for all fetches to finish
+            const results = await Promise.all(promises);
+            
+            // Flatten the nested arrays into one big list
+            allNewsItems = results.flat();
+
+            // Sort by latest first
+            allNewsItems.sort((a, b) => b.timestamp - a.timestamp);
+
+            if (allNewsItems.length > 0) {
+                grid.innerHTML = ''; // Clear loader
+                let tickerHTML = "";
+
+                allNewsItems.forEach((item, index) => {
+                    // Add to Ticker (limit to first 20 for performance)
+                    if (index < 20) {
+                        tickerHTML += `<span class="ticker-item"><b>${item.source}</b> ${item.title}</span>`;
+                    }
+
+                    // Create News Card
+                    const card = document.createElement('a');
+                    card.href = item.link; 
+                    card.target = "_blank"; 
+                    card.className = "card";
+                    card.setAttribute('data-title', item.title.toLowerCase());
+                    card.innerHTML = `
+                        <span style="font-size:0.85rem; color:var(--accent-cyan); font-weight:700;">${item.source}</span>
+                        <div class="card-title">${item.title}</div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                ticker.innerHTML = tickerHTML;
+                // Adjust scroll speed based on content length
+                ticker.style.animationDuration = (ticker.scrollWidth / 60) + "s";
+            } else {
+                grid.innerHTML = '<div style="text-align:center; color:var(--accent-red); padding:40px;">কোন সংবাদ পাওয়া যায়নি। অনুগ্রহ করে পরে চেষ্টা করুন।</div>';
+            }
         }
 
+        // Search Filter Logic
         document.getElementById('newsSearch').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.card').forEach(card => {
-                card.style.display = card.getAttribute('data-title').includes(term) ? "flex" : "none";
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                card.style.display = title.includes(term) ? "flex" : "none";
             });
         });
 
