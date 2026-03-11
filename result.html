@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্মার্ট রেজাল্ট মেকার | Form & Excel</title>
+    <title>স্কুল ডেটাবেস ও রেজাল্ট সিস্টেম</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; }
@@ -13,29 +12,20 @@
             .no-print { display: none; }
             .page-break { page-break-after: always; }
             body { background: white; padding: 0; }
-            .result-card { border: 1px solid #000; box-shadow: none; margin: 0; width: 100%; }
+            .result-card { border: 1px solid #000; box-shadow: none; margin: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         }
-        .result-card {
-            border: 2px solid #1e40af;
-            padding: 40px;
-            width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
-            background: #fff;
-        }
+        .result-card { border: 2px solid #1e40af; padding: 40px; width: 100%; max-width: 800px; margin: 20px auto; background: #fff; }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen">
 
-    <div class="no-print max-w-4xl mx-auto py-10 px-5">
-        <h1 class="text-4xl font-bold text-center text-blue-900 mb-8">স্মার্ট রেজাল্ট জেনারেটর</h1>
+    <div class="no-print max-w-5xl mx-auto py-10 px-5">
+        <h1 class="text-4xl font-bold text-center text-blue-900 mb-8">স্কুল ম্যানেজমেন্ট ও রেজাল্ট সিস্টেম</h1>
         
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-600">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-blue-700">
-                    📝 ফরম পূরণ করুন
-                </h2>
-                <form id="resultForm" class="space-y-3">
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-600 h-fit">
+                <h2 class="text-xl font-bold mb-4 text-blue-700 italic">📝 নতুন স্টুডেন্ট যোগ করুন</h2>
+                <form id="studentForm" class="space-y-3">
                     <input type="text" id="sName" placeholder="স্কুলের নাম" class="w-full p-2 border rounded" required>
                     <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded" required>
                     <div class="grid grid-cols-2 gap-2">
@@ -47,95 +37,145 @@
                         <input type="number" id="en" placeholder="ইংরেজি" class="p-2 border rounded" required>
                         <input type="number" id="math" placeholder="গণিত" class="p-2 border rounded" required>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition">রেজাল্ট তৈরি করুন</button>
+                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition">ডেটা সেভ করুন</button>
                 </form>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-600">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2 text-green-700">
-                    📊 এক্সেল ফাইল আপলোড
-                </h2>
-                <p class="text-sm text-gray-500 mb-4">একসাথে অনেক রেজাল্ট তৈরি করতে Excel/CSV ব্যবহার করুন।</p>
-                <input type="file" id="fileInput" accept=".csv, .xlsx" class="mb-4 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
-                <button onclick="generateFromExcel()" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700 transition">Excel থেকে তৈরি করুন</button>
-                <button onclick="window.print()" class="w-full mt-3 bg-gray-800 text-white font-bold py-2 rounded hover:bg-black transition">সবগুলো প্রিন্ট / PDF</button>
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-600">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-green-700 italic">📋 সংরক্ষিত স্টুডেন্ট লিস্ট</h2>
+                    <button onclick="clearDatabase()" class="text-red-500 text-sm hover:underline">সব মুছে ফেলুন</button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-2 border">রোল</th>
+                                <th class="p-2 border">নাম</th>
+                                <th class="p-2 border">শ্রেণি</th>
+                                <th class="p-2 border">অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-6 flex gap-3">
+                    <button onclick="generateFinalResults()" class="flex-1 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 shadow-md transition text-lg">
+                        পুরো ক্লাসের রেজাল্ট তৈরি করুন
+                    </button>
+                    <button onclick="window.print()" id="printBtn" class="hidden flex-1 bg-gray-800 text-white font-bold py-3 rounded-lg hover:bg-black shadow-md transition text-lg">
+                        সবগুলো প্রিন্ট / PDF
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="resultsContainer"></div>
+    <div id="resultsContainer" class="p-5"></div>
 
     <script>
-        // ফরম থেকে রেজাল্ট তৈরি
-        document.getElementById('resultForm').addEventListener('submit', function(e) {
+        let students = JSON.parse(localStorage.getItem('schoolDB')) || [];
+
+        // পেজ লোড হলে টেবিল আপডেট করা
+        window.onload = updateTable;
+
+        // ডেটা সেভ করা
+        document.getElementById('studentForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const data = {
-                স্কুল: document.getElementById('sName').value,
-                নাম: document.getElementById('stName').value,
-                রোল: document.getElementById('roll').value,
-                শ্রেণি: document.getElementById('class').value,
-                বাংলা: document.getElementById('bn').value,
-                ইংরেজি: document.getElementById('en').value,
-                গণিত: document.getElementById('math').value
+            const student = {
+                id: Date.now(),
+                school: document.getElementById('sName').value,
+                name: document.getElementById('stName').value,
+                roll: document.getElementById('roll').value,
+                className: document.getElementById('class').value,
+                bn: document.getElementById('bn').value,
+                en: document.getElementById('en').value,
+                ma: document.getElementById('math').value
             };
-            document.getElementById('resultsContainer').innerHTML = createCardHTML(data);
+
+            students.push(student);
+            localStorage.setItem('schoolDB', JSON.stringify(students));
+            updateTable();
+            this.reset();
+            document.getElementById('sName').value = student.school; // স্কুলের নাম রেখে দিলাম পরের জনের জন্য
         });
 
-        // এক্সেল থেকে রেজাল্ট তৈরি
-        function generateFromExcel() {
-            const fileInput = document.getElementById('fileInput');
-            if (!fileInput.files[0]) return alert("ফাইল সিলেক্ট করুন!");
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const workbook = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
-                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                let allCards = "";
-                jsonData.forEach(student => allCards += createCardHTML(student));
-                document.getElementById('resultsContainer').innerHTML = allCards;
-            };
-            reader.readAsArrayBuffer(fileInput.files[0]);
+        function updateTable() {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = students.map(s => `
+                <tr class="border-b">
+                    <td class="p-2 border">${s.roll}</td>
+                    <td class="p-2 border">${s.name}</td>
+                    <td class="p-2 border">${s.className}</td>
+                    <td class="p-2 border">
+                        <button onclick="deleteStudent(${s.id})" class="text-red-600 hover:font-bold">মুছুন</button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        // রেজাল্ট কার্ডের HTML টেমপ্লেট
-        function createCardHTML(s) {
-            const bn = Number(s.বাংলা) || 0;
-            const en = Number(s.ইংরেজি) || 0;
-            const ma = Number(s.গণিত) || 0;
-            const total = bn + en + ma;
-            const avg = (total / 3).toFixed(2);
+        function deleteStudent(id) {
+            students = students.filter(s => s.id !== id);
+            localStorage.setItem('schoolDB', JSON.stringify(students));
+            updateTable();
+        }
 
-            return `
-                <div class="result-card page-break">
-                    <div class="text-center border-b-2 border-blue-800 pb-4 mb-6">
-                        <h2 class="text-3xl font-bold text-blue-900">${s.স্কুল || s.School || 'শিক্ষা প্রতিষ্ঠান'}</h2>
-                        <p class="text-lg text-gray-700 italic">বার্ষিক ফলাফল - ২০২৬</p>
+        function clearDatabase() {
+            if(confirm("আপনি কি নিশ্চিতভাবে সব ডেটা মুছে ফেলতে চান?")) {
+                students = [];
+                localStorage.removeItem('schoolDB');
+                updateTable();
+                document.getElementById('resultsContainer').innerHTML = "";
+                document.getElementById('printBtn').classList.add('hidden');
+            }
+        }
+
+        function generateFinalResults() {
+            if (students.length === 0) return alert("আগে স্টুডেন্ট যোগ করুন!");
+            
+            let html = "";
+            students.forEach(s => {
+                const total = Number(s.bn) + Number(s.en) + Number(s.ma);
+                const avg = (total / 3).toFixed(2);
+                
+                html += `
+                    <div class="result-card page-break">
+                        <div class="text-center border-b-2 border-blue-800 pb-4 mb-6">
+                            <h2 class="text-3xl font-bold text-blue-900">${s.school}</h2>
+                            <p class="text-lg text-gray-700 italic">বার্ষিক ফলাফল - ২০২৬</p>
+                        </div>
+                        <div class="grid grid-cols-2 mb-6 text-lg">
+                            <p><strong>শিক্ষার্থীর নাম:</strong> ${s.name}</p>
+                            <p class="text-right"><strong>শ্রেণি:</strong> ${s.className}</p>
+                            <p><strong>রোল:</strong> ${s.roll}</p>
+                            <p class="text-right"><strong>তারিখ:</strong> ${new Date().toLocaleDateString('bn-BD')}</p>
+                        </div>
+                        <table class="w-full border-collapse border border-gray-400 text-lg">
+                            <tr class="bg-blue-50">
+                                <th class="border border-gray-400 p-2">বিষয়</th>
+                                <th class="border border-gray-400 p-2 text-center">নম্বর</th>
+                            </tr>
+                            <tr><td class="border border-gray-400 p-2">বাংলা</td><td class="border border-gray-400 p-2 text-center">${s.bn}</td></tr>
+                            <tr><td class="border border-gray-400 p-2">ইংরেজি</td><td class="border border-gray-400 p-2 text-center">${s.en}</td></tr>
+                            <tr><td class="border border-gray-400 p-2">গণিত</td><td class="border border-gray-400 p-2 text-center">${s.ma}</td></tr>
+                            <tr class="font-bold bg-gray-100">
+                                <td class="border border-gray-400 p-2 text-right">মোট নম্বর:</td>
+                                <td class="border border-gray-400 p-2 text-center">${total}</td>
+                            </tr>
+                        </table>
+                        <div class="mt-20 flex justify-between italic">
+                            <p class="border-t border-black px-4">অভিভাবক</p>
+                            <p class="border-t border-black px-4">প্রধান শিক্ষক</p>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-2 mb-6 text-lg">
-                        <p><strong>শিক্ষার্থীর নাম:</strong> ${s.নাম || s.Name}</p>
-                        <p class="text-right"><strong>শ্রেণি:</strong> ${s.শ্রেণি || s.Class}</p>
-                        <p><strong>রোল:</strong> ${s.রোল || s.Roll}</p>
-                        <p class="text-right"><strong>তারিখ:</strong> ${new Date().toLocaleDateString('bn-BD')}</p>
-                    </div>
-                    <table class="w-full border-collapse border border-gray-400 text-lg">
-                        <tr class="bg-blue-50">
-                            <th class="border border-gray-400 p-2">বিষয়</th>
-                            <th class="border border-gray-400 p-2 text-center">নম্বর</th>
-                        </tr>
-                        <tr><td class="border border-gray-400 p-2">বাংলা</td><td class="border border-gray-400 p-2 text-center">${bn}</td></tr>
-                        <tr><td class="border border-gray-400 p-2">ইংরেজি</td><td class="border border-gray-400 p-2 text-center">${en}</td></tr>
-                        <tr><td class="border border-gray-400 p-2">গণিত</td><td class="border border-gray-400 p-2 text-center">${ma}</td></tr>
-                        <tr class="font-bold bg-gray-100">
-                            <td class="border border-gray-400 p-2 text-right">মোট:</td>
-                            <td class="border border-gray-400 p-2 text-center">${total}</td>
-                        </tr>
-                    </table>
-                    <div class="mt-20 flex justify-between">
-                        <p class="border-t border-black px-4">অভিভাবক</p>
-                        <p class="border-t border-black px-4">প্রধান শিক্ষক</p>
-                    </div>
-                </div>
-            `;
+                `;
+            });
+            document.getElementById('resultsContainer').innerHTML = html;
+            document.getElementById('printBtn').classList.remove('hidden');
+            window.scrollTo(0, document.body.scrollHeight);
         }
     </script>
 </body>
