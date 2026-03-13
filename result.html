@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্কুল ডেটাবেস ও রেজাল্ট সিস্টেম</title>
+    <title>অ্যাডমিন প্যানেল | স্কুল রেজাল্ট সিস্টেম</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -12,171 +12,176 @@
             .no-print { display: none; }
             .page-break { page-break-after: always; }
             body { background: white; padding: 0; }
-            .result-card { border: 1px solid #000; box-shadow: none; margin: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+            .result-card { border: 2px solid #000; box-shadow: none; margin: 0; width: 100%; height: 95vh; display: flex; flex-direction: column; justify-content: center; }
         }
-        .result-card { border: 2px solid #1e40af; padding: 40px; width: 100%; max-width: 800px; margin: 20px auto; background: #fff; }
+        .result-card { border: 2px solid #1e40af; padding: 40px; width: 100%; max-width: 800px; margin: 20px auto; background: #fff; border-radius: 8px; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-slate-100 min-h-screen">
 
-    <div class="no-print max-w-5xl mx-auto py-10 px-5">
-        <h1 class="text-4xl font-bold text-center text-blue-900 mb-8">স্কুল ম্যানেজমেন্ট ও রেজাল্ট সিস্টেম</h1>
-        
-        <div class="grid lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-600 h-fit">
-                <h2 class="text-xl font-bold mb-4 text-blue-700 italic">📝 নতুন স্টুডেন্ট যোগ করুন</h2>
-                <form id="studentForm" class="space-y-3">
-                    <input type="text" id="sName" placeholder="স্কুলের নাম" class="w-full p-2 border rounded" required>
-                    <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded" required>
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="roll" placeholder="রোল" class="p-2 border rounded" required>
-                        <input type="text" id="class" placeholder="শ্রেণি" class="p-2 border rounded" required>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <input type="number" id="bn" placeholder="বাংলা" class="p-2 border rounded" required>
-                        <input type="number" id="en" placeholder="ইংরেজি" class="p-2 border rounded" required>
-                        <input type="number" id="math" placeholder="গণিত" class="p-2 border rounded" required>
-                    </div>
-                    <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition">ডেটা সেভ করুন</button>
-                </form>
-            </div>
-
-            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-600">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-green-700 italic">📋 সংরক্ষিত স্টুডেন্ট লিস্ট</h2>
-                    <button onclick="clearDatabase()" class="text-red-500 text-sm hover:underline">সব মুছে ফেলুন</button>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm border-collapse">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                <th class="p-2 border">রোল</th>
-                                <th class="p-2 border">নাম</th>
-                                <th class="p-2 border">শ্রেণি</th>
-                                <th class="p-2 border">অ্যাকশন</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentTableBody">
-                            </tbody>
-                    </table>
-                </div>
-                
-                <div class="mt-6 flex gap-3">
-                    <button onclick="generateFinalResults()" class="flex-1 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 shadow-md transition text-lg">
-                        পুরো ক্লাসের রেজাল্ট তৈরি করুন
-                    </button>
-                    <button onclick="window.print()" id="printBtn" class="hidden flex-1 bg-gray-800 text-white font-bold py-3 rounded-lg hover:bg-black shadow-md transition text-lg">
-                        সবগুলো প্রিন্ট / PDF
-                    </button>
-                </div>
-            </div>
+    <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-slate-900">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+            <h2 class="text-2xl font-bold text-center text-slate-800 mb-6">অ্যাডমিন লগইন</h2>
+            <input type="password" id="adminPass" placeholder="পাসওয়ার্ড (1234)" class="w-full p-3 border rounded-lg mb-4 outline-none focus:ring-2 focus:ring-blue-500">
+            <button onclick="checkPass()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">প্রবেশ করুন</button>
+            <p id="errorMsg" class="text-red-500 text-sm mt-2 hidden text-center">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
         </div>
     </div>
 
-    <div id="resultsContainer" class="p-5"></div>
+    <div id="mainApp" class="hidden">
+        <div class="no-print max-w-6xl mx-auto py-8 px-4">
+            <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-600">
+                <h1 class="text-2xl font-bold text-slate-800">ক্লাউড রেজাল্ট ডাটাবেস</h1>
+                <button onclick="location.reload()" class="text-red-500 hover:underline">লগ আউট</button>
+            </div>
+            
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-lg font-bold mb-4 text-blue-700">➕ নতুন এন্ট্রি</h2>
+                    <form id="studentForm" class="space-y-3">
+                        <input type="text" id="sName" placeholder="প্রতিষ্ঠানের নাম" class="w-full p-2 border rounded bg-gray-50" required>
+                        <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded" required>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="roll" placeholder="রোল" class="p-2 border rounded" required>
+                            <input type="text" id="class" placeholder="শ্রেণি" class="p-2 border rounded" required>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="number" id="bn" placeholder="বাংলা" class="p-2 border rounded text-center">
+                            <input type="number" id="en" placeholder="ইংরেজি" class="p-2 border rounded text-center">
+                            <input type="number" id="math" placeholder="গণিত" class="p-2 border rounded text-center">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded-lg hover:bg-blue-700 transition">সেভ করুন</button>
+                    </form>
+                </div>
 
-    <script>
-        let students = JSON.parse(localStorage.getItem('schoolDB')) || [];
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-lg font-bold text-slate-800 mb-4 italic">📋 বর্তমান স্টুডেন্ট লিস্ট</h2>
+                    <div class="overflow-y-auto max-h-[400px]">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="p-2 border">রোল</th>
+                                    <th class="p-2 border">নাম</th>
+                                    <th class="p-2 border">অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="mt-6 flex gap-3">
+                        <button onclick="generateFinalResults()" class="flex-1 bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700 transition text-sm">রেজাল্ট কার্ড জেনারেট</button>
+                        <button onclick="window.print()" class="px-6 bg-slate-800 text-white rounded hover:bg-black transition text-sm">প্রিন্ট</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        // পেজ লোড হলে টেবিল আপডেট করা
-        window.onload = updateTable;
+        <div id="resultsContainer" class="p-4"></div>
+    </div>
 
-        // ডেটা সেভ করা
-        document.getElementById('studentForm').addEventListener('submit', function(e) {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // আপনার প্রোভাইড করা কনফিগ
+        const firebaseConfig = {
+            apiKey: "AIzaSyAPhbMO5HcE6XT8vWUV1tI0L5fyNulyeMc",
+            authDomain: "school-result-app-acb88.firebaseapp.com",
+            projectId: "school-result-app-acb88",
+            storageBucket: "school-result-app-acb88.firebasestorage.app",
+            messagingSenderId: "442862025691",
+            appId: "1:442862025691:web:4fba33ad35454ad6ff85fe",
+            databaseURL: "https://school-result-app-acb88-default-rtdb.firebaseio.com" // এটি অটোমেটিক সেট করা
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const studentsRef = ref(db, 'students');
+
+        let studentsData = {};
+
+        // পাসওয়ার্ড চেক ফাংশন
+        window.checkPass = () => {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === "1234") { // আপনি এখানে পাসওয়ার্ড পরিবর্তন করতে পারেন
+                document.getElementById('loginArea').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+            } else {
+                document.getElementById('errorMsg').classList.remove('hidden');
+            }
+        };
+
+        // ডাটা সেভ
+        document.getElementById('studentForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const student = {
-                id: Date.now(),
                 school: document.getElementById('sName').value,
                 name: document.getElementById('stName').value,
                 roll: document.getElementById('roll').value,
                 className: document.getElementById('class').value,
-                bn: document.getElementById('bn').value,
-                en: document.getElementById('en').value,
-                ma: document.getElementById('math').value
+                bn: document.getElementById('bn').value || 0,
+                en: document.getElementById('en').value || 0,
+                ma: document.getElementById('math').value || 0
             };
-
-            students.push(student);
-            localStorage.setItem('schoolDB', JSON.stringify(students));
-            updateTable();
-            this.reset();
-            document.getElementById('sName').value = student.school; // স্কুলের নাম রেখে দিলাম পরের জনের জন্য
+            push(studentsRef, student);
+            e.target.reset();
+            document.getElementById('sName').value = student.school; // স্কুল নাম ফিক্সড রাখা হলো
         });
 
-        function updateTable() {
+        // ক্লাউড থেকে ডাটা রিড করা
+        onValue(studentsRef, (snapshot) => {
+            studentsData = snapshot.val() || {};
             const tbody = document.getElementById('studentTableBody');
-            tbody.innerHTML = students.map(s => `
-                <tr class="border-b">
-                    <td class="p-2 border">${s.roll}</td>
-                    <td class="p-2 border">${s.name}</td>
-                    <td class="p-2 border">${s.className}</td>
-                    <td class="p-2 border">
-                        <button onclick="deleteStudent(${s.id})" class="text-red-600 hover:font-bold">মুছুন</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
+            tbody.innerHTML = "";
+            Object.keys(studentsData).forEach(id => {
+                const s = studentsData[id];
+                tbody.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-2 border">${s.roll}</td>
+                        <td class="p-2 border">${s.name}</td>
+                        <td class="p-2 border text-center text-red-500 cursor-pointer hover:font-bold" onclick="deleteStudent('${id}')">মুছুন</td>
+                    </tr>
+                `;
+            });
+        });
 
-        function deleteStudent(id) {
-            students = students.filter(s => s.id !== id);
-            localStorage.setItem('schoolDB', JSON.stringify(students));
-            updateTable();
-        }
+        window.deleteStudent = (id) => {
+            if(confirm("আপনি কি নিশ্চিতভাবে এই ডাটা মুছতে চান?")) remove(ref(db, `students/${id}`));
+        };
 
-        function clearDatabase() {
-            if(confirm("আপনি কি নিশ্চিতভাবে সব ডেটা মুছে ফেলতে চান?")) {
-                students = [];
-                localStorage.removeItem('schoolDB');
-                updateTable();
-                document.getElementById('resultsContainer').innerHTML = "";
-                document.getElementById('printBtn').classList.add('hidden');
-            }
-        }
-
-        function generateFinalResults() {
-            if (students.length === 0) return alert("আগে স্টুডেন্ট যোগ করুন!");
-            
-            let html = "";
-            students.forEach(s => {
+        window.generateFinalResults = () => {
+            const container = document.getElementById('resultsContainer');
+            container.innerHTML = "";
+            Object.values(studentsData).forEach(s => {
                 const total = Number(s.bn) + Number(s.en) + Number(s.ma);
-                const avg = (total / 3).toFixed(2);
-                
-                html += `
+                container.innerHTML += `
                     <div class="result-card page-break">
-                        <div class="text-center border-b-2 border-blue-800 pb-4 mb-6">
-                            <h2 class="text-3xl font-bold text-blue-900">${s.school}</h2>
-                            <p class="text-lg text-gray-700 italic">বার্ষিক ফলাফল - ২০২৬</p>
+                        <div class="text-center border-b-2 border-blue-900 pb-2 mb-4">
+                            <h2 class="text-2xl font-bold text-blue-900">${s.school}</h2>
+                            <p class="text-gray-600">বার্ষিক ফলাফল - ২০২৬</p>
                         </div>
-                        <div class="grid grid-cols-2 mb-6 text-lg">
-                            <p><strong>শিক্ষার্থীর নাম:</strong> ${s.name}</p>
-                            <p class="text-right"><strong>শ্রেণি:</strong> ${s.className}</p>
-                            <p><strong>রোল:</strong> ${s.roll}</p>
-                            <p class="text-right"><strong>তারিখ:</strong> ${new Date().toLocaleDateString('bn-BD')}</p>
+                        <div class="flex justify-between mb-4 text-sm">
+                            <div><p>শিক্ষার্থী: <b>${s.name}</b></p><p>রোল: ${s.roll}</p></div>
+                            <div class="text-right"><p>শ্রেণি: ${s.className}</p><p>তারিখ: ${new Date().toLocaleDateString('bn-BD')}</p></div>
                         </div>
-                        <table class="w-full border-collapse border border-gray-400 text-lg">
+                        <table class="w-full border-collapse border border-gray-300">
                             <tr class="bg-blue-50">
-                                <th class="border border-gray-400 p-2">বিষয়</th>
-                                <th class="border border-gray-400 p-2 text-center">নম্বর</th>
+                                <th class="border p-2">বিষয়</th><th class="border p-2 text-center">নম্বর</th>
                             </tr>
-                            <tr><td class="border border-gray-400 p-2">বাংলা</td><td class="border border-gray-400 p-2 text-center">${s.bn}</td></tr>
-                            <tr><td class="border border-gray-400 p-2">ইংরেজি</td><td class="border border-gray-400 p-2 text-center">${s.en}</td></tr>
-                            <tr><td class="border border-gray-400 p-2">গণিত</td><td class="border border-gray-400 p-2 text-center">${s.ma}</td></tr>
-                            <tr class="font-bold bg-gray-100">
-                                <td class="border border-gray-400 p-2 text-right">মোট নম্বর:</td>
-                                <td class="border border-gray-400 p-2 text-center">${total}</td>
-                            </tr>
+                            <tr><td class="border p-2">বাংলা</td><td class="border p-2 text-center">${s.bn}</td></tr>
+                            <tr><td class="border p-2">ইংরেজি</td><td class="border p-2 text-center">${s.en}</td></tr>
+                            <tr><td class="border p-2">গণিত</td><td class="border p-2 text-center">${s.ma}</td></tr>
+                            <tr class="font-bold bg-gray-100"><td class="border p-2 text-right">মোট নম্বর:</td><td class="border p-2 text-center">${total}</td></tr>
                         </table>
-                        <div class="mt-20 flex justify-between italic">
+                        <div class="mt-12 flex justify-between italic text-xs">
                             <p class="border-t border-black px-4">অভিভাবক</p>
                             <p class="border-t border-black px-4">প্রধান শিক্ষক</p>
                         </div>
                     </div>
                 `;
             });
-            document.getElementById('resultsContainer').innerHTML = html;
-            document.getElementById('printBtn').classList.remove('hidden');
             window.scrollTo(0, document.body.scrollHeight);
-        }
+        };
     </script>
 </body>
 </html>
