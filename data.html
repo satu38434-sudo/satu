@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>স্কুল ডাটাবেস | অল-ইন-ওয়ান প্যানেল</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Hind Siliguri', sans-serif; }
+        @media print { .no-print { display: none !important; } }
+        .student-card { transition: transform 0.2s; }
+        .student-card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <div class="no-print bg-blue-900 text-white p-6 shadow-lg border-b-4 border-orange-500 mb-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold uppercase tracking-tight">Student Management</h1>
+                <p class="text-orange-400 font-bold italic">আমার ছোট স্কুল - ২০২৬</p>
+            </div>
+            <button onclick="window.print()" class="bg-white text-blue-900 px-6 py-2 rounded-full font-bold shadow hover:bg-slate-100 transition">প্রিন্ট রিপোর্ট</button>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid lg:grid-cols-4 gap-8">
+            
+            <div class="no-print lg:col-span-1">
+                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200 sticky top-8">
+                    <h2 id="formTitle" class="text-xl font-bold text-blue-800 mb-4 border-b pb-2">নতুন শিক্ষার্থী যোগ করুন</h2>
+                    <form id="studentForm" class="space-y-3">
+                        <input type="hidden" id="editKey">
+                        
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 ml-1">শিক্ষার্থীর নাম</label>
+                            <input type="text" id="stName" class="w-full p-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-400" required>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-xs font-bold text-slate-500 ml-1">রোল</label>
+                                <input type="text" id="roll" class="w-full p-2 border rounded-lg outline-none" required>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-500 ml-1">শ্রেণি</label>
+                                <input type="text" id="class" class="w-full p-2 border rounded-lg outline-none" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 ml-1">জন্ম তারিখ</label>
+                            <input type="date" id="dob" class="w-full p-2 border rounded-lg outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 ml-1">পিতার নাম</label>
+                            <input type="text" id="fName" class="w-full p-2 border rounded-lg outline-none">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 ml-1">মাতার নাম</label>
+                            <input type="text" id="mName" class="w-full p-2 border rounded-lg outline-none">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 ml-1">ছবির লিঙ্ক (URL)</label>
+                            <input type="text" id="photoUrl" placeholder="https://..." class="w-full p-2 border rounded-lg outline-none text-xs">
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-3 rounded-lg hover:bg-blue-800 transition shadow-md">ডেটা সেভ করুন</button>
+                        <button type="button" id="cancelBtn" class="hidden w-full bg-gray-200 text-slate-700 font-bold py-2 rounded-lg mt-1 transition">বাতিল</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3">
+                <div class="flex justify-between items-center mb-6 border-b-2 pb-2 border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-800 italic">শিক্ষার্থী প্রোফাইল তালিকা</h2>
+                    <span id="studentCount" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">০ জন</span>
+                </div>
+                
+                <div id="studentContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <p class="text-center col-span-full py-20 text-slate-400 italic">অপেক্ষা করুন, ডাটা লোড হচ্ছে...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // আপনার প্রোভাইড করা কনফিগ
+        const firebaseConfig = {
+            apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4",
+            authDomain: "my-school-database.firebaseapp.com",
+            projectId: "my-school-database",
+            storageBucket: "my-school-database.firebasestorage.app",
+            messagingSenderId: "131536885098",
+            appId: "1:131536885098:web:2374cb17a74404ebda4113",
+            databaseURL: "https://my-school-database-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const dbRef = ref(db, 'school_students');
+
+        // ইংরেজি সংখ্যাকে বাংলায় রূপান্তরকারী ফাংশন
+        const toBn = n => n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
+
+        // সেভ ও আপডেট লজিক
+        document.getElementById('studentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editKey').value;
+            const student = {
+                name: document.getElementById('stName').value,
+                roll: document.getElementById('roll').value,
+                className: document.getElementById('class').value,
+                dob: document.getElementById('dob').value,
+                father: document.getElementById('fName').value,
+                mother: document.getElementById('mName').value,
+                photo: document.getElementById('photoUrl').value || "https://via.placeholder.com/150"
+            };
+
+            if (id) {
+                set(ref(db, `school_students/${id}`), student).then(() => resetForm());
+            } else {
+                push(dbRef, student).then(() => e.target.reset());
+            }
+        });
+
+        // লাইভ ডাটা লোডিং
+        onValue(dbRef, (snapshot) => {
+            const container = document.getElementById('studentContainer');
+            const countLabel = document.getElementById('studentCount');
+            container.innerHTML = "";
+            const data = snapshot.val();
+            window.allData = data;
+
+            if(data) {
+                const keys = Object.keys(data);
+                countLabel.innerText = `${toBn(keys.length)} জন`;
+                
+                keys.forEach(id => {
+                    const s = data[id];
+                    container.innerHTML += `
+                        <div class="bg-white rounded-2xl shadow-md p-5 flex gap-4 items-center border border-slate-200 student-card relative overflow-hidden">
+                            <img src="${s.photo}" class="w-24 h-24 object-cover rounded-xl border-4 border-slate-50 shadow-sm">
+                            <div class="flex-1">
+                                <h3 class="font-bold text-xl text-blue-900 leading-tight">${s.name}</h3>
+                                <div class="text-sm text-slate-600 mt-1">
+                                    <p>শ্রেণি: <span class="font-bold text-slate-800">${s.className}</span> | রোল: <span class="font-bold text-slate-800">${toBn(s.roll)}</span></p>
+                                    <p class="mt-2 text-[11px] leading-tight">পিতা: ${s.father}<br>মাতা: ${s.mother}</p>
+                                    <p class="mt-1 text-xs text-blue-600 font-bold">জন্ম: ${s.dob ? toBn(s.dob) : 'নাই'}</p>
+                                </div>
+                            </div>
+                            <div class="no-print absolute top-2 right-2 flex flex-col gap-2">
+                                <button onclick="editBtn('${id}')" class="bg-blue-50 text-blue-600 p-1 rounded hover:bg-blue-600 hover:text-white transition text-xs font-bold">এডিট</button>
+                                <button onclick="deleteBtn('${id}')" class="bg-red-50 text-red-500 p-1 rounded hover:bg-red-500 hover:text-white transition text-xs font-bold">মুছুন</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                countLabel.innerText = `০ জন`;
+                container.innerHTML = "<p class='col-span-full text-center text-slate-400 py-20'>কোনো শিক্ষার্থীর তথ্য পাওয়া যায়নি।</p>";
+            }
+        });
+
+        // এডিট লজিক
+        window.editBtn = (id) => {
+            const s = window.allData[id];
+            document.getElementById('editKey').value = id;
+            document.getElementById('stName').value = s.name;
+            document.getElementById('roll').value = s.roll;
+            document.getElementById('class').value = s.className;
+            document.getElementById('dob').value = s.dob;
+            document.getElementById('fName').value = s.father;
+            document.getElementById('mName').value = s.mother;
+            document.getElementById('photoUrl').value = s.photo;
+            
+            document.getElementById('formTitle').innerText = "তথ্য পরিবর্তন করুন";
+            document.getElementById('submitBtn').innerText = "আপডেট করুন";
+            document.getElementById('submitBtn').classList.replace('bg-blue-700', 'bg-orange-600');
+            document.getElementById('cancelBtn').classList.remove('hidden');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+
+        // ডিলিট লজিক
+        window.deleteBtn = (id) => { if(confirm("এই শিক্ষার্থীর তথ্য কি চিরতরে মুছে ফেলবেন?")) remove(ref(db, `school_students/${id}`)); };
+
+        function resetForm() {
+            document.getElementById('studentForm').reset();
+            document.getElementById('editKey').value = "";
+            document.getElementById('formTitle').innerText = "নতুন শিক্ষার্থী যোগ করুন";
+            document.getElementById('submitBtn').innerText = "ডেটা সেভ করুন";
+            document.getElementById('submitBtn').classList.replace('bg-orange-600', 'bg-blue-700');
+            document.getElementById('cancelBtn').classList.add('hidden');
+        }
+        document.getElementById('cancelBtn').addEventListener('click', resetForm);
+    </script>
+</body>
+</html>
