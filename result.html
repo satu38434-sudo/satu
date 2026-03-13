@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>নিরাপদ অ্যাডমিন প্যানেল | ৩য় শ্রেণি</title>
+    <title>নিরাপদ অ্যাডমিন প্যানেল | এডিট অপশনসহ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -34,19 +34,19 @@
     <div id="mainApp" class="hidden">
         <div class="no-print max-w-6xl mx-auto py-8 px-4">
             <div class="flex justify-between items-center mb-8 bg-white p-6 rounded-xl shadow-md border-l-8 border-blue-700">
-                <h1 class="text-2xl font-bold text-slate-800 italic uppercase">Admin Dashboard</h1>
+                <h1 class="text-2xl font-bold text-slate-800 italic">স্কুল ম্যানেজমেন্ট ড্যাশবোর্ড</h1>
                 <button id="logoutBtn" class="bg-red-50 text-red-600 px-6 py-2 rounded-lg font-bold hover:bg-red-100 transition">লগ আউট</button>
             </div>
             
             <div class="grid lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-slate-300">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-700">নতুন শিক্ষার্থী তথ্য</h2>
+                    <h2 id="formTitle" class="text-xl font-bold mb-4 border-b pb-2 text-blue-700">নতুন শিক্ষার্থী তথ্য</h2>
                     <form id="studentForm" class="space-y-4">
-                        <input type="text" id="sName" placeholder="প্রতিষ্ঠানের নাম" class="w-full p-2 border rounded font-bold bg-slate-50" required>
+                        <input type="hidden" id="editKey"> <input type="text" id="sName" placeholder="প্রতিষ্ঠানের নাম" class="w-full p-2 border rounded font-bold bg-slate-50" required>
                         <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded" required>
                         <div class="grid grid-cols-2 gap-3">
                             <input type="text" id="roll" placeholder="রোল নম্বর" class="p-2 border rounded" required>
-                            <input type="text" id="class" value="তৃতীয়" class="p-2 border rounded bg-gray-50" readonly>
+                            <input type="text" id="class" value="তৃতীয়" class="p-2 border rounded bg-gray-50 font-bold" readonly>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-sm italic">
                             <input type="number" id="sub1" placeholder="বাংলা" class="p-2 border rounded">
@@ -59,12 +59,13 @@
                             <input type="number" id="sub8" placeholder="স্বাস্থ্য" class="p-2 border rounded">
                             <input type="number" id="sub9" placeholder="জীবন" class="p-2 border rounded">
                         </div>
-                        <button type="submit" class="w-full bg-blue-700 text-white font-bold py-3 rounded-lg hover:bg-blue-800 shadow-md">সেভ করুন</button>
+                        <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-3 rounded-lg hover:bg-blue-800 shadow-md">সেভ করুন</button>
+                        <button type="button" id="cancelBtn" class="hidden w-full bg-gray-200 text-gray-700 font-bold py-2 rounded-lg">বাতিল করুন</button>
                     </form>
                 </div>
 
                 <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-slate-300">
-                    <h2 class="text-xl font-bold text-slate-800 mb-4 italic">লাইভ ডাটাবেস তালিকা</h2>
+                    <h2 class="text-xl font-bold text-slate-800 mb-4 italic italic">লাইভ ডাটাবেস তালিকা</h2>
                     <div class="overflow-y-auto max-h-[400px] border-2 rounded">
                         <table class="w-full text-left">
                             <thead class="bg-slate-50 sticky top-0 font-bold">
@@ -74,7 +75,7 @@
                         </table>
                     </div>
                     <div class="mt-8 flex gap-4">
-                        <button onclick="generateFinalResults()" class="flex-1 bg-green-700 text-white font-bold py-3 rounded-xl hover:bg-green-800">রেজাল্ট জেনারেট করুন</button>
+                        <button onclick="generateFinalResults()" class="flex-1 bg-green-700 text-white font-bold py-3 rounded-xl hover:bg-green-800">রেজাল্ট জেনারেট</button>
                         <button onclick="window.print()" class="px-10 bg-black text-white font-bold py-3 rounded-xl">প্রিন্ট / PDF</button>
                     </div>
                 </div>
@@ -86,7 +87,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAPhbMO5HcE6XT8vWUV1tI0L5fyNulyeMc",
@@ -102,21 +103,18 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // লগইন লজিক
+        // লগইন ফাংশন
         document.getElementById('loginBtn').addEventListener('click', () => {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
             signInWithEmailAndPassword(auth, email, pass).catch(err => {
-                const errorMsg = document.getElementById('errorMsg');
-                errorMsg.innerText = "ভুল ইমেইল বা পাসওয়ার্ড!";
-                errorMsg.classList.remove('hidden');
+                document.getElementById('errorMsg').innerText = "ভুল ইমেইল বা পাসওয়ার্ড!";
+                document.getElementById('errorMsg').classList.remove('hidden');
             });
         });
 
-        // লগ আউট লজিক
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
-        // অথেনটিকেশন স্টেট চেক
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginArea').classList.add('hidden');
@@ -128,9 +126,9 @@
             }
         });
 
-        // ইংরেজি নম্বরকে বাংলায় রূপান্তর
         const toBnNum = (n) => n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
 
+        // ডাটা লোড ও এডিট/ডিলিট বাটন
         function loadData() {
             onValue(ref(db, 'class3_results'), (snapshot) => {
                 const tbody = document.getElementById('studentTableBody');
@@ -141,17 +139,56 @@
                     tbody.innerHTML += `<tr class="border-b">
                         <td class="p-3 font-bold font-mono">${s.roll}</td>
                         <td class="p-3">${s.name}</td>
-                        <td class="p-3 text-center"><button onclick="deleteStudent('${id}')" class="text-red-500 font-bold">মুছুন</button></td>
+                        <td class="p-3 text-center space-x-2">
+                            <button onclick="editStudent('${id}')" class="text-blue-600 font-bold hover:underline">এডিট</button>
+                            <button onclick="deleteStudent('${id}')" class="text-red-500 font-bold hover:underline">মুছুন</button>
+                        </td>
                     </tr>`;
                 });
                 window.studentsData = data;
             });
         }
 
-        window.deleteStudent = (id) => { if(confirm("মুছতে চান?")) remove(ref(db, `class3_results/${id}`)); };
+        // এডিট ফাংশন
+        window.editStudent = (id) => {
+            const s = window.studentsData[id];
+            document.getElementById('editKey').value = id;
+            document.getElementById('sName').value = s.school;
+            document.getElementById('stName').value = s.name;
+            document.getElementById('roll').value = s.roll;
+            document.getElementById('sub1').value = s.marks["বাংলা"];
+            document.getElementById('sub2').value = s.marks["ইংরেজি"];
+            document.getElementById('sub3').value = s.marks["গণিত"];
+            document.getElementById('sub4').value = s.marks["বিজ্ঞান"];
+            document.getElementById('sub5').value = s.marks["ইতিহাস ও সামাজিক বিজ্ঞান"];
+            document.getElementById('sub6').value = s.marks["ধর্ম শিক্ষা"];
+            document.getElementById('sub7').value = s.marks["শিল্পকলা"];
+            document.getElementById('sub8').value = s.marks["স্বাস্থ্য সুরক্ষা"];
+            document.getElementById('sub9').value = s.marks["জীবন ও জীবিকা"];
+            
+            document.getElementById('formTitle').innerText = "তথ্য আপডেট করুন";
+            document.getElementById('submitBtn').innerText = "আপডেট করুন";
+            document.getElementById('submitBtn').classList.replace('bg-blue-700', 'bg-orange-600');
+            document.getElementById('cancelBtn').classList.remove('hidden');
+            window.scrollTo(0,0);
+        };
 
+        // বাতিল বাটন
+        document.getElementById('cancelBtn').addEventListener('click', resetForm);
+
+        function resetForm() {
+            document.getElementById('studentForm').reset();
+            document.getElementById('editKey').value = "";
+            document.getElementById('formTitle').innerText = "নতুন শিক্ষার্থী তথ্য";
+            document.getElementById('submitBtn').innerText = "সেভ করুন";
+            document.getElementById('submitBtn').classList.replace('bg-orange-600', 'bg-blue-700');
+            document.getElementById('cancelBtn').classList.add('hidden');
+        }
+
+        // সেভ এবং আপডেট লজিক
         document.getElementById('studentForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            const id = document.getElementById('editKey').value;
             const student = {
                 school: document.getElementById('sName').value,
                 name: document.getElementById('stName').value,
@@ -169,17 +206,23 @@
                     "জীবন ও জীবিকা": document.getElementById('sub9').value || 0
                 }
             };
-            push(ref(db, 'class3_results'), student);
-            e.target.reset();
-            document.getElementById('sName').value = student.school;
+
+            if (id) {
+                set(ref(db, `class3_results/${id}`), student).then(() => resetForm());
+            } else {
+                push(ref(db, 'class3_results'), student);
+                e.target.reset();
+                document.getElementById('sName').value = student.school;
+            }
         });
+
+        window.deleteStudent = (id) => { if(confirm("মুছতে চান?")) remove(ref(db, `class3_results/${id}`)); };
 
         window.generateFinalResults = () => {
             const container = document.getElementById('resultsContainer');
             container.innerHTML = "";
             Object.values(window.studentsData).forEach(s => {
-                let rows = "";
-                let total = 0;
+                let rows = ""; let total = 0;
                 for (let sub in s.marks) {
                     rows += `<tr><td>${sub}</td><td>${toBnNum(s.marks[sub])}</td></tr>`;
                     total += Number(s.marks[sub]);
@@ -196,7 +239,7 @@
                         </div>
                         <table class="bengali-table">
                             <thead><tr class="bg-slate-100"><th>বিষয়ের নাম</th><th>নম্বর</th></tr></thead>
-                            <tbody>${rows}<tr class="font-bold bg-slate-200"><td class="text-right px-4 italic">মোট নম্বর:</td><td>${toBnNum(total)}</td></tr></tbody>
+                            <tbody>${rows}<tr class="font-bold bg-slate-200"><td class="text-right px-4">মোট নম্বর:</td><td>${toBnNum(total)}</td></tr></tbody>
                         </table>
                         <div class="mt-auto flex justify-between pt-32">
                             <div class="text-center w-56 border-t-2 border-black font-bold italic">অভিভাবক</div>
