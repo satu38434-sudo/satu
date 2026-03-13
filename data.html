@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্কুল ডাটাবেস | স্মার্ট ভ্যালিডেশন</title>
+    <title>স্কুল ডাটাবেস | স্মার্ট ইমেজ অপ্টিমাইজেশন</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; }
         @media print { .no-print { display: none !important; } }
-        .student-photo { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; border: 3px solid #1e3a8a; }
-        input:invalid { border-color: #ef4444; }
+        .student-photo { width: 90px; height: 90px; object-fit: cover; border-radius: 12px; border: 3px solid #1e40af; }
     </style>
 </head>
 <body class="bg-slate-50">
 
     <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-slate-900 px-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border-t-8 border-blue-600">
-            <h2 class="text-2xl font-bold text-center mb-6 italic">School Admin Login</h2>
+            <h2 class="text-2xl font-bold text-center mb-6 italic">Admin Login</h2>
             <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="অ্যাডমিন ইমেইল" class="w-full p-3 border rounded-lg outline-none">
+                <input type="email" id="loginEmail" placeholder="ইমেইল" class="w-full p-3 border rounded-lg outline-none">
                 <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-3 border rounded-lg outline-none">
-                <button id="loginBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700">প্রবেশ করুন</button>
+                <button id="loginBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold">প্রবেশ করুন</button>
             </div>
         </div>
     </div>
@@ -29,7 +28,7 @@
     <div id="mainApp" class="hidden">
         <div class="no-print bg-white shadow-md p-4 mb-6 border-b-2 border-blue-500">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <h1 class="text-xl font-bold text-slate-800 tracking-tight">ডিজিটাল স্টুডেন্ট ডাটাবেস</h1>
+                <h1 class="text-xl font-bold text-slate-800">Student Database (Optimized)</h1>
                 <button id="logoutBtn" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold">লগ আউট</button>
             </div>
         </div>
@@ -37,16 +36,15 @@
         <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-4 gap-8 pb-20">
             <div class="no-print lg:col-span-1">
                 <div class="bg-white p-6 rounded-2xl shadow-md border sticky top-5 overflow-y-auto max-h-[90vh]">
-                    <h2 id="formTitle" class="text-lg font-bold text-blue-700 mb-4 border-b pb-2 text-center">নিবন্ধন ফরম</h2>
+                    <h2 class="text-lg font-bold text-blue-700 mb-4 border-b pb-2 text-center">নিবন্ধন ফরম</h2>
                     <form id="studentForm" class="space-y-3">
                         <input type="hidden" id="editKey">
-                        
                         <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded text-sm" required>
                         
                         <div class="grid grid-cols-2 gap-2">
                             <input type="number" id="roll" placeholder="রোল" class="p-2 border rounded text-sm" required>
                             <select id="class" class="p-2 border rounded text-sm bg-white" required>
-                                <option value="" disabled selected>শ্রেণি নির্বাচন</option>
+                                <option value="" disabled selected>শ্রেণি</option>
                                 <option value="Pre Primary">Pre Primary</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
@@ -56,43 +54,38 @@
                             </select>
                         </div>
 
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400">জন্ম নিবন্ধন (১৭ ডিজিট)</label>
-                            <input type="text" id="birthReg" pattern="\d{17}" title="অবশ্যই ১৭ ডিজিট হতে হবে" placeholder="12345678901234567" class="w-full p-2 border rounded text-sm" required>
-                        </div>
-
+                        <input type="text" id="birthReg" pattern="\d{17}" title="১৭ ডিজিট হতে হবে" placeholder="জন্ম নিবন্ধন (১৭ ডিজিট)" class="w-full p-2 border rounded text-sm" required>
                         <input type="date" id="dob" class="w-full p-2 border rounded text-sm" required>
 
                         <hr class="my-2">
 
-                        <div class="space-y-3">
-                            <input type="text" id="fName" placeholder="পিতার নাম" class="w-full p-2 border rounded text-sm bg-blue-50/20">
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="text" id="fNid" pattern="\d{10}|\d{17}" title="NID ১০ অথবা ১৭ ডিজিট হতে হবে" placeholder="পিতার NID" class="p-2 border rounded text-[10px]">
-                                <input type="date" id="fDob" class="p-2 border rounded text-[10px]">
-                            </div>
-
-                            <input type="text" id="mName" placeholder="মাতার নাম" class="w-full p-2 border rounded text-sm bg-pink-50/20">
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="text" id="mNid" pattern="\d{10}|\d{17}" title="NID ১০ অথবা ১৭ ডিজিট হতে হবে" placeholder="মাতার NID" class="p-2 border rounded text-[10px]">
-                                <input type="date" id="mDob" class="p-2 border rounded text-[10px]">
-                            </div>
+                        <input type="text" id="fName" placeholder="পিতার নাম" class="w-full p-2 border rounded text-sm">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="fNid" pattern="\d{10}|\d{17}" title="১০ বা ১৭ ডিজিট" placeholder="পিতার NID" class="p-2 border rounded text-[10px]">
+                            <input type="date" id="fDob" class="p-2 border rounded text-[10px]">
                         </div>
 
-                        <div class="bg-slate-50 p-3 rounded-lg border-2 border-dashed">
-                            <input type="file" id="photoFile" accept="image/*" class="text-xs w-full">
+                        <input type="text" id="mName" placeholder="মাতার নাম" class="w-full p-2 border rounded text-sm">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="mNid" pattern="\d{10}|\d{17}" title="১০ বা ১৭ ডিজিট" placeholder="মাতার NID" class="p-2 border rounded text-[10px]">
+                            <input type="date" id="mDob" class="p-2 border rounded text-[10px]">
+                        </div>
+
+                        <div class="bg-slate-50 p-3 rounded-lg border-2 border-dashed border-blue-200">
+                            <label class="block text-[10px] font-bold text-blue-600 mb-1 italic text-center">ছবি (Auto-Resize: 200x200)</label>
+                            <input type="file" id="photoFile" accept="image/*" class="text-xs w-full cursor-pointer">
                             <input type="hidden" id="base64Photo">
+                            <div id="photoPreviewStatus" class="mt-2 text-[9px] font-bold text-center hidden"></div>
                         </div>
 
                         <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white py-3 rounded-xl font-bold shadow-md">সেভ করুন</button>
-                        <button type="button" id="cancelBtn" class="hidden w-full bg-slate-200 py-2 rounded-xl mt-1 text-xs font-bold">বাতিল</button>
                     </form>
                 </div>
             </div>
 
             <div class="lg:col-span-3">
                 <div id="studentContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <p class="text-center col-span-full py-10 text-slate-400">লোডিং...</p>
+                    <p class="text-center col-span-full py-10 text-slate-400 italic">তথ্য লোড হচ্ছে...</p>
                 </div>
             </div>
         </div>
@@ -114,6 +107,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        // লগইন চেক
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginArea').classList.add('hidden');
@@ -131,11 +125,45 @@
 
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
-        document.getElementById('photoFile').addEventListener('change', (e) => {
+        // ইমেজ রিসাইজার এবং প্রসেসর
+        document.getElementById('photoFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
-            reader.onloadend = () => document.getElementById('base64Photo').value = reader.result;
-            if (file) reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    // ক্যানভাস ব্যবহার করে রিসাইজ করা
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    
+                    // ছবিকে ২০০x২০০ সাইজে ড্র করা
+                    ctx.drawImage(img, 0, 0, 200, 200);
+                    
+                    // কোয়ালিটি কমিয়ে ৫০ কেবির নিচে আনা (0.7 quality)
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    // সাইজ চেক করা
+                    const sizeInKB = Math.round((dataUrl.length * 3 / 4) / 1024);
+                    const status = document.getElementById('photoPreviewStatus');
+                    
+                    if (sizeInKB > 50) {
+                        alert("দুঃখিত! রিসাইজ করার পরেও ছবি ৫০ কেবির বেশি। অনুগ্রহ করে ছোট ছবি ব্যবহার করুন।");
+                        e.target.value = "";
+                        status.classList.add('hidden');
+                    } else {
+                        document.getElementById('base64Photo').value = dataUrl;
+                        status.innerText = `সফল! সাইজ: ${sizeInKB} KB (200x200px)`;
+                        status.className = "mt-2 text-[9px] font-bold text-center text-green-600 block";
+                    }
+                };
+            };
         });
 
         function loadData() {
@@ -148,22 +176,20 @@
                     Object.keys(data).forEach(id => {
                         const s = data[id];
                         container.innerHTML += `
-                            <div class="bg-white p-5 rounded-2xl shadow-sm border flex flex-col sm:flex-row gap-4 relative">
-                                <div class="flex flex-col items-center">
-                                    <img src="${s.photo || 'https://via.placeholder.com/150'}" class="student-photo border-2 border-blue-500 shadow">
-                                    <span class="mt-2 font-bold text-blue-800 text-xs">রোল: ${s.roll}</span>
-                                </div>
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex gap-4 items-center relative">
+                                <img src="${s.photo || 'https://via.placeholder.com/150'}" class="student-photo shadow-lg">
                                 <div class="flex-1">
-                                    <h3 class="font-bold text-lg text-slate-800 uppercase border-b mb-1">${s.name}</h3>
-                                    <p class="text-[10px] text-blue-600 font-bold">শ্রেণি: ${s.className} | BRN: ${s.birthReg}</p>
-                                    <div class="mt-3 grid grid-cols-1 gap-2 bg-slate-50 p-2 rounded-lg text-[10px]">
-                                        <p><b>পিতা:</b> ${s.father} (NID: ${s.fNid || 'N/A'})</p>
-                                        <p><b>মাতা:</b> ${s.mother} (NID: ${s.mNid || 'N/A'})</p>
+                                    <h3 class="font-bold text-blue-900 border-b pb-1 mb-1">${s.name}</h3>
+                                    <p class="text-[10px] font-bold text-slate-700">রোল: ${s.roll} | শ্রেণি: ${s.className}</p>
+                                    <p class="text-[9px] text-blue-600 mt-1">BRN: ${s.birthReg}</p>
+                                    <div class="mt-2 text-[9px] text-slate-500">
+                                        <p>পিতা: ${s.father || 'N/A'}</p>
+                                        <p>মাতা: ${s.mother || 'N/A'}</p>
                                     </div>
                                 </div>
-                                <div class="absolute top-2 right-2 flex gap-2 no-print">
-                                    <button onclick="editRec('${id}')" class="text-blue-500 font-bold text-[10px]">এডিট</button>
-                                    <button onclick="deleteRec('${id}')" class="text-red-400 font-bold text-[10px]">মুছুন</button>
+                                <div class="absolute top-2 right-2 no-print flex gap-2">
+                                    <button onclick="editRec('${id}')" class="text-blue-500 text-[10px] font-bold">Edit</button>
+                                    <button onclick="deleteRec('${id}')" class="text-red-400 text-[10px] font-bold">Del</button>
                                 </div>
                             </div>
                         `;
@@ -209,7 +235,6 @@
             document.getElementById('mDob').value = s.mDob;
             document.getElementById('base64Photo').value = s.photo || "";
             document.getElementById('submitBtn').innerText = "আপডেট করুন";
-            document.getElementById('cancelBtn').classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
         };
 
@@ -219,10 +244,9 @@
             document.getElementById('studentForm').reset();
             document.getElementById('editKey').value = "";
             document.getElementById('base64Photo').value = "";
+            document.getElementById('photoPreviewStatus').classList.add('hidden');
             document.getElementById('submitBtn').innerText = "সেভ করুন";
-            document.getElementById('cancelBtn').classList.add('hidden');
         }
-        document.getElementById('cancelBtn').addEventListener('click', resetForm);
     </script>
 </body>
 </html>
