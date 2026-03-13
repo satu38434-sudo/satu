@@ -3,75 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>সুরক্ষিত স্কুল ডাটাবেস | অ্যাডমিন প্যানেল</title>
+    <title>ফ্রি স্কুল ডাটাবেস | নো স্টোরেজ কস্ট</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Hind Siliguri', sans-serif; }
         @media print { .no-print { display: none !important; } }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .student-photo { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 3px solid #3b82f6; }
     </style>
 </head>
 <body class="bg-slate-50">
 
     <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-slate-900 px-4">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-            <h2 class="text-2xl font-bold text-center text-slate-800 mb-6">স্কুল অ্যাডমিন লগইন</h2>
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border-t-8 border-blue-600">
+            <h2 class="text-2xl font-bold text-center text-slate-800 mb-6 italic">School Admin Access</h2>
             <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="ইমেইল" class="w-full p-3 border-2 rounded-lg outline-none focus:border-blue-500">
-                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-3 border-2 rounded-lg outline-none focus:border-blue-500">
-                <button id="loginBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">প্রবেশ করুন</button>
-                <p id="loginError" class="text-red-500 text-sm text-center hidden font-bold italic"></p>
+                <input type="email" id="loginEmail" placeholder="অ্যাডমিন ইমেইল" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="loginBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg">লগইন করুন</button>
+                <p id="loginError" class="text-red-500 text-sm text-center hidden font-bold italic">ভুল ইমেইল বা পাসওয়ার্ড!</p>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden">
-        <div class="no-print bg-white shadow-md p-4 mb-8 border-b-4 border-blue-600">
+        <div class="no-print bg-white shadow-md p-4 mb-8 border-b-2 border-blue-500">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <h1 class="text-xl font-bold text-slate-800 italic">স্কুল ম্যানেজমেন্ট ড্যাশবোর্ড</h1>
-                <div class="flex gap-4">
-                    <button onclick="window.print()" class="bg-slate-100 px-4 py-2 rounded font-bold text-sm">প্রিন্ট</button>
-                    <button id="logoutBtn" class="bg-red-50 text-red-600 px-4 py-2 rounded font-bold text-sm hover:bg-red-100">লগ আউট</button>
-                </div>
+                <h1 class="text-xl font-bold text-slate-800">শিক্ষার্থী ডাটাবেস প্যানেল</h1>
+                <button id="logoutBtn" class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold hover:bg-red-100 transition">লগ আউট</button>
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 pb-20">
-            <div class="grid lg:grid-cols-4 gap-8">
-                
-                <div class="no-print lg:col-span-1">
-                    <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-200">
-                        <h2 id="formTitle" class="text-lg font-bold text-blue-700 mb-4 border-b pb-2">শিক্ষার্থী যোগ করুন</h2>
-                        <form id="studentForm" class="space-y-3">
-                            <input type="hidden" id="editKey">
-                            <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded-lg text-sm" required>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="text" id="roll" placeholder="রোল" class="p-2 border rounded-lg text-sm" required>
-                                <input type="text" id="class" placeholder="শ্রেণি" class="p-2 border rounded-lg text-sm" required>
-                            </div>
-                            <input type="date" id="dob" class="w-full p-2 border rounded-lg text-sm">
-                            <input type="text" id="fName" placeholder="পিতার নাম" class="w-full p-2 border rounded-lg text-sm">
-                            <input type="text" id="mName" placeholder="মাতার নাম" class="w-full p-2 border rounded-lg text-sm">
-
-                            <div class="border-2 border-dashed border-slate-200 p-3 rounded-lg text-center bg-slate-50">
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1 italic italic">ছবি নির্বাচন করুন</label>
-                                <input type="file" id="photoFile" accept="image/*" class="text-[10px] w-full">
-                                <div id="uploadProgress" class="hidden mt-2"><div class="loader"></div> <span class="text-[10px] text-blue-600 font-bold">আপলোড হচ্ছে...</span></div>
-                                <input type="hidden" id="photoUrl">
-                            </div>
-
-                            <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white font-bold py-3 rounded-xl hover:bg-blue-800 transition">সেভ করুন</button>
-                            <button type="button" id="cancelBtn" class="hidden w-full bg-gray-200 py-2 rounded-xl mt-1 text-sm">বাতিল</button>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-3">
-                    <div id="studentContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-4 gap-8 pb-20">
+            <div class="no-print lg:col-span-1">
+                <div class="bg-white p-6 rounded-2xl shadow-md border sticky top-5">
+                    <h2 id="formTitle" class="text-lg font-bold text-blue-700 mb-4 border-b pb-2">নতুন শিক্ষার্থী যোগ</h2>
+                    <form id="studentForm" class="space-y-4">
+                        <input type="hidden" id="editKey">
+                        <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded shadow-sm" required>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="roll" placeholder="রোল" class="p-2 border rounded shadow-sm" required>
+                            <input type="text" id="class" placeholder="শ্রেণি" class="p-2 border rounded shadow-sm" required>
                         </div>
+                        <input type="date" id="dob" class="w-full p-2 border rounded shadow-sm text-sm">
+                        <input type="text" id="fName" placeholder="পিতার নাম" class="w-full p-2 border rounded shadow-sm text-sm">
+                        <input type="text" id="mName" placeholder="মাতার নাম" class="w-full p-2 border rounded shadow-sm text-sm">
+                        
+                        <div class="bg-blue-50 p-3 rounded-lg border-2 border-dashed border-blue-200">
+                            <label class="block text-xs font-bold text-blue-700 mb-1 italic">ছবি সিলেক্ট করুন (ফ্রি)</label>
+                            <input type="file" id="photoFile" accept="image/*" class="text-xs w-full">
+                            <input type="hidden" id="base64Photo">
+                            <div id="photoStatus" class="hidden mt-1 text-[10px] text-green-600 font-bold">✓ ছবি প্রস্তুত!</div>
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white py-3 rounded-xl font-bold hover:bg-blue-800 shadow-md">ডেটা সেভ করুন</button>
+                        <button type="button" id="cancelBtn" class="hidden w-full bg-gray-200 text-slate-700 py-2 rounded-xl mt-1 text-xs">বাতিল</button>
+                    </form>
                 </div>
+            </div>
+
+            <div class="lg:col-span-3">
+                <div id="studentContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    </div>
             </div>
         </div>
     </div>
@@ -80,97 +73,92 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4",
             authDomain: "my-school-database.firebaseapp.com",
             projectId: "my-school-database",
+            databaseURL: "https://my-school-database-default-rtdb.firebaseio.com",
             storageBucket: "my-school-database.firebasestorage.app",
             messagingSenderId: "131536885098",
-            appId: "1:131536885098:web:2374cb17a74404ebda4113",
-            databaseURL: "https://my-school-database-default-rtdb.firebaseio.com"
+            appId: "1:131536885098:web:2374cb17a74404ebda4113"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        const storage = getStorage(app);
 
-        // লগইন চেক
+        // লগইন স্ট্যাটাস চেক
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
-                loadData();
+                loadStudents();
             } else {
                 document.getElementById('loginArea').classList.remove('hidden');
                 document.getElementById('mainApp').classList.add('hidden');
             }
         });
 
-        // লগইন লজিক
+        // লগইন ফাংশন
         document.getElementById('loginBtn').addEventListener('click', () => {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(err => {
-                const errBox = document.getElementById('loginError');
-                errBox.innerText = "ভুল ইমেইল বা পাসওয়ার্ড!";
-                errBox.classList.remove('hidden');
+            signInWithEmailAndPassword(auth, email, pass).catch(() => {
+                document.getElementById('loginError').classList.remove('hidden');
             });
         });
 
         // লগ আউট
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
-        // ফটো আপলোড ফাংশন
-        document.getElementById('photoFile').addEventListener('change', async (e) => {
+        // ইমেজকে Base64 এ রূপান্তর (যাতে আলাদা স্টোরেজ না লাগে)
+        document.getElementById('photoFile').addEventListener('change', (e) => {
             const file = e.target.files[0];
-            if (!file) return;
-            const progress = document.getElementById('uploadProgress');
-            progress.classList.remove('hidden');
-            
-            const storageRef = sRef(storage, `profiles/${Date.now()}_${file.name}`);
-            try {
-                const snap = await uploadBytes(storageRef, file);
-                const url = await getDownloadURL(snap.ref);
-                document.getElementById('photoUrl').value = url;
-                progress.innerHTML = "<span class='text-green-600 text-[10px] font-bold'>✓ ছবি আপলোড হয়েছে</span>";
-            } catch (error) {
-                progress.innerHTML = "<span class='text-red-600 text-[10px]'>আপলোড ব্যর্থ!</span>";
-            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                document.getElementById('base64Photo').value = reader.result;
+                document.getElementById('photoStatus').classList.remove('hidden');
+            };
+            if (file) reader.readAsDataURL(file);
         });
 
-        // ডাটা লোড
-        function loadData() {
-            onValue(ref(db, 'school_students'), (snapshot) => {
+        // ডাটাবেস থেকে ডাটা পড়া
+        function loadStudents() {
+            onValue(ref(db, 'students'), (snapshot) => {
                 const container = document.getElementById('studentContainer');
                 container.innerHTML = "";
                 const data = snapshot.val();
-                window.cachedData = data;
+                window.allData = data;
                 if(data) {
                     Object.keys(data).forEach(id => {
                         const s = data[id];
                         container.innerHTML += `
-                            <div class="bg-white p-4 rounded-xl shadow border flex items-center gap-4 relative">
-                                <img src="${s.photo}" class="w-20 h-20 object-cover rounded-lg border">
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex gap-4 items-center relative hover:shadow-lg transition">
+                                <img src="${s.photo || 'https://via.placeholder.com/150'}" class="student-photo">
                                 <div class="flex-1">
-                                    <h3 class="font-bold text-blue-900">${s.name}</h3>
-                                    <p class="text-xs">রোল: ${s.roll} | শ্রেণি: ${s.className}</p>
-                                    <p class="text-[10px] text-slate-500 mt-1">পিতা: ${s.father}<br>মাতা: ${s.mother}</p>
+                                    <h3 class="font-bold text-lg text-blue-900 leading-tight">${s.name}</h3>
+                                    <p class="text-xs font-bold text-slate-700">রোল: ${s.roll} | শ্রেণি: ${s.className}</p>
+                                    <div class="mt-2 text-[10px] text-slate-500 italic">
+                                        <p>পিতা: ${s.father}</p>
+                                        <p>মাতা: ${s.mother}</p>
+                                        <p class="mt-1 text-blue-600 font-bold">জন্ম: ${s.dob}</p>
+                                    </div>
                                 </div>
-                                <div class="no-print absolute top-2 right-2 flex gap-2">
-                                    <button onclick="editBtn('${id}')" class="text-blue-500 text-[10px] font-bold uppercase">Edit</button>
-                                    <button onclick="deleteBtn('${id}')" class="text-red-500 text-[10px] font-bold uppercase">Del</button>
+                                <div class="no-print absolute top-3 right-3 flex flex-col gap-2">
+                                    <button onclick="editRec('${id}')" class="text-blue-500 hover:text-blue-700 font-bold text-[10px] uppercase">Edit</button>
+                                    <button onclick="deleteRec('${id}')" class="text-red-400 hover:text-red-600 font-bold text-[10px] uppercase">Del</button>
                                 </div>
                             </div>
                         `;
                     });
+                } else {
+                    container.innerHTML = "<p class='col-span-full text-center py-20 text-slate-400'>কোনো শিক্ষার্থীর তথ্য নেই।</p>";
                 }
             });
         }
 
-        // সেভ ও আপডেট
+        // সেভ এবং এডিট ফাংশন
         document.getElementById('studentForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const id = document.getElementById('editKey').value;
@@ -181,21 +169,18 @@
                 dob: document.getElementById('dob').value,
                 father: document.getElementById('fName').value,
                 mother: document.getElementById('mName').value,
-                photo: document.getElementById('photoUrl').value || "https://via.placeholder.com/150"
+                photo: document.getElementById('base64Photo').value
             };
 
             if (id) {
-                set(ref(db, `school_students/${id}`), student).then(() => resetForm());
+                set(ref(db, `students/${id}`), student).then(() => resetForm());
             } else {
-                push(ref(db, 'school_students'), student).then(() => {
-                    e.target.reset();
-                    document.getElementById('uploadProgress').classList.add('hidden');
-                });
+                push(ref(db, 'students'), student).then(() => resetForm());
             }
         });
 
-        window.editBtn = (id) => {
-            const s = window.cachedData[id];
+        window.editRec = (id) => {
+            const s = window.allData[id];
             document.getElementById('editKey').value = id;
             document.getElementById('stName').value = s.name;
             document.getElementById('roll').value = s.roll;
@@ -203,22 +188,24 @@
             document.getElementById('dob').value = s.dob;
             document.getElementById('fName').value = s.father;
             document.getElementById('mName').value = s.mother;
-            document.getElementById('photoUrl').value = s.photo;
-            document.getElementById('submitBtn').innerText = "আপডেট করুন";
+            document.getElementById('base64Photo').value = s.photo;
+            document.getElementById('submitBtn').innerText = "তথ্য আপডেট করুন";
             document.getElementById('cancelBtn').classList.remove('hidden');
             window.scrollTo({top: 0, behavior: 'smooth'});
         };
 
-        window.deleteBtn = (id) => { if(confirm("মুছে ফেলবেন?")) remove(ref(db, `school_students/${id}`)); };
+        window.deleteRec = (id) => { if(confirm("মুছে ফেলবেন?")) remove(ref(db, `students/${id}`)); };
 
         function resetForm() {
             document.getElementById('studentForm').reset();
             document.getElementById('editKey').value = "";
-            document.getElementById('submitBtn').innerText = "সেভ করুন";
+            document.getElementById('base64Photo').value = "";
+            document.getElementById('photoStatus').classList.add('hidden');
+            document.getElementById('submitBtn').innerText = "ডেটা সেভ করুন";
             document.getElementById('cancelBtn').classList.add('hidden');
-            document.getElementById('uploadProgress').classList.add('hidden');
         }
         document.getElementById('cancelBtn').addEventListener('click', resetForm);
+
     </script>
 </body>
 </html>
