@@ -3,30 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>অ্যাডমিন প্যানেল | ৩য় শ্রেণি রেজাল্ট সিস্টেম</title>
+    <title>অ্যাডমিন প্যানেল | মাল্টি-ইউজার রেজাল্ট সিস্টেম</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* বাংলা ফন্ট এবং প্রিন্ট সেটআপ */
         body { font-family: 'Hind Siliguri', sans-serif; }
         
         @media print {
             .no-print { display: none !important; }
             .page-break { page-break-after: always; }
             body { background: white; padding: 0; margin: 0; }
-            
-            /* A4 কাগজের মাপ নিশ্চিত করা */
-            @page {
-                size: A4;
-                margin: 0;
-            }
+            @page { size: A4; margin: 0; }
             .result-card { 
                 width: 210mm;
                 height: 297mm;
                 padding: 15mm 20mm;
                 margin: 0 auto;
                 border: none !important;
-                box-shadow: none !important;
                 display: flex;
                 flex-direction: column;
             }
@@ -40,7 +33,6 @@
             max-width: 800px;
             margin: 20px auto;
             position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .bengali-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -50,17 +42,17 @@
             text-align: center;
             font-size: 1.2rem;
         }
-        .school-header h2 { font-size: 2.5rem; font-weight: 700; color: #1e3a8a; }
     </style>
 </head>
 <body class="bg-slate-200">
 
     <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-slate-900 px-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-            <h2 class="text-2xl font-bold text-center text-slate-800 mb-6 font-bold underline">অ্যাডমিন লগইন</h2>
-            <input type="password" id="adminPass" placeholder="পাসওয়ার্ড (1234)" class="w-full p-3 border-2 border-slate-200 rounded-lg mb-4 text-center focus:border-blue-500 outline-none">
-            <button onclick="checkPass()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">প্রবেশ করুন</button>
-            <p id="errorMsg" class="text-red-500 text-sm mt-3 hidden text-center">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
+            <h2 class="text-2xl font-bold text-center text-slate-800 mb-6 underline">অ্যাডমিন প্যানেল</h2>
+            <input type="text" id="username" placeholder="ইউজারনেম" class="w-full p-3 border-2 rounded-lg mb-4 outline-none focus:border-blue-500">
+            <input type="password" id="password" placeholder="পাসওয়ার্ড" class="w-full p-3 border-2 rounded-lg mb-4 outline-none focus:border-blue-500">
+            <button onclick="checkLogin()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">প্রবেশ করুন</button>
+            <p id="errorMsg" class="text-red-500 text-sm mt-3 hidden text-center font-bold">ভুল ইউজারনেম বা পাসওয়ার্ড!</p>
         </div>
     </div>
 
@@ -68,16 +60,16 @@
         <div class="no-print max-w-6xl mx-auto py-8 px-4">
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-6 rounded-xl shadow-md border-l-8 border-blue-700 gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-slate-800 tracking-tight">ক্লাউড রেজাল্ট ডাটাবেস</h1>
-                    <p class="text-blue-700 font-bold">৩য় শ্রেণি | শিক্ষাবর্ষ: ২০২৬</p>
+                    <h1 class="text-3xl font-bold text-slate-800">ক্লাউড রেজাল্ট ডাটাবেস</h1>
+                    <p id="welcomeUser" class="text-blue-700 font-bold italic"></p>
                 </div>
                 <button onclick="location.reload()" class="bg-red-50 text-red-600 px-6 py-2 rounded-lg font-bold hover:bg-red-100 transition">লগ আউট</button>
             </div>
             
             <div class="grid lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md border border-slate-300">
-                    <h2 class="text-xl font-bold mb-4 text-slate-800 border-b pb-2">নতুন তথ্য যোগ করুন</h2>
-                    <form id="studentForm" class="space-y-4">
+                    <h2 class="text-xl font-bold mb-4 text-slate-800 border-b pb-2">তথ্য যোগ করুন</h2>
+                    <form id="studentForm" class="space-y-3">
                         <input type="text" id="sName" placeholder="প্রতিষ্ঠানের নাম" class="w-full p-2 border rounded-md font-bold bg-slate-50" required>
                         <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="w-full p-2 border rounded-md" required>
                         <div class="grid grid-cols-2 gap-3">
@@ -85,28 +77,25 @@
                             <input type="text" id="class" value="তৃতীয়" class="p-2 border rounded-md bg-gray-100 font-bold" readonly>
                         </div>
                         
-                        <div class="space-y-2">
-                            <p class="text-xs font-bold text-gray-500 uppercase">বিষয়ভিত্তিক নম্বর:</p>
-                            <div class="grid grid-cols-2 gap-2 text-sm">
-                                <input type="number" id="sub1" placeholder="বাংলা" class="p-2 border rounded">
-                                <input type="number" id="sub2" placeholder="ইংরেজি" class="p-2 border rounded">
-                                <input type="number" id="sub3" placeholder="গণিত" class="p-2 border rounded">
-                                <input type="number" id="sub4" placeholder="বিজ্ঞান" class="p-2 border rounded">
-                                <input type="number" id="sub5" placeholder="ইতিহাস ও সা. বি." class="p-2 border rounded">
-                                <input type="number" id="sub6" placeholder="ধর্ম শিক্ষা" class="p-2 border rounded">
-                                <input type="number" id="sub7" placeholder="শিল্পকলা" class="p-2 border rounded">
-                                <input type="number" id="sub8" placeholder="স্বাস্থ্য সুরক্ষা" class="p-2 border rounded">
-                                <input type="number" id="sub9" placeholder="জীবন ও জীবিকা" class="p-2 border rounded">
-                            </div>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <input type="number" id="sub1" placeholder="বাংলা" class="p-2 border rounded">
+                            <input type="number" id="sub2" placeholder="ইংরেজি" class="p-2 border rounded">
+                            <input type="number" id="sub3" placeholder="গণিত" class="p-2 border rounded">
+                            <input type="number" id="sub4" placeholder="বিজ্ঞান" class="p-2 border rounded">
+                            <input type="number" id="sub5" placeholder="ইতিহাস ও সা. বি." class="p-2 border rounded">
+                            <input type="number" id="sub6" placeholder="ধর্ম শিক্ষা" class="p-2 border rounded">
+                            <input type="number" id="sub7" placeholder="শিল্পকলা" class="p-2 border rounded">
+                            <input type="number" id="sub8" placeholder="স্বাস্থ্য সুরক্ষা" class="p-2 border rounded">
+                            <input type="number" id="sub9" placeholder="জীবন ও জীবিকা" class="p-2 border rounded">
                         </div>
                         
-                        <button type="submit" class="w-full bg-blue-700 text-white font-bold py-3 rounded-lg hover:bg-blue-800 shadow-lg">ক্লাউডে সেভ করুন</button>
+                        <button type="submit" class="w-full bg-blue-700 text-white font-bold py-3 rounded-lg hover:bg-blue-800">সেভ করুন</button>
                     </form>
                 </div>
 
                 <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-slate-300">
-                    <h2 class="text-xl font-bold text-slate-800 mb-4 italic">অনলাইন ডাটাবেস তালিকা</h2>
-                    <div class="overflow-y-auto max-h-[450px] border-2 rounded-lg">
+                    <h2 class="text-xl font-bold text-slate-800 mb-4 italic">সংরক্ষিত ডাটাবেস</h2>
+                    <div class="overflow-y-auto max-h-[450px] border rounded-lg">
                         <table class="w-full text-left">
                             <thead class="bg-slate-100 sticky top-0">
                                 <tr>
@@ -119,7 +108,7 @@
                         </table>
                     </div>
                     <div class="mt-8 flex flex-wrap gap-4">
-                        <button onclick="generateFinalResults()" class="flex-1 bg-green-700 text-white font-bold py-3 rounded-xl hover:bg-green-800 shadow-lg transition">ফলাফল তৈরি (Generate)</button>
+                        <button onclick="generateFinalResults()" class="flex-1 bg-green-700 text-white font-bold py-3 rounded-xl hover:bg-green-800">ফলাফল তৈরি করুন</button>
                         <button onclick="window.print()" class="px-10 bg-black text-white font-bold py-3 rounded-xl">প্রিন্ট / PDF</button>
                     </div>
                 </div>
@@ -133,7 +122,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // আপনার প্রোভাইড করা API Config
         const firebaseConfig = {
             apiKey: "AIzaSyAPhbMO5HcE6XT8vWUV1tI0L5fyNulyeMc",
             authDomain: "school-result-app-acb88.firebaseapp.com",
@@ -148,13 +136,26 @@
         const db = getDatabase(app);
         const studentsRef = ref(db, 'class3_results');
 
-        let studentsData = {};
+        // মাল্টি-ইউজার ডাটাবেস
+        const validUsers = {
+            "admin": "1234",
+            "school1": "5678",
+            "satu": "password123"
+        };
 
-        window.checkPass = () => {
-            const pass = document.getElementById('adminPass').value;
-            if(pass === "1234") {
+        // ইংরেজি নম্বরকে বাংলায় রূপান্তর
+        const toBengaliNumber = (num) => {
+            const numbers = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯','.' : '.'};
+            return num.toString().split('').map(char => numbers[char] || char).join('');
+        };
+
+        window.checkLogin = () => {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if(validUsers[user] && validUsers[user] === pass) {
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('welcomeUser').innerText = `ইউজার: ${user}`;
             } else {
                 document.getElementById('errorMsg').classList.remove('hidden');
             }
@@ -185,84 +186,55 @@
         });
 
         onValue(studentsRef, (snapshot) => {
-            studentsData = snapshot.val() || {};
             const tbody = document.getElementById('studentTableBody');
             tbody.innerHTML = "";
-            Object.keys(studentsData).forEach(id => {
-                const s = studentsData[id];
+            const data = snapshot.val() || {};
+            Object.keys(data).forEach(id => {
+                const s = data[id];
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition">
                         <td class="p-3 border-b font-bold font-mono">${s.roll}</td>
                         <td class="p-3 border-b">${s.name}</td>
-                        <td class="p-3 border-b text-center">
-                            <button onclick="deleteStudent('${id}')" class="text-red-500 hover:font-bold">মুছুন</button>
-                        </td>
-                    </tr>
-                `;
+                        <td class="p-3 border-b text-center"><button onclick="deleteStudent('${id}')" class="text-red-500">মুছুন</button></td>
+                    </tr>`;
             });
+            window.studentsData = data;
         });
 
         window.deleteStudent = (id) => {
-            if(confirm("আপনি কি নিশ্চিতভাবে এই ডাটা মুছতে চান?")) remove(ref(db, `class3_results/${id}`));
+            if(confirm("মুছে ফেলতে চান?")) remove(ref(db, `class3_results/${id}`));
         };
 
         window.generateFinalResults = () => {
             const container = document.getElementById('resultsContainer');
             container.innerHTML = "";
-            Object.values(studentsData).forEach(s => {
+            Object.values(window.studentsData).forEach(s => {
                 let rows = "";
                 let totalMarks = 0;
                 for (let subject in s.marks) {
-                    rows += `<tr><td>${subject}</td><td>${s.marks[subject]}</td></tr>`;
+                    rows += `<tr><td>${subject}</td><td>${toBengaliNumber(s.marks[subject])}</td></tr>`;
                     totalMarks += Number(s.marks[subject]);
                 }
 
                 container.innerHTML += `
                     <div class="result-card page-break">
-                        <div class="text-center school-header border-b-8 border-double border-black pb-4 mb-8">
-                            <h2>${s.school}</h2>
-                            <p class="text-2xl font-bold mt-2 underline">একাডেমিক ট্রান্সক্রিপ্ট (বার্ষিক মূল্যায়ন-২০২৬)</p>
+                        <div class="text-center border-b-8 border-double border-black pb-4 mb-6">
+                            <h2 class="text-4xl font-bold">${s.school}</h2>
+                            <p class="text-2xl font-bold mt-2">একাডেমিক ট্রান্সক্রিপ্ট (বার্ষিক মূল্যায়ন)</p>
                         </div>
-                        
-                        <div class="grid grid-cols-2 text-2xl mb-8 border-2 border-black p-4 bg-slate-50">
-                            <div>
-                                <p><strong>শিক্ষার্থীর নাম:</strong> ${s.name}</p>
-                                <p><strong>শ্রেণি:</strong> ${s.class}</p>
-                            </div>
-                            <div class="text-right">
-                                <p><strong>রোল নম্বর:</strong> ${s.roll}</p>
-                                <p><strong>তারিখ:</strong> ${new Date().toLocaleDateString('bn-BD')}</p>
-                            </div>
+                        <div class="grid grid-cols-2 text-xl mb-6 border-2 border-black p-4">
+                            <div><p>শিক্ষার্থীর নাম: ${s.name}</p><p>শ্রেণি: ${s.class}</p></div>
+                            <div class="text-right"><p>রোল নম্বর: ${toBengaliNumber(s.roll)}</p><p>তারিখ: ${toBengaliNumber(new Date().toLocaleDateString('bn-BD'))}</p></div>
                         </div>
-
                         <table class="bengali-table">
-                            <thead>
-                                <tr class="bg-slate-100">
-                                    <th class="w-2/3">বিষয়ের নাম</th>
-                                    <th>প্রাপ্ত নম্বর</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${rows}
-                                <tr class="font-bold bg-slate-200">
-                                    <td class="text-right px-6 italic font-bold">সর্বমোট প্রাপ্ত নম্বর:</td>
-                                    <td>${totalMarks}</td>
-                                </tr>
-                            </tbody>
+                            <thead><tr class="bg-slate-100"><th>বিষয়ের নাম</th><th>প্রাপ্ত নম্বর</th></tr></thead>
+                            <tbody>${rows}<tr class="font-bold bg-slate-200"><td class="text-right px-4">সর্বমোট নম্বর:</td><td>${toBengaliNumber(totalMarks)}</td></tr></tbody>
                         </table>
-
                         <div class="mt-auto flex justify-between pt-32">
-                            <div class="text-center">
-                                <div class="w-56 border-t-2 border-black mb-1"></div>
-                                <p class="text-xl font-bold italic">অভিভাবকের স্বাক্ষর</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="w-56 border-t-2 border-black mb-1"></div>
-                                <p class="text-xl font-bold italic">প্রধান শিক্ষকের স্বাক্ষর</p>
-                            </div>
+                            <div class="text-center w-56 border-t-2 border-black font-bold italic">অভিভাবক</div>
+                            <div class="text-center w-56 border-t-2 border-black font-bold italic">প্রধান শিক্ষক</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
             window.scrollTo(0, document.body.scrollHeight);
         };
