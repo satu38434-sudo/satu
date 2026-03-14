@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্কুল ডাটাবেস সিস্টেম</title>
+    <title>স্কুল ম্যানেজমেন্ট সিস্টেম</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
         body { font-family: 'SolaimanLipi', sans-serif; background-color: #020617; color: #f1f5f9; }
         .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); }
         .tab-active { background: #3b82f6 !important; color: white !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
-        input, select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; }
-        @media print { .no-print { display: none !important; } body { background: white; color: black; } }
+        input, select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; padding: 12px 16px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; }
+        input:focus { border-color: #3b82f6 !important; box-shadow: 0 0 8px rgba(59, 130, 246, 0.3); }
+        @media print { .no-print { display: none !important; } body { background: white; color: black; } .print-area { display: block !important; } }
     </style>
 </head>
 <body class="antialiased">
 
     <div id="loginArea" class="no-print min-h-screen flex items-center justify-center px-4">
         <div class="glass p-10 rounded-[45px] w-full max-w-md shadow-2xl text-center">
-            <h2 class="text-2xl font-bold mb-8 tracking-widest uppercase text-blue-500">লগইন</h2>
+            <h2 class="text-2xl font-bold mb-8 tracking-widest text-blue-500 uppercase">সিস্টেম লগইন</h2>
             <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="ইমেইল আইডি" class="w-full p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
-                <button id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl font-bold transition-all active:scale-95">প্রবেশ করুন</button>
+                <input type="email" id="loginEmail" placeholder="ইমেইল আইডি">
+                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
+                <button id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-blue-600/20">প্রবেশ করুন</button>
             </div>
         </div>
     </div>
@@ -35,12 +36,12 @@
                     <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2 text-sm font-bold rounded-xl transition-all tab-active">তালিকা</button>
                     <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 text-sm font-bold rounded-xl text-slate-400">নতুন এন্ট্রি</button>
                 </div>
-                <button id="logoutBtn" class="text-red-400 text-xs font-bold uppercase px-4 py-2 rounded-xl">লগ আউট</button>
+                <button id="logoutBtn" class="text-red-400 text-xs font-bold uppercase px-4 py-2 rounded-xl border border-red-500/20 hover:bg-red-500/10">লগ আউট</button>
             </div>
         </nav>
 
         <div class="max-w-[1400px] mx-auto px-4">
-            <div class="mb-8 flex items-center gap-3 bg-white/5 p-3 rounded-2xl inline-flex">
+            <div class="mb-8 flex items-center gap-3 bg-white/5 p-3 rounded-2xl inline-flex border border-white/5">
                 <div id="statusDot" class="w-3 h-3 rounded-full bg-slate-500 animate-pulse"></div>
                 <h3 id="roleText" class="text-xs font-bold tracking-wide text-slate-300">যাচাই করা হচ্ছে...</h3>
             </div>
@@ -50,54 +51,73 @@
                     <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
                     
                     <div class="flex flex-col md:flex-row gap-8 mb-10 items-center">
-                        <div class="w-36 h-36 bg-slate-800 rounded-3xl border-2 border-dashed border-slate-600 flex items-center justify-center overflow-hidden relative group">
+                        <div class="w-40 h-40 bg-slate-800 rounded-3xl border-2 border-dashed border-slate-600 flex items-center justify-center overflow-hidden relative group">
                             <img id="imagePreview" class="hidden w-full h-full object-cover">
                             <div id="imgPlaceholder" class="text-center">
-                                <span class="text-slate-500 text-[10px] font-bold block uppercase">ছবি আপলোড</span>
-                                <span class="text-slate-600 text-[8px] mt-1 block">অটো রিসাইজ হবে</span>
+                                <span class="text-slate-500 text-[10px] font-bold block uppercase">ছবি নির্বাচন</span>
+                                <span class="text-slate-600 text-[8px] mt-1 block">(২০০x২০০ পিক্সেল)</span>
                             </div>
                             <input type="file" id="stPhoto" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 w-full">
-                            <div><label class="text-xs text-slate-500 mb-2 block font-bold">শিক্ষার্থীর নাম</label><input type="text" id="stName" class="w-full p-4 rounded-2xl outline-none" required></div>
+                            <div><label class="text-xs text-slate-500 mb-2 block font-bold">শিক্ষার্থীর নাম</label><input type="text" id="stName" required></div>
                             <div><label class="text-xs text-slate-500 mb-2 block font-bold">শ্রেণি</label>
-                                <select id="class" class="w-full p-4 rounded-2xl outline-none">
+                                <select id="class">
                                     <option value="১ম">১ম শ্রেণি</option><option value="২য়">২য় শ্রেণি</option><option value="৩য়">৩য় শ্রেণি</option><option value="৪র্থ">৪র্থ শ্রেণি</option><option value="৫ম">৫ম শ্রেণি</option>
                                 </select>
                             </div>
-                            <div><label class="text-xs text-slate-500 mb-2 block font-bold">রোল নম্বর</label><input type="number" id="roll" class="w-full p-4 rounded-2xl outline-none" required></div>
+                            <div><label class="text-xs text-slate-500 mb-2 block font-bold">রোল নম্বর</label><input type="number" id="roll" required></div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div class="p-8 bg-white/5 rounded-[30px] border border-white/5">
-                            <h4 class="text-blue-400 text-xs font-bold mb-6">পিতার তথ্য</h4>
-                            <input type="text" id="fName" placeholder="পিতার নাম" class="w-full p-4 mb-4 rounded-2xl outline-none">
-                            <input type="text" id="fMobile" placeholder="মোবাইল নম্বর" class="w-full p-4 rounded-2xl outline-none">
-                        </div>
-                        <div class="p-8 bg-white/5 rounded-[30px] border border-white/5">
-                            <h4 class="text-pink-400 text-xs font-bold mb-6">মাতার তথ্য</h4>
-                            <input type="text" id="mName" placeholder="মাতার নাম" class="w-full p-4 mb-4 rounded-2xl outline-none">
-                            <input type="text" id="mMobile" placeholder="মোবাইল নম্বর" class="w-full p-4 rounded-2xl outline-none">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        <div><label class="text-xs text-slate-500 mb-2 block font-bold">জন্ম নিবন্ধন নম্বর</label><input type="text" id="birthReg"></div>
+                        <div><label class="text-xs text-slate-500 mb-2 block font-bold">জন্ম তারিখ</label><input type="date" id="dob"></div>
+                        <div><label class="text-xs text-slate-500 mb-2 block font-bold">রক্তের গ্রুপ</label>
+                            <select id="bloodGroup">
+                                <option value="">নির্বাচন করুন</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option>
+                            </select>
                         </div>
                     </div>
 
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl font-bold transition-all active:scale-95 text-sm uppercase tracking-widest">ডাটা সেভ করুন</button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                        <div class="p-8 bg-white/5 rounded-[30px] border border-white/5">
+                            <h4 class="text-blue-400 text-xs font-bold mb-6 uppercase tracking-widest border-b border-white/10 pb-2">পিতার তথ্য</h4>
+                            <div class="space-y-4">
+                                <input type="text" id="fName" placeholder="পিতার নাম">
+                                <input type="text" id="fMobile" placeholder="পিতার মোবাইল নম্বর">
+                                <input type="text" id="fNid" placeholder="পিতার এনআইডি">
+                            </div>
+                        </div>
+                        <div class="p-8 bg-white/5 rounded-[30px] border border-white/5">
+                            <h4 class="text-pink-400 text-xs font-bold mb-6 uppercase tracking-widest border-b border-white/10 pb-2">মাতার তথ্য</h4>
+                            <div class="space-y-4">
+                                <input type="text" id="mName" placeholder="মাতার নাম">
+                                <input type="text" id="mMobile" placeholder="মাতার মোবাইল নম্বর">
+                                <input type="text" id="mNid" placeholder="মাতার এনআইডি">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-4">
+                        <button type="button" onclick="document.getElementById('studentForm').reset();" class="px-8 py-4 rounded-2xl text-slate-400 font-bold hover:bg-white/5 transition-all">রিসেট</button>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl font-bold transition-all active:scale-95 shadow-xl shadow-blue-500/20">ডাটা সেভ করুন</button>
+                    </div>
                 </form>
             </div>
 
             <div id="viewTab" class="glass rounded-[45px] shadow-2xl overflow-hidden mb-10">
                 <div class="p-8 flex flex-col md:flex-row justify-between items-center border-b border-white/5 gap-4">
-                    <h2 class="font-bold text-slate-400 text-xs uppercase tracking-widest">স্টুডেন্ট ডাটাবেস</h2>
-                    <input type="text" id="searchBar" placeholder="খুঁজুন..." class="p-3 px-6 rounded-2xl w-full md:w-80 outline-none text-xs focus:ring-1 focus:ring-blue-500">
+                    <h2 class="font-bold text-slate-400 text-xs uppercase tracking-widest">রেজিস্ট্রি ডাটাবেস</h2>
+                    <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="p-3 px-6 rounded-2xl w-full md:w-80 outline-none text-xs focus:ring-1 focus:ring-blue-500">
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="text-[10px] uppercase tracking-wider text-slate-500 bg-slate-900/30">
                             <tr>
-                                <th class="p-6 font-bold">প্রোফাইল ও রোল</th>
-                                <th class="p-6 font-bold">নাম ও শ্রেণি</th>
-                                <th class="p-6 font-bold">অভিভাবক</th>
+                                <th class="p-6 font-bold">প্রোফাইল</th>
+                                <th class="p-6 font-bold">শিক্ষার্থীর নাম ও রোল</th>
+                                <th class="p-6 font-bold">অভিভাবক ও যোগাযোগ</th>
                                 <th class="p-6 font-bold text-center no-print">অ্যাকশন</th>
                             </tr>
                         </thead>
@@ -128,12 +148,11 @@
             if (user) {
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
-                
                 const roleText = document.getElementById('roleText');
                 const dot = document.getElementById('statusDot');
                 const u = user.uid;
 
-                // লজিক সংকেত (গোপন চেকিং)
+                // লজিক সংকেত
                 const checkA = u.startsWith("Q9AUB") && u.endsWith("Cx1");
                 const checkH = u.startsWith("BcQX") && u.includes("WMHQkJN");
 
@@ -194,7 +213,7 @@
         document.getElementById('loginBtn').addEventListener('click', () => {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(() => alert('এক্সেস ডিনাইড!'));
+            signInWithEmailAndPassword(auth, email, pass).catch(() => alert('লগইন ব্যর্থ!'));
         });
 
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
@@ -210,25 +229,22 @@
                     const s = data[id];
                     if (s.name.includes(searchTerm) || s.roll.toString().includes(searchTerm)) {
                         body.innerHTML += `
-                            <tr class="hover:bg-white/5 transition-all">
+                            <tr class="hover:bg-white/5 transition-all group">
                                 <td class="p-6">
-                                    <div class="flex items-center gap-4">
-                                        <img src="${s.photo || 'https://via.placeholder.com/200'}" class="w-12 h-12 rounded-xl object-cover border border-white/10">
-                                        <span class="font-bold text-blue-500 text-lg">#${s.roll}</span>
-                                    </div>
+                                    <img src="${s.photo || 'https://via.placeholder.com/200'}" class="w-14 h-14 rounded-2xl object-cover border border-white/10 group-hover:border-blue-500/50 transition-all">
                                 </td>
-                                <td class="p-6 uppercase">
+                                <td class="p-6">
                                     <div class="font-bold text-slate-200">${s.name}</div>
-                                    <div class="text-[10px] text-slate-500 font-mono">${s.className} শ্রেণি</div>
+                                    <div class="text-[10px] text-blue-500 font-mono mt-1">শ্রেণি: ${s.className} | রোল: ${s.roll}</div>
                                 </td>
-                                <td class="p-6 text-xs text-slate-400 font-mono">
-                                    <div class="mb-1">P: ${s.fMobile || '-'}</div>
-                                    <div>M: ${s.mMobile || '-'}</div>
+                                <td class="p-6 text-xs text-slate-400">
+                                    <div>পিতা: ${s.fName || '-'} <span class="text-slate-600">(${s.fMobile || ''})</span></div>
+                                    <div>মাতা: ${s.mName || '-'} <span class="text-slate-600">(${s.mMobile || ''})</span></div>
                                 </td>
                                 <td class="p-6 no-print text-center">
                                     <div class="flex justify-center gap-2">
-                                        <button onclick="editRec('${id}')" class="p-2 bg-white/5 rounded-xl hover:bg-blue-600/20 text-blue-400 transition-all active:scale-90 px-4 text-xs">এডিট</button>
-                                        ${window.currentUserRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="p-2 bg-white/5 rounded-xl hover:bg-red-600/20 text-red-400 transition-all active:scale-90 px-4 text-xs">ডিলিট</button>` : ''}
+                                        <button onclick="editRec('${id}')" class="p-3 bg-white/5 rounded-xl hover:bg-blue-600/20 text-blue-400 transition-all">সম্পাদনা</button>
+                                        ${window.currentUserRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="p-3 bg-white/5 rounded-xl hover:bg-red-600/20 text-red-400 transition-all">মুছুন</button>` : ''}
                                     </div>
                                 </td>
                             </tr>`;
@@ -245,10 +261,15 @@
                 roll: document.getElementById('roll').value, 
                 className: document.getElementById('class').value,
                 photo: document.getElementById('photoBase64').value,
+                birthReg: document.getElementById('birthReg').value,
+                dob: document.getElementById('dob').value,
+                bloodGroup: document.getElementById('bloodGroup').value,
                 fName: document.getElementById('fName').value, 
                 fMobile: document.getElementById('fMobile').value,
+                fNid: document.getElementById('fNid').value,
                 mName: document.getElementById('mName').value, 
-                mMobile: document.getElementById('mMobile').value
+                mMobile: document.getElementById('mMobile').value,
+                mNid: document.getElementById('mNid').value
             };
             set(id ? ref(db, `students/${id}`) : push(ref(db, 'students')), student).then(() => {
                 document.getElementById('studentForm').reset();
@@ -266,24 +287,27 @@
             document.getElementById('roll').value = s.roll;
             document.getElementById('class').value = s.className;
             document.getElementById('photoBase64').value = s.photo || "";
+            document.getElementById('birthReg').value = s.birthReg || "";
+            document.getElementById('dob').value = s.dob || "";
+            document.getElementById('bloodGroup').value = s.bloodGroup || "";
+            document.getElementById('fName').value = s.fName || ""; 
+            document.getElementById('fMobile').value = s.fMobile || "";
+            document.getElementById('fNid').value = s.fNid || "";
+            document.getElementById('mName').value = s.mName || ""; 
+            document.getElementById('mMobile').value = s.mMobile || "";
+            document.getElementById('mNid').value = s.mNid || "";
             if(s.photo) {
                 document.getElementById('imagePreview').src = s.photo;
                 document.getElementById('imagePreview').classList.remove('hidden');
                 document.getElementById('imgPlaceholder').classList.add('hidden');
             }
-            document.getElementById('fName').value = s.fName || ""; 
-            document.getElementById('fMobile').value = s.fMobile || "";
-            document.getElementById('mName').value = s.mName || ""; 
-            document.getElementById('mMobile').value = s.mMobile || "";
             switchTab('entryTab');
         };
 
         window.deleteRec = (id) => { 
             if(window.currentUserRole === 'admin') {
                 if(confirm("আপনি কি নিশ্চিতভাবে মুছে ফেলতে চান?")) remove(ref(db, `students/${id}`)); 
-            } else {
-                alert("আপনার মুছে ফেলার অনুমতি নেই!");
-            }
+            } else { alert("অনুমতি নেই!"); }
         };
 
         document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
