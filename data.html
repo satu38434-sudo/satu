@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্কুল ডাটাবেস | অ্যাডমিন প্যানেল</title>
+    <title>স্কুল ডাটাবেস | মাল্টি-ইউজার ড্যাশবোর্ড</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -18,7 +18,7 @@
 
     <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-slate-900 px-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border-t-8 border-blue-600">
-            <h2 class="text-2xl font-bold text-center mb-6 text-slate-800 italic text-blue-600">School Admin Portal</h2>
+            <h2 class="text-2xl font-bold text-center mb-6 text-slate-800">অ্যাডমিন পোর্টাল</h2>
             <div class="space-y-4">
                 <input type="email" id="loginEmail" placeholder="ইমেইল" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
                 <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
@@ -55,8 +55,8 @@
                     <p class="text-xs text-slate-500 font-bold uppercase">আমার এন্ট্রি</p>
                     <h3 id="myEntries" class="text-2xl font-black text-green-700">0</h3>
                 </div>
-                <div id="userCountCard" class="admin-stat-card border-b-4 border-purple-500 shadow-sm">
-                    <p class="text-xs text-slate-500 font-bold uppercase">অন্যান্য ইউজার ডাটা</p>
+                <div class="admin-stat-card border-b-4 border-purple-500 shadow-sm">
+                    <p class="text-xs text-slate-500 font-bold uppercase">অন্যদের এন্ট্রি</p>
                     <h3 id="othersEntries" class="text-2xl font-black text-purple-700">0</h3>
                 </div>
                 <div class="admin-stat-card border-b-4 border-orange-500 shadow-sm">
@@ -108,7 +108,7 @@
                                 <input type="hidden" id="base64Photo">
                             </div>
 
-                            <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-800 transition">ডাটা সেভ করুন</button>
+                            <button type="submit" id="submitBtn" class="w-full bg-blue-700 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-blue-800 transition">সেভ করুন</button>
                             <button type="button" id="cancelBtn" class="hidden w-full bg-slate-200 text-slate-700 py-2 rounded-xl mt-1 text-xs font-bold">বাতিল</button>
                         </form>
                     </div>
@@ -139,7 +139,7 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // আপনার অ্যাডমিন UID সেট করা হলো
+        // অ্যাডমিন ইউআইডি
         const ADMIN_UID = "Q9AUB3tOiAYAO9HebLAPpKbjDCx1"; 
 
         onAuthStateChanged(auth, (user) => {
@@ -153,8 +153,9 @@
                     rBadge.className = "text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-bold block";
                     document.getElementById('adminStats').classList.remove('hidden');
                 } else {
-                    rBadge.innerText = "স্টাফ ইউজার";
+                    rBadge.innerText = "স্টাফ";
                     rBadge.className = "text-[10px] bg-green-600 text-white px-2 py-0.5 rounded font-bold block";
+                    document.getElementById('adminStats').classList.add('hidden');
                 }
                 loadData();
             } else {
@@ -170,7 +171,7 @@
 
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
-        // ইমেজ অপ্টিমাইজার
+        // ইমেজ রিসাইজার
         document.getElementById('photoFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -194,25 +195,37 @@
             onValue(ref(db, 'students'), (snapshot) => {
                 const container = document.getElementById('studentContainer');
                 container.innerHTML = "";
-                const data = snapshot.val();
-                window.allData = data || {};
+                const data = snapshot.val() || {};
+                window.allData = data;
                 
+                // স্ট্যাটাস কাউন্টার (লুপের বাইরে রিসেট করা হয়েছে)
                 let total = 0, mine = 0, others = 0, today = 0;
                 const todayStr = new Date().toISOString().split('T')[0];
 
+                // ১. গ্লোবাল ক্যালকুলেশন (একবারই রান হবে)
+                Object.values(data).forEach(s => {
+                    total++;
+                    if(s.createdBy === currentUser.uid) mine++; else others++;
+                    if(s.createdAt === todayStr) today++;
+                });
+
+                // অ্যাডমিন প্যানেল আপডেট
+                if(currentUser.uid === ADMIN_UID) {
+                    document.getElementById('totalStudents').innerText = total;
+                    document.getElementById('myEntries').innerText = mine;
+                    document.getElementById('othersEntries').innerText = others;
+                    document.getElementById('todayEntries').innerText = today;
+                }
+
+                // ২. ইউআই রেন্ডারিং (শ্রেণিভিত্তিক)
                 const classes = ["প্রাক-প্রাথমিক", "১ম", "২য়", "৩য়", "৪র্থ", "৫ম"];
                 classes.forEach(cls => {
-                    const filtered = Object.keys(data || {}).filter(id => {
+                    const filtered = Object.keys(data).filter(id => {
                         const s = data[id];
+                        const matchSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                           s.roll.toString().includes(searchTerm);
                         const isOwner = s.createdBy === currentUser.uid;
                         const isAdmin = currentUser.uid === ADMIN_UID;
-                        
-                        // স্ট্যাটাস ক্যালকুলেশন
-                        total++;
-                        if(s.createdBy === currentUser.uid) mine++; else others++;
-                        if(s.createdAt === todayStr) today++;
-
-                        const matchSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.roll.toString().includes(searchTerm);
                         return s.className === cls && matchSearch && (isAdmin || isOwner);
                     });
 
@@ -233,27 +246,19 @@
                                         <div class="mt-2 text-[9px] text-slate-500 space-y-0.5 italic">
                                             <p>পিতা: ${s.father || '-'} | NID: ${s.fNid || '-'}</p>
                                             <p>মাতা: ${s.mother || '-'} | NID: ${s.mNid || '-'}</p>
-                                            ${currentUser.uid === ADMIN_UID ? `<p class="text-blue-400 font-bold not-italic mt-1">দিয়েছন: ${s.creatorEmail || 'Unknown'}</p>` : ''}
+                                            ${currentUser.uid === ADMIN_UID ? `<p class="text-blue-400 font-bold not-italic mt-1 border-t pt-1">এন্ট্রি: ${s.creatorEmail || 'Unknown'}</p>` : ''}
                                         </div>
                                     </div>
                                     <div class="absolute top-2 right-2 no-print flex gap-2">
-                                        <button onclick="editRec('${id}')" class="text-blue-500 font-bold text-[9px]">Edit</button>
-                                        <button onclick="deleteRec('${id}')" class="text-red-300 font-bold text-[9px]">Del</button>
+                                        <button onclick="editRec('${id}')" class="text-blue-500 font-bold text-[9px] hover:underline">Edit</button>
+                                        <button onclick="deleteRec('${id}')" class="text-red-300 font-bold text-[9px] hover:underline">Del</button>
                                     </div>
-                                </div>
-                            `;
+                                </div>`;
                         });
                         container.appendChild(section);
                     }
                 });
-
-                // স্ট্যাটাস আপডেট
-                if(currentUser.uid === ADMIN_UID) {
-                    document.getElementById('totalStudents').innerText = total;
-                    document.getElementById('myEntries').innerText = mine;
-                    document.getElementById('othersEntries').innerText = others;
-                    document.getElementById('todayEntries').innerText = today;
-                }
+                if(total === 0) container.innerHTML = "<p class='text-center py-20 text-slate-400 italic'>কোনো ডাটা পাওয়া যায়নি।</p>";
             });
         }
 
@@ -282,11 +287,8 @@
                 createdAt: id ? window.allData[id].createdAt : new Date().toISOString().split('T')[0]
             };
 
-            if (id) {
-                set(ref(db, `students/${id}`), student).then(() => resetForm());
-            } else {
-                push(ref(db, 'students'), student).then(() => resetForm());
-            }
+            if (id) set(ref(db, `students/${id}`), student).then(() => resetForm());
+            else push(ref(db, 'students'), student).then(() => resetForm());
         });
 
         window.editRec = (id) => {
@@ -315,7 +317,7 @@
             document.getElementById('studentForm').reset();
             document.getElementById('editKey').value = "";
             document.getElementById('base64Photo').value = "";
-            document.getElementById('submitBtn').innerText = "ডেটা সেভ করুন";
+            document.getElementById('submitBtn').innerText = "সেভ করুন";
             document.getElementById('cancelBtn').classList.add('hidden');
         }
         document.getElementById('cancelBtn').addEventListener('click', resetForm);
