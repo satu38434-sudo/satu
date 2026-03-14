@@ -12,7 +12,7 @@
         .tab-active { background: #2563eb !important; color: white !important; }
         .list-row:hover { background-color: #f8fafc; }
         
-        /* ডাইনামিক রোল বক্স কালার - টেক্সট কালো বা গাঢ় করে দেওয়া হয়েছে পড়ার সুবিধার্থে */
+        /* পদবি বক্স কালার সংশোধন */
         .theme-admin { background: #fee2e2; border: 2px solid #ef4444; color: #991b1b !important; }
         .theme-head { background: #dbeafe; border: 2px solid #3b82f6; color: #1e40af !important; }
         .theme-teacher { background: #f1f5f9; border: 2px solid #64748b; color: #334155 !important; }
@@ -56,6 +56,7 @@
             <div id="entryTab" class="hidden no-print bg-white p-8 rounded-3xl shadow-sm border mb-10">
                 <form id="studentForm">
                     <input type="hidden" id="editKey">
+                    
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div><label class="font-bold text-sm mb-2 block">শিক্ষার্থীর নাম</label><input type="text" id="stName" class="w-full p-3 bg-slate-50 border rounded-xl" required></div>
                         <div><label class="font-bold text-sm mb-2 block">শ্রেণি</label>
@@ -66,15 +67,20 @@
                         <div><label class="font-bold text-sm mb-2 block">রোল নম্বর</label><input type="number" id="roll" class="w-full p-3 bg-slate-50 border rounded-xl" required></div>
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div><label class="font-bold text-sm mb-2 block text-blue-600">শিক্ষার্থীর জন্ম নিবন্ধন (BRN)</label><input type="text" id="birthReg" class="w-full p-3 bg-slate-50 border-2 border-blue-50 rounded-xl focus:border-blue-200 outline-none"></div>
+                        <div><label class="font-bold text-sm mb-2 block text-blue-600">শিক্ষার্থীর জন্ম তারিখ (DOB)</label><input type="date" id="dob" class="w-full p-3 bg-slate-50 border-2 border-blue-50 rounded-xl focus:border-blue-200 outline-none"></div>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div class="p-6 bg-blue-50 rounded-2xl border border-blue-100">
+                        <div class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
                             <h4 class="font-bold mb-4 text-blue-700 border-b border-blue-200 pb-2">পিতার তথ্য</h4>
                             <input type="text" id="fName" placeholder="পিতার নাম" class="w-full p-3 mb-3 border rounded-lg">
                             <input type="text" id="fNid" placeholder="NID নম্বর" class="w-full p-3 mb-3 border rounded-lg">
                             <input type="date" id="fDob" class="w-full p-3 mb-3 border rounded-lg">
                             <input type="text" id="fMobile" placeholder="পিতার মোবাইল নম্বর" class="w-full p-3 border rounded-lg">
                         </div>
-                        <div class="p-6 bg-pink-50 rounded-2xl border border-pink-100">
+                        <div class="p-6 bg-pink-50/50 rounded-2xl border border-pink-100">
                             <h4 class="font-bold mb-4 text-pink-700 border-b border-pink-200 pb-2">মাতার তথ্য</h4>
                             <input type="text" id="mName" placeholder="মাতার নাম" class="w-full p-3 mb-3 border rounded-lg">
                             <input type="text" id="mNid" placeholder="NID নম্বর" class="w-full p-3 mb-3 border rounded-lg">
@@ -83,18 +89,14 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div><label class="font-bold text-sm mb-2 block">শিক্ষার্থীর জন্ম নিবন্ধন (BRN)</label><input type="text" id="birthReg" class="w-full p-3 bg-slate-50 border rounded-xl"></div>
-                        <div><label class="font-bold text-sm mb-2 block">শিক্ষার্থীর জন্ম তারিখ (DOB)</label><input type="date" id="dob" class="w-full p-3 bg-slate-50 border rounded-xl"></div>
-                    </div>
                     <button type="submit" class="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-all">তথ্য সেভ করুন</button>
                 </form>
             </div>
 
             <div id="viewTab" class="bg-white rounded-3xl shadow-sm border overflow-hidden">
-                <div class="p-6 border-b flex justify-between items-center bg-slate-50/50">
+                <div class="p-6 border-b flex justify-between items-center bg-slate-50">
                     <h2 class="font-bold">সকল শিক্ষার্থীর তালিকা</h2>
-                    <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="p-3 border rounded-xl w-64 outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="p-3 border rounded-xl w-64 outline-none">
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
