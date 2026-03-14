@@ -22,19 +22,19 @@
             <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white text-2xl">&times;</button>
             <div id="modalContent" class="space-y-6"></div>
             <div class="mt-8 pt-6 border-t border-white/10 flex justify-between gap-4">
-                <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-2xl text-sm font-bold transition-all">প্রিন্ট রিপোর্ট</button>
-                <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-2xl text-sm font-bold transition-all">বন্ধ করুন</button>
+                <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-2xl text-sm font-bold transition-all uppercase">Print Report</button>
+                <button onclick="closeModal()" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-2xl text-sm font-bold transition-all uppercase">Close</button>
             </div>
         </div>
     </div>
 
     <div id="loginArea" class="no-print min-h-screen flex items-center justify-center">
         <div class="glass p-10 rounded-[45px] w-full max-w-md text-center shadow-2xl">
-            <h2 class="text-2xl font-black mb-8 text-blue-500 tracking-tighter uppercase">DB ACCESS</h2>
+            <h2 class="text-2xl font-black mb-8 text-blue-500 tracking-tighter uppercase">DB Access</h2>
             <div class="space-y-4">
                 <input type="email" id="loginEmail" placeholder="ইমেইল আইডি">
                 <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
-                <button id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl font-bold transition-all active:scale-95">কানেক্ট করুন</button>
+                <button id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg shadow-blue-600/20">লগইন করুন</button>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
                 <h1 class="font-black text-2xl tracking-tighter text-blue-500">CORE<span class="text-white">DB</span></h1>
                 <div class="flex gap-2 bg-slate-900/50 p-1 rounded-2xl">
                     <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2 rounded-xl text-sm font-bold transition-all tab-active">তালিকা</button>
-                    <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 rounded-xl text-sm font-bold text-slate-400 transition-all">এন্ট্রি</button>
+                    <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 rounded-xl text-sm font-bold text-slate-400 transition-all">নতুন এন্ট্রি</button>
                 </div>
                 <button id="logoutBtn" class="text-red-400 text-[10px] font-bold uppercase px-4 py-2 border border-red-500/20 rounded-xl hover:bg-red-500/10">লগ আউট</button>
             </div>
@@ -54,20 +54,21 @@
         <div class="max-w-[1400px] mx-auto px-4">
             <div class="mb-6 flex items-center gap-3 bg-white/5 p-3 rounded-2xl inline-flex border border-white/5">
                 <div id="statusDot" class="w-2.5 h-2.5 rounded-full bg-slate-500 animate-pulse"></div>
-                <h3 id="roleText" class="text-[10px] font-bold uppercase tracking-widest text-slate-400">যাচাই করা হচ্ছে...</h3>
+                <h3 id="roleText" class="text-[10px] font-bold uppercase tracking-widest text-slate-400">অপেক্ষা করুন...</h3>
             </div>
 
             <div id="entryTab" class="hidden no-print glass p-8 rounded-[40px] mb-10 border border-white/5">
                 <form id="studentForm" class="space-y-6">
                     <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
+                    
                     <div class="flex flex-col md:flex-row gap-8 items-center">
                         <div class="w-32 h-32 bg-slate-800 rounded-3xl border-2 border-dashed border-slate-600 flex items-center justify-center overflow-hidden relative group">
                             <img id="imagePreview" class="hidden w-full h-full object-cover">
-                            <div id="imgPlaceholder" class="text-center text-[10px] text-slate-500">ছবি দিন<br>(২০০x২০০)</div>
+                            <div id="imgPlaceholder" class="text-center text-[10px] text-slate-500">ছবি আপলোড<br>(২০০x২০০)</div>
                             <input type="file" id="stPhoto" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
-                            <input type="text" id="stName" placeholder="শিক্ষার্থীর পূর্ণ নাম" required>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1 w-full">
+                            <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required>
                             <select id="class" required>
                                 <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
                                 <option value="১ম">১ম শ্রেণি</option>
@@ -79,6 +80,7 @@
                             <input type="number" id="roll" placeholder="রোল নম্বর" required>
                         </div>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর">
                         <input type="date" id="dob">
@@ -90,24 +92,33 @@
                             <option value="AB+">AB+</option><option value="AB-">AB-</option>
                         </select>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="p-6 bg-white/5 rounded-3xl space-y-3 border border-white/5">
                             <p class="text-blue-500 text-[10px] font-black uppercase tracking-widest">পিতার তথ্য</p>
                             <input type="text" id="fName" placeholder="পিতার নাম">
-                            <input type="text" id="fMobile" placeholder="পিতার মোবাইল">
+                            <input type="text" id="fMobile" placeholder="মোবাইল নম্বর">
+                            <input type="text" id="fNid" placeholder="পিতার NID নম্বর">
+                            <input type="date" id="fDob" title="পিতার জন্ম তারিখ">
                         </div>
                         <div class="p-6 bg-white/5 rounded-3xl space-y-3 border border-white/5">
                             <p class="text-pink-500 text-[10px] font-black uppercase tracking-widest">মাতার তথ্য</p>
                             <input type="text" id="mName" placeholder="মাতার নাম">
-                            <input type="text" id="mMobile" placeholder="মাতার মোবাইল">
+                            <input type="text" id="mMobile" placeholder="মোবাইল নম্বর">
+                            <input type="text" id="mNid" placeholder="মাতার NID নম্বর">
+                            <input type="date" id="mDob" title="মাতার জন্ম তারিখ">
                         </div>
                     </div>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-12 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-xl shadow-blue-600/20">তথ্য সংরক্ষণ করুন</button>
+                    
+                    <div class="flex justify-end gap-3">
+                        <button type="button" onclick="document.getElementById('studentForm').reset();" class="px-8 py-4 rounded-2xl text-slate-500 font-bold hover:bg-white/5 transition-all uppercase text-xs">Reset</button>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-12 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-blue-600/20 uppercase text-xs">Save Profile</button>
+                    </div>
                 </form>
             </div>
 
             <div id="viewTab" class="space-y-10 pb-20">
-                <div class="no-print mb-6"><input type="text" id="searchBar" placeholder="দ্রুত খুঁজুন (নাম/রোল)..." class="glass p-4 rounded-2xl w-full md:w-96 outline-none border border-white/10 focus:border-blue-500/50"></div>
+                <div class="no-print mb-6"><input type="text" id="searchBar" placeholder="খুঁজুন (নাম বা রোল)..." class="glass p-4 rounded-2xl w-full md:w-96 outline-none border border-white/10 focus:border-blue-500/50"></div>
                 <div id="classWiseContainer" class="space-y-12"></div>
             </div>
         </div>
@@ -136,13 +147,11 @@
                 const u = user.uid;
                 const checkA = u.startsWith("Q9AUB") && u.endsWith("Cx1");
                 const checkH = u.startsWith("BcQX") && u.includes("WMHQkJN");
-
                 const rt = document.getElementById('roleText');
                 const dt = document.getElementById('statusDot');
-
-                if (checkA) { window.currentUserRole = "admin"; rt.innerText = "পদবি: অ্যাডমিন"; dt.className = "w-2.5 h-2.5 rounded-full bg-blue-500"; }
-                else if (checkH) { window.currentUserRole = "head_teacher"; rt.innerText = "পদবি: প্রধান শিক্ষক"; dt.className = "w-2.5 h-2.5 rounded-full bg-emerald-500"; }
-                else { window.currentUserRole = "teacher"; rt.innerText = "পদবি: সহকারী শিক্ষক"; dt.className = "w-2.5 h-2.5 rounded-full bg-slate-500"; }
+                if (checkA) { window.currentUserRole = "admin"; rt.innerText = "Role: Admin"; dt.className = "w-2.5 h-2.5 rounded-full bg-blue-500"; }
+                else if (checkH) { window.currentUserRole = "head_teacher"; rt.innerText = "Role: Head Teacher"; dt.className = "w-2.5 h-2.5 rounded-full bg-emerald-500"; }
+                else { window.currentUserRole = "teacher"; rt.innerText = "Role: Teacher"; dt.className = "w-2.5 h-2.5 rounded-full bg-slate-500"; }
                 loadData();
             } else {
                 document.getElementById('loginArea').classList.remove('hidden');
@@ -150,7 +159,6 @@
             }
         });
 
-        // ২০০x২০০ ইমেজ রিসাইজিং লজিক
         document.getElementById('stPhoto').addEventListener('change', (e) => {
             const file = e.target.files[0];
             const reader = new FileReader();
@@ -160,7 +168,6 @@
                     const canvas = document.createElement('canvas');
                     canvas.width = 200; canvas.height = 200;
                     const ctx = canvas.getContext('2d');
-                    // স্কয়ার ক্রপ
                     let side = Math.min(img.width, img.height);
                     ctx.drawImage(img, (img.width-side)/2, (img.height-side)/2, side, side, 0, 0, 200, 200);
                     const b64 = canvas.toDataURL('image/jpeg', 0.4);
@@ -180,29 +187,24 @@
                 container.innerHTML = "";
                 const data = snapshot.val() || {};
                 window.allData = data;
-
-                // শ্রেণি বিন্যাস: প্রাক-প্রাথমিক সবার আগে
                 const classes = ["প্রাক-প্রাথমিক", "১ম", "২য়", "৩য়", "৪র্থ", "৫ম"];
-                
                 classes.forEach(cls => {
                     const filtered = Object.keys(data)
                         .filter(id => data[id].className === cls && (data[id].name.toLowerCase().includes(searchTerm.toLowerCase()) || data[id].roll.toString().includes(searchTerm)))
                         .sort((a,b) => data[a].roll - data[b].roll);
-
                     if (filtered.length > 0) {
                         let html = `
-                        <div class="glass rounded-[40px] overflow-hidden border border-white/5 shadow-xl">
+                        <div class="glass rounded-[40px] overflow-hidden border border-white/5">
                             <div class="bg-white/5 p-6 border-b border-white/5 flex justify-between items-center">
                                 <h2 class="font-black text-blue-500 uppercase tracking-tighter">${cls} শ্রেণি</h2>
-                                <span class="text-[10px] bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">${filtered.length} জন</span>
+                                <span class="text-[10px] text-slate-500 uppercase">${filtered.length} জন</span>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left text-sm">
-                                    <thead class="bg-slate-900/40 text-slate-500 text-[9px] uppercase tracking-[0.2em]">
-                                        <tr><th class="p-6">রোল</th><th class="p-6">নাম</th><th class="p-6 text-center">অ্যাকশন</th></tr>
+                                    <thead class="bg-slate-900/40 text-slate-500 text-[9px] uppercase tracking-widest">
+                                        <tr><th class="p-6">Roll</th><th class="p-6">Name</th><th class="p-6 text-center">Action</th></tr>
                                     </thead>
                                     <tbody class="divide-y divide-white/5">`;
-                        
                         filtered.forEach(id => {
                             const s = data[id];
                             html += `
@@ -230,15 +232,27 @@
                     <img src="${s.photo || 'https://via.placeholder.com/200'}" class="w-36 h-36 rounded-[40px] border-4 border-blue-500/10 object-cover shadow-2xl">
                     <div class="text-center">
                         <h2 class="text-3xl font-black text-white tracking-tighter">${s.name}</h2>
-                        <p class="text-blue-500 font-bold tracking-widest uppercase text-xs mt-1">${s.className} শ্রেণি | রোল: ${s.roll}</p>
+                        <p class="text-blue-500 font-bold uppercase text-xs mt-1 tracking-widest">${s.className} শ্রেণি | Roll: ${s.roll}</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-bold">
-                    <div class="p-5 bg-white/5 rounded-3xl border border-white/5"><p class="text-slate-500 uppercase mb-1">জন্ম নিবন্ধন</p><p>${s.birthReg || '---'}</p></div>
-                    <div class="p-5 bg-white/5 rounded-3xl border border-white/5"><p class="text-slate-500 uppercase mb-1">জন্ম তারিখ</p><p>${s.dob || '---'}</p></div>
+                    <div class="p-5 bg-white/5 rounded-3xl border border-white/5"><p class="text-slate-500 uppercase mb-1">শিক্ষার্থীর জন্ম নিবন্ধন</p><p>${s.birthReg || '---'}</p></div>
+                    <div class="p-5 bg-white/5 rounded-3xl border border-white/5"><p class="text-slate-500 uppercase mb-1">শিক্ষার্থীর জন্ম তারিখ</p><p>${s.dob || '---'}</p></div>
                     <div class="p-5 bg-white/5 rounded-3xl border border-white/5"><p class="text-slate-500 uppercase mb-1">রক্তের গ্রুপ</p><p class="text-red-500">${s.bloodGroup || '---'}</p></div>
-                    <div class="p-5 bg-white/5 rounded-3xl border border-white/5"><p class="text-blue-500 uppercase mb-1">পিতার নাম</p><p>${s.fName || '---'} (${s.fMobile || ''})</p></div>
-                    <div class="p-5 bg-white/5 rounded-3xl border border-white/5"><p class="text-pink-500 uppercase mb-1">মাতার নাম</p><p>${s.mName || '---'} (${s.mMobile || ''})</p></div>
+                    <div class="p-5 bg-white/5 rounded-3xl border border-white/5">
+                        <p class="text-blue-500 uppercase mb-1">পিতার তথ্য</p>
+                        <p>নাম: ${s.fName || '---'}</p>
+                        <p>মোবাইল: ${s.fMobile || '---'}</p>
+                        <p>NID: ${s.fNid || '---'}</p>
+                        <p>DOB: ${s.fDob || '---'}</p>
+                    </div>
+                    <div class="p-5 bg-white/5 rounded-3xl border border-white/5">
+                        <p class="text-pink-500 uppercase mb-1">মাতার তথ্য</p>
+                        <p>নাম: ${s.mName || '---'}</p>
+                        <p>মোবাইল: ${s.mMobile || '---'}</p>
+                        <p>NID: ${s.mNid || '---'}</p>
+                        <p>DOB: ${s.mDob || '---'}</p>
+                    </div>
                 </div>`;
             document.getElementById('viewModal').style.display = 'flex';
         };
@@ -252,9 +266,11 @@
                 name: document.getElementById('stName').value, roll: document.getElementById('roll').value,
                 className: document.getElementById('class').value, photo: document.getElementById('photoBase64').value,
                 birthReg: document.getElementById('birthReg').value, dob: document.getElementById('dob').value,
-                bloodGroup: document.getElementById('bloodGroup').value, fName: document.getElementById('fName').value,
-                fMobile: document.getElementById('fMobile').value, mName: document.getElementById('mName').value,
-                mMobile: document.getElementById('mMobile').value
+                bloodGroup: document.getElementById('bloodGroup').value,
+                fName: document.getElementById('fName').value, fMobile: document.getElementById('fMobile').value,
+                fNid: document.getElementById('fNid').value, fDob: document.getElementById('fDob').value,
+                mName: document.getElementById('mName').value, mMobile: document.getElementById('mMobile').value,
+                mNid: document.getElementById('mNid').value, mDob: document.getElementById('mDob').value
             };
             set(id ? ref(db, `students/${id}`) : push(ref(db, 'students')), student).then(() => {
                 document.getElementById('studentForm').reset();
@@ -275,15 +291,19 @@
             document.getElementById('birthReg').value = s.birthReg || "";
             document.getElementById('dob').value = s.dob || "";
             document.getElementById('bloodGroup').value = s.bloodGroup || "";
-            document.getElementById('fName').value = s.fName || ""; document.getElementById('fMobile').value = s.fMobile || "";
-            document.getElementById('mName').value = s.mName || ""; document.getElementById('mMobile').value = s.mMobile || "";
+            document.getElementById('fName').value = s.fName || ""; 
+            document.getElementById('fMobile').value = s.fMobile || "";
+            document.getElementById('fNid').value = s.fNid || ""; 
+            document.getElementById('fDob').value = s.fDob || "";
+            document.getElementById('mName').value = s.mName || ""; 
+            document.getElementById('mMobile').value = s.mMobile || "";
+            document.getElementById('mNid').value = s.mNid || ""; 
+            document.getElementById('mDob').value = s.mDob || "";
             if(s.photo) { document.getElementById('imagePreview').src = s.photo; document.getElementById('imagePreview').classList.remove('hidden'); document.getElementById('imgPlaceholder').classList.add('hidden'); }
             switchTab('entryTab');
         };
 
-        window.deleteRec = (id) => { 
-            if(window.currentUserRole === 'admin' && confirm("আপনি কি নিশ্চিতভাবে মুছে ফেলতে চান?")) remove(ref(db, `students/${id}`)); 
-        };
+        window.deleteRec = (id) => { if(window.currentUserRole === 'admin' && confirm("Delete data?")) remove(ref(db, `students/${id}`)); };
 
         window.switchTab = (id) => {
             document.getElementById('entryTab').classList.toggle('hidden', id !== 'entryTab');
@@ -293,7 +313,7 @@
         };
 
         document.getElementById('loginBtn').addEventListener('click', () => {
-            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(e => alert("লগইন ভুল!"));
+            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(e => alert("Login Error"));
         });
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
         document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
