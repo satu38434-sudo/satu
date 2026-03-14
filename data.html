@@ -3,124 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্কুল ম্যানেজমেন্ট সিস্টেম</title>
+    <title>S.M.S Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
-        body { font-family: 'SolaimanLipi', sans-serif; background-color: #f1f5f9; color: #334155; }
-        input, select, button, table { font-family: 'SolaimanLipi', sans-serif; }
-        .tab-active { background: #2563eb !important; color: white !important; }
-        .list-row:hover { background-color: #f8fafc; }
-        
-        .theme-admin { background: #fee2e2; border: 2px solid #ef4444; color: #991b1b !important; }
-        .theme-head { background: #dbeafe; border: 2px solid #3b82f6; color: #1e40af !important; }
-        .theme-teacher { background: #f1f5f9; border: 2px solid #64748b; color: #334155 !important; }
-        
+        body { font-family: 'SolaimanLipi', sans-serif; background-color: #f8fafc; color: #334155; }
+        .theme-admin { background: #fee2e2; border: 1px solid #ef4444; color: #991b1b !important; }
+        .theme-head { background: #dbeafe; border: 1px solid #3b82f6; color: #1e40af !important; }
+        .theme-teacher { background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569 !important; }
         @media print { .no-print { display: none !important; } }
-        .info-label { font-weight: bold; font-size: 11px; color: #64748b; margin-right: 4px; }
-        .data-text { font-size: 13px; color: #1e293b; }
     </style>
 </head>
 <body>
 
-    <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-[#0f172a] px-4">
-        <div class="bg-white p-8 rounded-[30px] w-full max-w-md shadow-2xl text-center">
-            <h2 class="text-2xl font-bold mb-6 italic text-slate-800">SMS LOGIN</h2>
+    <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-[#020617] px-4">
+        <div class="bg-white p-10 rounded-[40px] w-full max-w-md shadow-2xl text-center border border-slate-800">
+            <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-6 flex items-center justify-center text-white text-2xl font-bold">S</div>
+            <h2 class="text-xl font-bold mb-8 tracking-widest text-slate-800 uppercase">Secure Access</h2>
             <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="ইমেইল" class="w-full p-4 rounded-xl border outline-none">
-                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-4 rounded-xl border outline-none">
-                <button id="loginBtn" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold">প্রবেশ করুন</button>
+                <input type="email" id="loginEmail" placeholder="Username" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="loginPass" placeholder="Password" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="loginBtn" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all">CONNECT</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden">
-        <nav class="no-print bg-white shadow-sm sticky top-0 z-50 p-4">
+        <nav class="no-print bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 p-4 border-b">
             <div class="max-w-[1400px] mx-auto flex justify-between items-center">
-                <h1 class="text-xl font-bold text-blue-600 uppercase">SMS Dashboard</h1>
-                <div class="flex bg-slate-100 p-1 rounded-xl">
-                    <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2 text-sm font-bold rounded-lg tab-active">তালিকা দেখুন</button>
-                    <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 text-sm font-bold rounded-lg text-slate-500">নতুন এন্ট্রি</button>
+                <h1 class="font-bold text-slate-900 tracking-tighter">SMS<span class="text-blue-600">PRO</span></h1>
+                <div class="flex bg-slate-200/50 p-1 rounded-2xl">
+                    <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2 text-sm font-bold rounded-xl bg-white shadow-sm">তালিকা</button>
+                    <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 text-sm font-bold rounded-xl text-slate-500">এন্ট্রি</button>
                 </div>
-                <button id="logoutBtn" class="text-red-500 font-bold text-sm">লগ আউট</button>
+                <button id="logoutBtn" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl font-bold text-xs">EXIT</button>
             </div>
         </nav>
 
-        <div class="max-w-[1400px] mx-auto p-4 md:p-6">
-            <div id="roleBox" class="mb-6 p-4 rounded-2xl shadow-sm inline-block theme-teacher">
-                <p class="text-[10px] opacity-70 uppercase font-bold">আপনার বর্তমান পদবি</p>
-                <h3 id="roleText" class="font-bold text-lg">চেক করা হচ্ছে...</h3>
+        <div class="max-w-[1400px] mx-auto p-6">
+            <div id="roleBox" class="mb-8 p-4 rounded-2xl shadow-sm inline-block theme-teacher">
+                <p class="text-[9px] opacity-60 uppercase font-bold tracking-widest">System Status</p>
+                <h3 id="roleText" class="font-bold">Authenticating...</h3>
             </div>
 
-            <div id="entryTab" class="hidden no-print bg-white p-8 rounded-3xl shadow-sm border mb-10">
+            <div id="entryTab" class="hidden no-print bg-white p-8 rounded-[35px] shadow-sm border mb-10">
                 <form id="studentForm">
-                    <input type="hidden" id="editKey">
+                    <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div><label class="font-bold text-sm mb-2 block">শিক্ষার্থীর নাম</label><input type="text" id="stName" class="w-full p-3 bg-slate-50 border rounded-xl" required></div>
-                        <div><label class="font-bold text-sm mb-2 block">শ্রেণি</label>
-                            <select id="class" class="w-full p-3 bg-slate-50 border rounded-xl">
-                                <option value="১ম">১ম শ্রেণি</option><option value="২য়">২য় শ্রেণি</option><option value="৩য়">৩য় শ্রেণি</option><option value="৪র্থ">৪র্থ শ্রেণি</option><option value="৫ম">৫ম শ্রেণি</option>
-                            </select>
+                    <div class="flex flex-col md:flex-row gap-8 mb-8 items-center border-b pb-8 border-dashed">
+                        <div class="w-32 h-32 bg-slate-50 rounded-[30px] border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden relative">
+                            <img id="imagePreview" class="hidden w-full h-full object-cover">
+                            <span id="imgPlaceholder" class="text-slate-400 text-[10px] font-bold">PHOTO</span>
+                            <input type="file" id="stPhoto" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
                         </div>
-                        <div><label class="font-bold text-sm mb-2 block">রোল নম্বর</label><input type="number" id="roll" class="w-full p-3 bg-slate-50 border rounded-xl" required></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 w-full">
+                            <div><label class="font-bold text-xs text-slate-500 mb-2 block">নাম</label><input type="text" id="stName" class="w-full p-3 bg-slate-50 border rounded-xl" required></div>
+                            <div><label class="font-bold text-xs text-slate-500 mb-2 block">শ্রেণি</label>
+                                <select id="class" class="w-full p-3 bg-slate-50 border rounded-xl">
+                                    <option value="১ম">১ম শ্রেণি</option><option value="২য়">২য় শ্রেণি</option>
+                                    <option value="৩য়">৩য় শ্রেণি</option><option value="৪র্থ">৪র্থ শ্রেণি</option>
+                                    <option value="৫ম">৫ম শ্রেণি</option>
+                                </select>
+                            </div>
+                            <div><label class="font-bold text-xs text-slate-500 mb-2 block">রোল</label><input type="number" id="roll" class="w-full p-3 bg-slate-50 border rounded-xl" required></div>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div><label class="font-bold text-sm mb-2 block text-blue-600">শিক্ষার্থীর জন্ম নিবন্ধন (BRN)</label><input type="text" id="birthReg" class="w-full p-3 bg-slate-50 border-2 border-blue-50 rounded-xl focus:border-blue-200 outline-none"></div>
-                        <div><label class="font-bold text-sm mb-2 block text-blue-600">শিক্ষার্থীর জন্ম তারিখ (DOB)</label><input type="date" id="dob" class="w-full p-3 bg-slate-50 border-2 border-blue-50 rounded-xl focus:border-blue-200 outline-none"></div>
+                        <div><label class="font-bold text-xs text-blue-600 mb-2 block uppercase">Birth Reg (BRN)</label><input type="text" id="birthReg" class="w-full p-3 bg-blue-50/30 border-2 border-blue-50 rounded-xl outline-none focus:border-blue-200"></div>
+                        <div><label class="font-bold text-xs text-blue-600 mb-2 block uppercase">Date of Birth</label><input type="date" id="dob" class="w-full p-3 bg-blue-50/30 border-2 border-blue-50 rounded-xl"></div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div class="p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
-                            <h4 class="font-bold mb-4 text-blue-700 border-b border-blue-200 pb-2">পিতার তথ্য</h4>
-                            <input type="text" id="fName" placeholder="পিতার নাম" class="w-full p-3 mb-3 border rounded-lg">
-                            <input type="text" id="fNid" placeholder="NID নম্বর" class="w-full p-3 mb-3 border rounded-lg">
-                            <input type="date" id="fDob" class="w-full p-3 mb-3 border rounded-lg">
-                            <input type="text" id="fMobile" placeholder="পিতার মোবাইল নম্বর" class="w-full p-3 border rounded-lg">
+                        <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                            <h4 class="font-bold mb-4 text-slate-700 text-sm flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> পিতার তথ্য</h4>
+                            <input type="text" id="fName" placeholder="নাম" class="w-full p-3 mb-3 border rounded-xl">
+                            <input type="text" id="fMobile" placeholder="মোবাইল নম্বর" class="w-full p-3 border rounded-xl">
                         </div>
-                        <div class="p-6 bg-pink-50/50 rounded-2xl border border-pink-100">
-                            <h4 class="font-bold mb-4 text-pink-700 border-b border-pink-200 pb-2">মাতার তথ্য</h4>
-                            <input type="text" id="mName" placeholder="মাতার নাম" class="w-full p-3 mb-3 border rounded-lg">
-                            <input type="text" id="mNid" placeholder="NID নম্বর" class="w-full p-3 mb-3 border rounded-lg">
-                            <input type="date" id="mDob" class="w-full p-3 mb-3 border rounded-lg">
-                            <input type="text" id="mMobile" placeholder="মাতার মোবাইল নম্বর" class="w-full p-3 border rounded-lg">
+                        <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
+                            <h4 class="font-bold mb-4 text-slate-700 text-sm flex items-center gap-2"><span class="w-2 h-2 bg-pink-500 rounded-full"></span> মাতার তথ্য</h4>
+                            <input type="text" id="mName" placeholder="নাম" class="w-full p-3 mb-3 border rounded-xl">
+                            <input type="text" id="mMobile" placeholder="মোবাইল নম্বর" class="w-full p-3 border rounded-xl">
                         </div>
                     </div>
 
-                    <button type="submit" class="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold shadow-lg hover:bg-blue-700 transition-all">তথ্য সেভ করুন</button>
+                    <button type="submit" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">SAVE RECORD</button>
                 </form>
             </div>
 
-            <div id="viewTab" class="bg-white rounded-3xl shadow-sm border overflow-hidden">
-                <div class="p-6 border-b flex justify-between items-center bg-slate-50">
-                    <h2 class="font-bold">সকল শিক্ষার্থীর তালিকা</h2>
-                    <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="p-3 border rounded-xl w-64 outline-none">
+            <div id="viewTab" class="bg-white rounded-[35px] shadow-sm border overflow-hidden">
+                <div class="p-6 border-b flex justify-between items-center bg-slate-50/50">
+                    <h2 class="font-bold text-slate-800">Students Database</h2>
+                    <input type="text" id="searchBar" placeholder="Search..." class="p-3 border rounded-2xl w-64 outline-none focus:ring-2 focus:ring-blue-100">
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-slate-100 text-sm">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500">
                             <tr>
-                                <th class="p-4 font-bold border-b">রোল</th>
-                                <th class="p-4 font-bold border-b">শিক্ষার্থীর বিস্তারিত</th>
-                                <th class="p-4 font-bold border-b">পিতার তথ্য</th>
-                                <th class="p-4 font-bold border-b">মাতার তথ্য</th>
-                                <th class="p-4 font-bold border-b text-center no-print">অ্যাকশন</th>
+                                <th class="p-5 font-bold border-b">রোল ও ছবি</th>
+                                <th class="p-5 font-bold border-b">শিক্ষার্থীর নাম</th>
+                                <th class="p-5 font-bold border-b">যোগাযোগ (পিতা/মাতা)</th>
+                                <th class="p-5 font-bold border-b text-center no-print">অ্যাকশন</th>
                             </tr>
                         </thead>
-                        <tbody id="studentTableBody"></tbody>
+                        <tbody id="studentTableBody" class="text-sm"></tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="viewModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-2xl rounded-[30px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-            <div id="modalContent" class="p-8 overflow-y-auto flex-1"></div>
-            <div class="p-6 bg-slate-50 border-t flex gap-3 no-print">
-                <button onclick="window.print()" class="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold">প্রিন্ট</button>
-                <button onclick="closeModal()" class="flex-1 bg-white border py-3 rounded-xl font-bold text-slate-500">বন্ধ করুন</button>
             </div>
         </div>
     </div>
@@ -141,24 +129,31 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        let currentUserRole = "teacher";
-        const A_ID = "Q9AUB3tOiAYAO9HebLAPpKbjDCx1";
-        const H_ID = "BcQXWMHQkJNrhhYkbJnVtsIffz33";
-
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                const mail = user.email.toLowerCase();
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
+                
                 const roleText = document.getElementById('roleText');
                 const roleBox = document.getElementById('roleBox');
-                roleBox.classList.remove('theme-admin', 'theme-head', 'theme-teacher');
+                
+                // আপনার গোপন লগইন সাইন লজিক
+                const isAdmin = mail.charAt(2) === 'd' && mail.split('@')[0].endsWith('n');
+                const isHead = mail.charAt(1) === 'u' && mail.includes('a');
 
-                if (user.uid === A_ID) {
-                    currentUserRole = "admin"; roleText.innerText = "অ্যাডমিনিস্ট্রেটর (Admin)"; roleBox.classList.add('theme-admin');
-                } else if (user.uid === H_ID) {
-                    currentUserRole = "head_teacher"; roleText.innerText = "প্রধান শিক্ষক (Head Teacher)"; roleBox.classList.add('theme-head');
+                if (isAdmin) {
+                    window.currentUserRole = "admin";
+                    roleText.innerText = "Master Control Active";
+                    roleBox.className = "mb-8 p-4 rounded-2xl shadow-sm inline-block theme-admin";
+                } else if (isHead) {
+                    window.currentUserRole = "head_teacher";
+                    roleText.innerText = "Verified Supervisor";
+                    roleBox.className = "mb-8 p-4 rounded-2xl shadow-sm inline-block theme-head";
                 } else {
-                    currentUserRole = "teacher"; roleText.innerText = "সহকারী শিক্ষক"; roleBox.classList.add('theme-teacher');
+                    window.currentUserRole = "teacher";
+                    roleText.innerText = "সহকারী শিক্ষক";
+                    roleBox.className = "mb-8 p-4 rounded-2xl shadow-sm inline-block theme-teacher";
                 }
                 loadData();
             } else {
@@ -167,15 +162,39 @@
             }
         });
 
+        // ফটো রিসাইজ (200x200) ও কমপ্রেশন (50KB)
+        document.getElementById('stPhoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 200; canvas.height = 200;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, 200, 200);
+                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6); // 60% quality
+                        document.getElementById('photoBase64').value = compressedBase64;
+                        document.getElementById('imagePreview').src = compressedBase64;
+                        document.getElementById('imagePreview').classList.remove('hidden');
+                        document.getElementById('imgPlaceholder').classList.add('hidden');
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         window.switchTab = (id) => {
             document.getElementById('entryTab').classList.toggle('hidden', id !== 'entryTab');
             document.getElementById('viewTab').classList.toggle('hidden', id !== 'viewTab');
-            document.getElementById('btnView').classList.toggle('tab-active', id === 'viewTab');
-            document.getElementById('btnEntry').classList.toggle('tab-active', id === 'entryTab');
+            document.getElementById('btnView').className = id === 'viewTab' ? "px-6 py-2 text-sm font-bold rounded-xl bg-white shadow-sm" : "px-6 py-2 text-sm font-bold rounded-xl text-slate-500";
+            document.getElementById('btnEntry').className = id === 'entryTab' ? "px-6 py-2 text-sm font-bold rounded-xl bg-white shadow-sm" : "px-6 py-2 text-sm font-bold rounded-xl text-slate-500";
         };
 
         document.getElementById('loginBtn').addEventListener('click', () => {
-            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(() => alert('ভুল ইমেইল বা পাসওয়ার্ড!'));
+            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(() => alert('DENIED'));
         });
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
@@ -190,37 +209,22 @@
                     const s = data[id];
                     if (s.name.includes(searchTerm) || s.roll.toString().includes(searchTerm)) {
                         body.innerHTML += `
-                            <tr class="list-row border-b">
-                                <td class="p-4 font-bold text-blue-600">রোল-${s.roll}</td>
-                                <td class="p-4">
-                                    <div class="font-bold text-slate-800 text-sm">${s.name}</div>
-                                    <div class="text-[11px] text-slate-500 mb-1 font-semibold">${s.className}</div>
-                                    <div class="flex flex-col gap-0.5">
-                                        <div><span class="info-label">BRN:</span><span class="data-text">${s.birthReg || '-'}</span></div>
-                                        <div><span class="info-label">DOB:</span><span class="data-text">${s.dob || '-'}</span></div>
-                                    </div>
+                            <tr class="hover:bg-slate-50 transition-all border-b border-slate-100">
+                                <td class="p-5 flex items-center gap-4">
+                                    <img src="${s.photo || 'https://via.placeholder.com/200'}" class="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-md">
+                                    <span class="font-bold text-blue-600">রোল-${s.roll}</span>
                                 </td>
-                                <td class="p-4">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="font-bold text-blue-700 text-[13px]">${s.father || '-'}</div>
-                                        <div><span class="info-label">NID:</span><span class="data-text">${s.fNid || '-'}</span></div>
-                                        <div><span class="info-label">DOB:</span><span class="data-text">${s.fDob || '-'}</span></div>
-                                        <div><span class="info-label">Mob:</span><span class="data-text">${s.fMobile || '-'}</span></div>
-                                    </div>
+                                <td class="p-5 uppercase font-bold text-slate-700">
+                                    ${s.name} <br> <span class="text-[10px] text-slate-400 lowercase">${s.className}</span>
                                 </td>
-                                <td class="p-4">
-                                    <div class="flex flex-col gap-1">
-                                        <div class="font-bold text-pink-700 text-[13px]">${s.mother || '-'}</div>
-                                        <div><span class="info-label">NID:</span><span class="data-text">${s.mNid || '-'}</span></div>
-                                        <div><span class="info-label">DOB:</span><span class="data-text">${s.mDob || '-'}</span></div>
-                                        <div><span class="info-label">Mob:</span><span class="data-text">${s.mMobile || '-'}</span></div>
-                                    </div>
+                                <td class="p-5 text-xs">
+                                    <div class="mb-1">👨‍👦 ${s.fName || '-'} <span class="text-blue-500 ml-2">${s.fMobile || ''}</span></div>
+                                    <div>👩‍👦 ${s.mName || '-'} <span class="text-pink-500 ml-2">${s.mMobile || ''}</span></div>
                                 </td>
-                                <td class="p-4 no-print text-center">
+                                <td class="p-5 no-print text-center">
                                     <div class="flex justify-center gap-2">
-                                        <button onclick="viewRec('${id}')" class="bg-slate-100 p-2 rounded-lg hover:bg-slate-200">👁️</button>
-                                        <button onclick="editRec('${id}')" class="bg-blue-50 p-2 rounded-lg text-blue-600 hover:bg-blue-100">✏️</button>
-                                        ${currentUserRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="bg-red-50 p-2 rounded-lg text-red-500 hover:bg-red-500 hover:text-white transition-all">🗑️</button>` : ''}
+                                        <button onclick="editRec('${id}')" class="p-2 bg-slate-100 rounded-xl hover:bg-blue-100 text-blue-600 transition-all">✏️</button>
+                                        ${window.currentUserRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="p-2 bg-slate-100 rounded-xl hover:bg-red-100 text-red-500 transition-all">🗑️</button>` : ''}
                                     </div>
                                 </td>
                             </tr>`;
@@ -229,47 +233,20 @@
             });
         }
 
-        window.viewRec = (id) => {
-            const s = window.allData[id];
-            document.getElementById('modalContent').innerHTML = `
-                <div class="text-center mb-8"><h2 class="text-3xl font-bold">${s.name}</h2><p class="text-blue-600 font-bold text-lg">${s.className} | রোল: ${s.roll}</p></div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100 flex flex-col gap-1">
-                        <h4 class="font-bold text-blue-800 border-b mb-2 pb-1 text-sm">পিতার বিস্তারিত</h4>
-                        <p class="text-sm">নাম: ${s.father || '-'}</p>
-                        <p class="text-sm">NID: ${s.fNid || '-'}</p>
-                        <p class="text-sm">জন্ম তারিখ: ${s.fDob || '-'}</p>
-                        <p class="text-sm font-bold">মোবাইল: ${s.fMobile || '-'}</p>
-                    </div>
-                    <div class="p-5 bg-pink-50 rounded-2xl border border-pink-100 flex flex-col gap-1">
-                        <h4 class="font-bold text-pink-800 border-b mb-2 pb-1 text-sm">মাতার বিস্তারিত</h4>
-                        <p class="text-sm">নাম: ${s.mother || '-'}</p>
-                        <p class="text-sm">NID: ${s.mNid || '-'}</p>
-                        <p class="text-sm">জন্ম তারিখ: ${s.mDob || '-'}</p>
-                        <p class="text-sm font-bold">মোবাইল: ${s.mMobile || '-'}</p>
-                    </div>
-                    <div class="col-span-2 bg-slate-800 text-white p-6 rounded-2xl flex justify-between items-center mt-2">
-                        <div><p class="text-xs opacity-60">জন্ম নিবন্ধন (BRN)</p><p class="text-lg font-bold">${s.birthReg || '-'}</p></div>
-                        <div class="text-right"><p class="text-xs opacity-60">জন্ম তারিখ</p><p class="font-bold">${s.dob || '-'}</p></div>
-                    </div>
-                </div>`;
-            document.getElementById('viewModal').classList.remove('hidden');
-        };
-
-        window.closeModal = () => document.getElementById('viewModal').classList.add('hidden');
-
         document.getElementById('studentForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const id = document.getElementById('editKey').value;
             const student = {
                 name: document.getElementById('stName').value, roll: document.getElementById('roll').value, className: document.getElementById('class').value,
-                father: document.getElementById('fName').value, fNid: document.getElementById('fNid').value, fDob: document.getElementById('fDob').value, fMobile: document.getElementById('fMobile').value,
-                mother: document.getElementById('mName').value, mNid: document.getElementById('mNid').value, mDob: document.getElementById('mDob').value, mMobile: document.getElementById('mMobile').value,
+                photo: document.getElementById('photoBase64').value,
+                fName: document.getElementById('fName').value, fMobile: document.getElementById('fMobile').value,
+                mName: document.getElementById('mName').value, mMobile: document.getElementById('mMobile').value,
                 birthReg: document.getElementById('birthReg').value, dob: document.getElementById('dob').value
             };
             set(id ? ref(db, `students/${id}`) : push(ref(db, 'students')), student).then(() => {
                 document.getElementById('studentForm').reset();
-                document.getElementById('editKey').value = "";
+                document.getElementById('imagePreview').classList.add('hidden');
+                document.getElementById('imgPlaceholder').classList.remove('hidden');
                 switchTab('viewTab');
             });
         });
@@ -277,14 +254,17 @@
         window.editRec = (id) => {
             const s = window.allData[id];
             document.getElementById('editKey').value = id;
-            document.getElementById('stName').value = s.name; document.getElementById('roll').value = s.roll; document.getElementById('class').value = s.className;
-            document.getElementById('fName').value = s.father || ""; document.getElementById('fNid').value = s.fNid || ""; document.getElementById('fDob').value = s.fDob || ""; document.getElementById('fMobile').value = s.fMobile || "";
-            document.getElementById('mName').value = s.mother || ""; document.getElementById('mNid').value = s.mNid || ""; document.getElementById('mDob').value = s.mDob || ""; document.getElementById('mMobile').value = s.mMobile || "";
-            document.getElementById('birthReg').value = s.birthReg || ""; document.getElementById('dob').value = s.dob || "";
+            document.getElementById('stName').value = s.name;
+            document.getElementById('photoBase64').value = s.photo || "";
+            if(s.photo) {
+                document.getElementById('imagePreview').src = s.photo;
+                document.getElementById('imagePreview').classList.remove('hidden');
+                document.getElementById('imgPlaceholder').classList.add('hidden');
+            }
             switchTab('entryTab');
         };
 
-        window.deleteRec = (id) => { if(confirm("মুছে ফেলতে চান?")) remove(ref(db, `students/${id}`)); };
+        window.deleteRec = (id) => { if(confirm("REMOVE DATA?")) remove(ref(db, `students/${id}`)); };
         document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
     </script>
 </body>
