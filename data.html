@@ -3,32 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্কুল ম্যানেজমেন্ট সিস্টেম | সোলাইমান লিপি এডিশন</title>
+    <title>স্কুল ম্যানেজমেন্ট সিস্টেম | সোলাইমান লিপি</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
-    
     <style>
-        body { 
-            font-family: 'SolaimanLipi', sans-serif; 
-            background-color: #f1f5f9; 
-            color: #334155;
-            font-size: 16px;
-        }
-        
-        /* সব ইনপুট এবং বাটনে ফন্ট সেট করা */
-        input, select, button, table, h1, h2, h3 { 
-            font-family: 'SolaimanLipi', sans-serif; 
-        }
-
+        body { font-family: 'SolaimanLipi', sans-serif; background-color: #f1f5f9; color: #334155; }
+        input, select, button, table { font-family: 'SolaimanLipi', sans-serif; }
         .tab-active { background: #2563eb !important; color: white !important; }
-        .list-row { transition: all 0.2s; border-bottom: 1px solid #e2e8f0; }
         .list-row:hover { background-color: #f8fafc; }
-        
-        /* থিম কালার */
         .theme-admin { background: linear-gradient(135deg, #ef4444, #b91c1c) !important; }
         .theme-head { background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important; }
-
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
@@ -36,10 +20,10 @@
 
     <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-[#0f172a] px-4">
         <div class="bg-white p-8 rounded-[30px] w-full max-w-md shadow-2xl text-center">
-            <h2 class="text-2xl font-bold mb-6">লগইন করুন</h2>
+            <h2 class="text-2xl font-bold mb-6 italic">SMS LOGIN</h2>
             <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="ইমেইল" class="w-full p-4 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-4 rounded-xl border outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="email" id="loginEmail" placeholder="ইমেইল" class="w-full p-4 rounded-xl border outline-none">
+                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-4 rounded-xl border outline-none">
                 <button id="loginBtn" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold">প্রবেশ করুন</button>
             </div>
         </div>
@@ -48,7 +32,7 @@
     <div id="mainApp" class="hidden">
         <nav class="no-print bg-white shadow-sm sticky top-0 z-50 p-4">
             <div class="max-w-[1400px] mx-auto flex justify-between items-center">
-                <h1 class="text-xl font-bold text-blue-600">স্কুল ম্যানেজমেন্ট ড্যাশবোর্ড</h1>
+                <h1 class="text-xl font-bold text-blue-600 uppercase">SMS Dashboard</h1>
                 <div class="flex bg-slate-100 p-1 rounded-xl">
                     <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2 text-sm font-bold rounded-lg tab-active">তালিকা দেখুন</button>
                     <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 text-sm font-bold rounded-lg text-slate-500">নতুন এন্ট্রি</button>
@@ -94,31 +78,29 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div><label class="font-bold text-sm mb-2 block">মোবাইল</label><input type="text" id="mobile" class="w-full p-3 bg-slate-50 border rounded-xl"></div>
                         <div><label class="font-bold text-sm mb-2 block">জন্ম নিবন্ধন</label><input type="text" id="birthReg" class="w-full p-3 bg-slate-50 border rounded-xl"></div>
-                        <div><label class="font-bold text-sm mb-2 block">জন্ম তারিখ (DOB)</label><input type="date" id="dob" class="w-full p-3 bg-slate-50 border rounded-xl"></div>
+                        <div><label class="font-bold text-sm mb-2 block">জন্ম তারিখ</label><input type="date" id="dob" class="w-full p-3 bg-slate-50 border rounded-xl"></div>
                     </div>
-                    <button type="submit" class="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold">সেভ করুন</button>
+                    <button type="submit" class="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold">তথ্য সেভ করুন</button>
                 </form>
             </div>
 
             <div id="viewTab" class="bg-white rounded-3xl shadow-sm border overflow-hidden">
-                <div class="p-6 border-b flex flex-col md:flex-row justify-between gap-4 bg-slate-50">
-                    <h2 class="font-bold text-lg">সকল শিক্ষার্থীর তালিকা</h2>
-                    <input type="text" id="searchBar" placeholder="নাম অথবা রোল দিয়ে খুঁজুন..." class="p-3 border rounded-xl w-full md:w-80 outline-none">
+                <div class="p-6 border-b flex justify-between items-center bg-slate-50">
+                    <h2 class="font-bold">শিক্ষার্থী তালিকা</h2>
+                    <input type="text" id="searchBar" placeholder="নাম/রোল খুঁজুন..." class="p-3 border rounded-xl w-64 outline-none">
                 </div>
-                
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-200 text-slate-600 text-sm">
+                        <thead class="bg-slate-100 text-sm">
+                            <tr>
                                 <th class="p-4 font-bold border-b">রোল</th>
-                                <th class="p-4 font-bold border-b">শিক্ষার্থীর নাম ও শ্রেণি</th>
-                                <th class="p-4 font-bold border-b">অভিভাবকের তথ্য (NID/DOB)</th>
+                                <th class="p-4 font-bold border-b">নাম ও শ্রেণি</th>
+                                <th class="p-4 font-bold border-b">অভিভাবকের তথ্য (NID)</th>
                                 <th class="p-4 font-bold border-b">মোবাইল নম্বর</th>
                                 <th class="p-4 font-bold border-b text-center no-print">অ্যাকশন</th>
                             </tr>
                         </thead>
-                        <tbody id="studentTableBody">
-                            </tbody>
+                        <tbody id="studentTableBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -129,7 +111,7 @@
         <div class="bg-white w-full max-w-2xl rounded-[30px] overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             <div id="modalContent" class="p-8 overflow-y-auto flex-1"></div>
             <div class="p-6 bg-slate-50 border-t flex gap-3 no-print">
-                <button onclick="window.print()" class="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold">প্রিন্ট রিপোর্ট</button>
+                <button onclick="window.print()" class="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold">প্রিন্ট</button>
                 <button onclick="closeModal()" class="flex-1 bg-white border py-3 rounded-xl font-bold text-slate-500">বন্ধ করুন</button>
             </div>
         </div>
@@ -153,37 +135,47 @@
 
         let currentUserRole = "teacher";
 
-        window.switchTab = (tabId) => {
-            document.getElementById('entryTab').classList.add('hidden');
-            document.getElementById('viewTab').classList.add('hidden');
-            document.getElementById(tabId).classList.remove('hidden');
-            document.getElementById('btnView').classList.toggle('tab-active', tabId === 'viewTab');
-            document.getElementById('btnEntry').classList.toggle('tab-active', tabId === 'entryTab');
-        };
+        const ADMIN_ID = "Q9AUB3tOiAYAO9HebLAPpKbjDCx1";
+        const HEAD_ID = "BcQXWMHQkJNrhhYkbJnVtsIffz33";
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
-                onValue(ref(db, `roles/${user.uid}`), (snapshot) => {
-                    currentUserRole = snapshot.val() || "teacher";
-                    const rText = document.getElementById('roleText');
-                    const rBox = document.getElementById('roleBox');
-                    rBox.classList.remove('theme-admin', 'theme-head');
-                    
-                    if(currentUserRole === "admin") { rText.innerText = "অ্যাডমিনিস্ট্রেটর"; rBox.classList.add('theme-admin'); }
-                    else if(currentUserRole === "head_teacher") { rText.innerText = "প্রধান শিক্ষক"; rBox.classList.add('theme-head'); }
-                    else { rText.innerText = "সহকারী শিক্ষক"; }
-                    loadData();
-                });
+                
+                const roleText = document.getElementById('roleText');
+                const roleBox = document.getElementById('roleBox');
+                roleBox.classList.remove('theme-admin', 'theme-head');
+
+                // রোল ডিফাইন করা হচ্ছে আইডি অনুযায়ী
+                if (user.uid === ADMIN_ID) {
+                    currentUserRole = "admin";
+                    roleText.innerText = "অ্যাডমিনিস্ট্রেটর";
+                    roleBox.classList.add('theme-admin');
+                } else if (user.uid === HEAD_ID) {
+                    currentUserRole = "head_teacher";
+                    roleText.innerText = "প্রধান শিক্ষক";
+                    roleBox.classList.add('theme-head');
+                } else {
+                    currentUserRole = "teacher";
+                    roleText.innerText = "সহকারী শিক্ষক";
+                }
+                loadData();
             } else {
                 document.getElementById('loginArea').classList.remove('hidden');
                 document.getElementById('mainApp').classList.add('hidden');
             }
         });
 
+        window.switchTab = (id) => {
+            document.getElementById('entryTab').classList.toggle('hidden', id !== 'entryTab');
+            document.getElementById('viewTab').classList.toggle('hidden', id !== 'viewTab');
+            document.getElementById('btnView').classList.toggle('tab-active', id === 'viewTab');
+            document.getElementById('btnEntry').classList.toggle('tab-active', id === 'entryTab');
+        };
+
         document.getElementById('loginBtn').addEventListener('click', () => {
-            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(() => alert('লগইন ব্যর্থ!'));
+            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(() => alert('ভুল ইমেইল বা পাসওয়ার্ড!'));
         });
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
@@ -194,26 +186,26 @@
                 const data = snapshot.val() || {};
                 window.allData = data;
 
-                Object.keys(data).sort((a,b) => data[a].roll - data[b].roll).forEach(id => {
+                Object.keys(data).forEach(id => {
                     const s = data[id];
                     if (s.name.includes(searchTerm) || s.roll.toString().includes(searchTerm)) {
                         body.innerHTML += `
-                            <tr class="list-row text-sm">
-                                <td class="p-4 font-bold text-blue-600">রোল-${s.roll}</td>
+                            <tr class="list-row text-sm border-b">
+                                <td class="p-4 font-bold text-blue-600">${s.roll}</td>
                                 <td class="p-4">
-                                    <div class="font-bold text-slate-800">${s.name}</div>
-                                    <div class="text-[12px] text-slate-400">${s.className}</div>
+                                    <div class="font-bold">${s.name}</div>
+                                    <div class="text-xs text-slate-400">${s.className}</div>
                                 </td>
                                 <td class="p-4">
-                                    <div class="mb-1"><span class="font-bold text-blue-500">পিতা:</span> ${s.father || '-'} | <span class="text-xs text-slate-400">${s.fNid || ''}</span></div>
-                                    <div><span class="font-bold text-pink-500">মাতা:</span> ${s.mother || '-'} | <span class="text-xs text-slate-400">${s.mNid || ''}</span></div>
+                                    <div class="mb-1"><span class="font-bold text-blue-500 text-xs">পিতা:</span> ${s.father || '-'} | <span class="text-[10px] text-slate-400">${s.fNid || ''}</span></div>
+                                    <div><span class="font-bold text-pink-500 text-xs">মাতা:</span> ${s.mother || '-'} | <span class="text-[10px] text-slate-400">${s.mNid || ''}</span></div>
                                 </td>
                                 <td class="p-4 font-bold text-slate-700">${s.mobile || '-'}</td>
                                 <td class="p-4 no-print text-center">
                                     <div class="flex justify-center gap-2">
-                                        <button onclick="viewRec('${id}')" title="দেখুন" class="bg-slate-100 p-2 rounded-lg">👁️</button>
-                                        <button onclick="editRec('${id}')" title="এডিট" class="bg-blue-50 p-2 rounded-lg text-blue-600">✏️</button>
-                                        ${currentUserRole === 'admin' ? `<button onclick="deleteRec('${id}')" title="ডিলিট" class="bg-red-50 p-2 rounded-lg text-red-500">🗑️</button>` : ''}
+                                        <button onclick="viewRec('${id}')" class="bg-slate-100 p-2 rounded-lg">👁️</button>
+                                        <button onclick="editRec('${id}')" class="bg-blue-50 p-2 rounded-lg text-blue-600">✏️</button>
+                                        ${currentUserRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="bg-red-50 p-2 rounded-lg text-red-500">🗑️</button>` : ''}
                                     </div>
                                 </td>
                             </tr>`;
@@ -225,35 +217,15 @@
         window.viewRec = (id) => {
             const s = window.allData[id];
             document.getElementById('modalContent').innerHTML = `
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold mb-2">${s.name}</h2>
-                    <p class="text-blue-600 font-bold text-lg">${s.className} | রোল নম্বর: ${s.roll}</p>
-                </div>
+                <div class="text-center mb-6"><h2 class="text-2xl font-bold">${s.name}</h2><p class="text-blue-600 font-bold">${s.className} | রোল: ${s.roll}</p></div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="p-5 bg-blue-50 rounded-2xl border border-blue-100">
-                        <h4 class="font-bold text-blue-800 mb-3 border-b border-blue-200">পিতার বিস্তারিত</h4>
-                        <p class="mb-1">নাম: ${s.father || '-'}</p>
-                        <p class="mb-1">NID: ${s.fNid || '-'}</p>
-                        <p>জন্ম তারিখ: ${s.fDob || '-'}</p>
+                    <div class="p-4 bg-blue-50 rounded-xl"><p class="font-bold text-blue-800 border-b mb-2 text-xs">পিতার তথ্য</p><p class="text-sm">নাম: ${s.father || '-'}</p><p class="text-sm">NID: ${s.fNid || '-'}</p></div>
+                    <div class="p-4 bg-pink-50 rounded-xl"><p class="font-bold text-pink-800 border-b mb-2 text-xs">মাতার তথ্য</p><p class="text-sm">নাম: ${s.mother || '-'}</p><p class="text-sm">NID: ${s.mNid || '-'}</p></div>
+                    <div class="col-span-2 bg-slate-800 text-white p-4 rounded-xl flex justify-between items-center">
+                        <div><p class="text-[10px] opacity-60">মোবাইল</p><p class="font-bold">${s.mobile}</p></div>
+                        <div class="text-right"><p class="text-[10px] opacity-60">জন্ম নিবন্ধন</p><p class="text-sm">${s.birthReg}</p></div>
                     </div>
-                    <div class="p-5 bg-pink-50 rounded-2xl border border-pink-100">
-                        <h4 class="font-bold text-pink-800 mb-3 border-b border-pink-200">মাতার বিস্তারিত</h4>
-                        <p class="mb-1">নাম: ${s.mother || '-'}</p>
-                        <p class="mb-1">NID: ${s.mNid || '-'}</p>
-                        <p>জন্ম তারিখ: ${s.mDob || '-'}</p>
-                    </div>
-                    <div class="col-span-2 bg-slate-800 text-white p-6 rounded-2xl flex justify-between items-center">
-                        <div>
-                            <p class="text-xs text-white/60 mb-1">শিক্ষার্থীর মোবাইল নম্বর</p>
-                            <p class="text-xl font-bold tracking-wider">${s.mobile}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs text-white/60 mb-1">জন্ম নিবন্ধন</p>
-                            <p class="font-bold">${s.birthReg}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
+                </div>`;
             document.getElementById('viewModal').classList.remove('hidden');
         };
 
@@ -263,21 +235,12 @@
             e.preventDefault();
             const id = document.getElementById('editKey').value;
             const student = {
-                name: document.getElementById('stName').value,
-                roll: document.getElementById('roll').value,
-                className: document.getElementById('class').value,
-                father: document.getElementById('fName').value,
-                fNid: document.getElementById('fNid').value,
-                fDob: document.getElementById('fDob').value,
-                mother: document.getElementById('mName').value,
-                mNid: document.getElementById('mNid').value,
-                mDob: document.getElementById('mDob').value,
-                mobile: document.getElementById('mobile').value,
-                birthReg: document.getElementById('birthReg').value,
-                dob: document.getElementById('dob').value
+                name: document.getElementById('stName').value, roll: document.getElementById('roll').value, className: document.getElementById('class').value,
+                father: document.getElementById('fName').value, fNid: document.getElementById('fNid').value, fDob: document.getElementById('fDob').value,
+                mother: document.getElementById('mName').value, mNid: document.getElementById('mNid').value, mDob: document.getElementById('mDob').value,
+                mobile: document.getElementById('mobile').value, birthReg: document.getElementById('birthReg').value, dob: document.getElementById('dob').value
             };
-            const saveRef = id ? ref(db, `students/${id}`) : push(ref(db, 'students'));
-            set(saveRef, student).then(() => {
+            set(id ? ref(db, `students/${id}`) : push(ref(db, 'students')), student).then(() => {
                 document.getElementById('studentForm').reset();
                 document.getElementById('editKey').value = "";
                 switchTab('viewTab');
@@ -287,22 +250,14 @@
         window.editRec = (id) => {
             const s = window.allData[id];
             document.getElementById('editKey').value = id;
-            document.getElementById('stName').value = s.name;
-            document.getElementById('roll').value = s.roll;
-            document.getElementById('class').value = s.className;
-            document.getElementById('fName').value = s.father || "";
-            document.getElementById('fNid').value = s.fNid || "";
-            document.getElementById('fDob').value = s.fDob || "";
-            document.getElementById('mName').value = s.mother || "";
-            document.getElementById('mNid').value = s.mNid || "";
-            document.getElementById('mDob').value = s.mDob || "";
-            document.getElementById('mobile').value = s.mobile || "";
-            document.getElementById('birthReg').value = s.birthReg || "";
-            document.getElementById('dob').value = s.dob || "";
+            document.getElementById('stName').value = s.name; document.getElementById('roll').value = s.roll; document.getElementById('class').value = s.className;
+            document.getElementById('fName').value = s.father || ""; document.getElementById('fNid').value = s.fNid || ""; document.getElementById('fDob').value = s.fDob || "";
+            document.getElementById('mName').value = s.mother || ""; document.getElementById('mNid').value = s.mNid || ""; document.getElementById('mDob').value = s.mDob || "";
+            document.getElementById('mobile').value = s.mobile || ""; document.getElementById('birthReg').value = s.birthReg || ""; document.getElementById('dob').value = s.dob || "";
             switchTab('entryTab');
         };
 
-        window.deleteRec = (id) => { if(confirm("এই তথ্যটি কি চিরতরে মুছে ফেলতে চান?")) remove(ref(db, `students/${id}`)); };
+        window.deleteRec = (id) => { if(confirm("মুছে ফেলতে চান?")) remove(ref(db, `students/${id}`)); };
         document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
     </script>
 </body>
