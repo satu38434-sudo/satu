@@ -3,110 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.M.S Engine</title>
+    <title>Core Database System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
-        body { font-family: 'SolaimanLipi', sans-serif; background-color: #f8fafc; color: #334155; }
-        .theme-admin { background: #fee2e2; border: 1px solid #ef4444; color: #991b1b !important; }
-        .theme-head { background: #dbeafe; border: 1px solid #3b82f6; color: #1e40af !important; }
-        .theme-teacher { background: #f1f5f9; border: 1px solid #cbd5e1; color: #475569 !important; }
-        @media print { .no-print { display: none !important; } }
+        body { font-family: 'SolaimanLipi', sans-serif; background-color: #020617; color: #f1f5f9; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); }
+        .tab-active { background: #3b82f6 !important; color: white !important; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        input, select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; }
+        @media print { .no-print { display: none !important; } body { background: white; color: black; } }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
-    <div id="loginArea" class="no-print min-h-screen flex items-center justify-center bg-[#020617] px-4">
-        <div class="bg-white p-10 rounded-[40px] w-full max-w-md shadow-2xl text-center border border-slate-800">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-6 flex items-center justify-center text-white text-2xl font-bold">S</div>
-            <h2 class="text-xl font-bold mb-8 tracking-widest text-slate-800 uppercase">Secure Access</h2>
+    <div id="loginArea" class="no-print min-h-screen flex items-center justify-center px-4">
+        <div class="glass p-10 rounded-[45px] w-full max-w-md shadow-2xl text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-lg">
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+            <h2 class="text-xl font-bold mb-8 tracking-widest uppercase">System Access</h2>
             <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="Username" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500">
-                <input type="password" id="loginPass" placeholder="Password" class="w-full p-4 rounded-2xl border bg-slate-50 outline-none focus:ring-2 focus:ring-blue-500">
-                <button id="loginBtn" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all">CONNECT</button>
+                <input type="email" id="loginEmail" placeholder="Email/ID" class="w-full p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="loginPass" placeholder="Password" class="w-full p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
+                <button id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-2xl font-bold transition-all active:scale-95">CONNECT</button>
             </div>
         </div>
     </div>
 
     <div id="mainApp" class="hidden">
-        <nav class="no-print bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 p-4 border-b">
+        <nav class="no-print glass sticky top-0 z-50 p-4 mb-6 border-b border-white/5">
             <div class="max-w-[1400px] mx-auto flex justify-between items-center">
-                <h1 class="font-bold text-slate-900 tracking-tighter">SMS<span class="text-blue-600">PRO</span></h1>
-                <div class="flex bg-slate-200/50 p-1 rounded-2xl">
-                    <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2 text-sm font-bold rounded-xl bg-white shadow-sm">তালিকা</button>
-                    <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 text-sm font-bold rounded-xl text-slate-500">এন্ট্রি</button>
+                <h1 class="font-black text-2xl tracking-tighter text-blue-500">SMS<span class="text-white">CORE</span></h1>
+                <div class="flex gap-2 bg-slate-900/50 p-1.5 rounded-2xl border border-white/5">
+                    <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2 text-sm font-bold rounded-xl transition-all tab-active">Records</button>
+                    <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 text-sm font-bold rounded-xl text-slate-400">Entry</button>
                 </div>
-                <button id="logoutBtn" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl font-bold text-xs">EXIT</button>
+                <button id="logoutBtn" class="text-red-400 text-xs font-bold uppercase hover:bg-red-500/10 px-4 py-2 rounded-xl">Exit</button>
             </div>
         </nav>
 
-        <div class="max-w-[1400px] mx-auto p-6">
-            <div id="roleBox" class="mb-8 p-4 rounded-2xl shadow-sm inline-block theme-teacher">
-                <p class="text-[9px] opacity-60 uppercase font-bold tracking-widest">System Status</p>
-                <h3 id="roleText" class="font-bold">Authenticating...</h3>
+        <div class="max-w-[1400px] mx-auto px-4">
+            <div class="mb-8 flex items-center gap-3 bg-white/5 p-3 rounded-2xl inline-flex">
+                <div id="statusDot" class="w-3 h-3 rounded-full bg-slate-500 animate-pulse"></div>
+                <h3 id="roleText" class="text-[10px] font-mono uppercase tracking-[0.2em] text-slate-400">Syncing...</h3>
             </div>
 
-            <div id="entryTab" class="hidden no-print bg-white p-8 rounded-[35px] shadow-sm border mb-10">
+            <div id="entryTab" class="hidden no-print glass p-8 rounded-[40px] shadow-2xl mb-10">
                 <form id="studentForm">
                     <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
                     
-                    <div class="flex flex-col md:flex-row gap-8 mb-8 items-center border-b pb-8 border-dashed">
-                        <div class="w-32 h-32 bg-slate-50 rounded-[30px] border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden relative">
+                    <div class="flex flex-col md:flex-row gap-8 mb-10 items-center">
+                        <div class="w-36 h-36 bg-slate-800 rounded-3xl border-2 border-dashed border-slate-600 flex items-center justify-center overflow-hidden relative group">
                             <img id="imagePreview" class="hidden w-full h-full object-cover">
-                            <span id="imgPlaceholder" class="text-slate-400 text-[10px] font-bold">PHOTO</span>
+                            <div id="imgPlaceholder" class="text-center">
+                                <span class="text-slate-500 text-[10px] font-bold block uppercase">Student Photo</span>
+                                <span class="text-slate-600 text-[8px] mt-1 block">Auto 200x200</span>
+                            </div>
                             <input type="file" id="stPhoto" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 w-full">
-                            <div><label class="font-bold text-xs text-slate-500 mb-2 block">নাম</label><input type="text" id="stName" class="w-full p-3 bg-slate-50 border rounded-xl" required></div>
-                            <div><label class="font-bold text-xs text-slate-500 mb-2 block">শ্রেণি</label>
-                                <select id="class" class="w-full p-3 bg-slate-50 border rounded-xl">
-                                    <option value="১ম">১ম শ্রেণি</option><option value="২য়">২য় শ্রেণি</option>
-                                    <option value="৩য়">৩য় শ্রেণি</option><option value="৪র্থ">৪র্থ শ্রেণি</option>
-                                    <option value="৫ম">৫ম শ্রেণি</option>
+                            <div><label class="text-[10px] text-slate-500 mb-2 block uppercase font-bold tracking-widest">Full Name</label><input type="text" id="stName" class="w-full p-4 rounded-2xl outline-none" required></div>
+                            <div><label class="text-[10px] text-slate-500 mb-2 block uppercase font-bold tracking-widest">Class Segment</label>
+                                <select id="class" class="w-full p-4 rounded-2xl outline-none">
+                                    <option value="১ম">Class 1</option><option value="২য়">Class 2</option><option value="৩য়">Class 3</option><option value="৪র্থ">Class 4</option><option value="৫ম">Class 5</option>
                                 </select>
                             </div>
-                            <div><label class="font-bold text-xs text-slate-500 mb-2 block">রোল</label><input type="number" id="roll" class="w-full p-3 bg-slate-50 border rounded-xl" required></div>
+                            <div><label class="text-[10px] text-slate-500 mb-2 block uppercase font-bold tracking-widest">Identity / Roll</label><input type="number" id="roll" class="w-full p-4 rounded-2xl outline-none" required></div>
                         </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div><label class="font-bold text-xs text-blue-600 mb-2 block uppercase">Birth Reg (BRN)</label><input type="text" id="birthReg" class="w-full p-3 bg-blue-50/30 border-2 border-blue-50 rounded-xl outline-none focus:border-blue-200"></div>
-                        <div><label class="font-bold text-xs text-blue-600 mb-2 block uppercase">Date of Birth</label><input type="date" id="dob" class="w-full p-3 bg-blue-50/30 border-2 border-blue-50 rounded-xl"></div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                        <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                            <h4 class="font-bold mb-4 text-slate-700 text-sm flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> পিতার তথ্য</h4>
-                            <input type="text" id="fName" placeholder="নাম" class="w-full p-3 mb-3 border rounded-xl">
-                            <input type="text" id="fMobile" placeholder="মোবাইল নম্বর" class="w-full p-3 border rounded-xl">
+                        <div class="p-8 bg-white/5 rounded-[30px] border border-white/5">
+                            <h4 class="text-blue-400 text-xs font-bold mb-6 uppercase tracking-tighter">Paternal Info</h4>
+                            <input type="text" id="fName" placeholder="Father's Name" class="w-full p-4 mb-4 rounded-2xl outline-none">
+                            <input type="text" id="fMobile" placeholder="Contact Number" class="w-full p-4 rounded-2xl outline-none">
                         </div>
-                        <div class="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                            <h4 class="font-bold mb-4 text-slate-700 text-sm flex items-center gap-2"><span class="w-2 h-2 bg-pink-500 rounded-full"></span> মাতার তথ্য</h4>
-                            <input type="text" id="mName" placeholder="নাম" class="w-full p-3 mb-3 border rounded-xl">
-                            <input type="text" id="mMobile" placeholder="মোবাইল নম্বর" class="w-full p-3 border rounded-xl">
+                        <div class="p-8 bg-white/5 rounded-[30px] border border-white/5">
+                            <h4 class="text-pink-400 text-xs font-bold mb-6 uppercase tracking-tighter">Maternal Info</h4>
+                            <input type="text" id="mName" placeholder="Mother's Name" class="w-full p-4 mb-4 rounded-2xl outline-none">
+                            <input type="text" id="mMobile" placeholder="Contact Number" class="w-full p-4 rounded-2xl outline-none">
                         </div>
                     </div>
 
-                    <button type="submit" class="bg-blue-600 text-white px-10 py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all">SAVE RECORD</button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-12 py-5 rounded-2xl font-bold transition-all shadow-xl shadow-indigo-500/20 active:scale-95 text-sm uppercase tracking-widest">Execute Save</button>
                 </form>
             </div>
 
-            <div id="viewTab" class="bg-white rounded-[35px] shadow-sm border overflow-hidden">
-                <div class="p-6 border-b flex justify-between items-center bg-slate-50/50">
-                    <h2 class="font-bold text-slate-800">Students Database</h2>
-                    <input type="text" id="searchBar" placeholder="Search..." class="p-3 border rounded-2xl w-64 outline-none focus:ring-2 focus:ring-blue-100">
+            <div id="viewTab" class="glass rounded-[45px] shadow-2xl overflow-hidden mb-10">
+                <div class="p-8 flex flex-col md:flex-row justify-between items-center border-b border-white/5 gap-4">
+                    <h2 class="font-bold tracking-widest text-slate-400 uppercase text-xs">Registry Node</h2>
+                    <input type="text" id="searchBar" placeholder="Quick Search..." class="p-3 px-6 rounded-2xl w-full md:w-80 outline-none text-xs focus:ring-2 focus:ring-blue-500/50">
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
-                        <thead class="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500">
+                        <thead class="text-[9px] uppercase tracking-[0.3em] text-slate-500 bg-slate-900/30">
                             <tr>
-                                <th class="p-5 font-bold border-b">রোল ও ছবি</th>
-                                <th class="p-5 font-bold border-b">শিক্ষার্থীর নাম</th>
-                                <th class="p-5 font-bold border-b">যোগাযোগ (পিতা/মাতা)</th>
-                                <th class="p-5 font-bold border-b text-center no-print">অ্যাকশন</th>
+                                <th class="p-6 font-bold">Profile</th>
+                                <th class="p-6 font-bold">Student Data</th>
+                                <th class="p-6 font-bold">Guardian Details</th>
+                                <th class="p-6 font-bold text-center no-print">Control</th>
                             </tr>
                         </thead>
-                        <tbody id="studentTableBody" class="text-sm"></tbody>
+                        <tbody id="studentTableBody" class="text-sm divide-y divide-white/5"></tbody>
                     </table>
                 </div>
             </div>
@@ -129,31 +127,30 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
+        // --- আপনার নির্দিষ্ট UID লজিক ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                const mail = user.email.toLowerCase();
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 
                 const roleText = document.getElementById('roleText');
-                const roleBox = document.getElementById('roleBox');
+                const dot = document.getElementById('statusDot');
                 
-                // আপনার গোপন লগইন সাইন লজিক
-                const isAdmin = mail.charAt(2) === 'd' && mail.split('@')[0].endsWith('n');
-                const isHead = mail.charAt(1) === 'u' && mail.includes('a');
+                const ADMIN_ID = "Q9AUB3tOiAYAO9HebLAPpKbjDCx1";
+                const HEAD_ID = "BcQXWMHQkJNrhhYkbJnVtsIffz33";
 
-                if (isAdmin) {
+                if (user.uid === ADMIN_ID) {
                     window.currentUserRole = "admin";
-                    roleText.innerText = "Master Control Active";
-                    roleBox.className = "mb-8 p-4 rounded-2xl shadow-sm inline-block theme-admin";
-                } else if (isHead) {
+                    roleText.innerText = "System Architect: 00";
+                    dot.className = "w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_15px_#3b82f6]";
+                } else if (user.uid === HEAD_ID) {
                     window.currentUserRole = "head_teacher";
-                    roleText.innerText = "Verified Supervisor";
-                    roleBox.className = "mb-8 p-4 rounded-2xl shadow-sm inline-block theme-head";
+                    roleText.innerText = "Supervisor Node: 01";
+                    dot.className = "w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]";
                 } else {
                     window.currentUserRole = "teacher";
-                    roleText.innerText = "সহকারী শিক্ষক";
-                    roleBox.className = "mb-8 p-4 rounded-2xl shadow-sm inline-block theme-teacher";
+                    roleText.innerText = "General Node: Active";
+                    dot.className = "w-3 h-3 rounded-full bg-slate-500";
                 }
                 loadData();
             } else {
@@ -162,7 +159,7 @@
             }
         });
 
-        // ফটো রিসাইজ (200x200) ও কমপ্রেশন (50KB)
+        // --- স্মার্ট ইমেজ প্রসেসিং (200x200 & <50KB) ---
         document.getElementById('stPhoto').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -173,10 +170,18 @@
                         const canvas = document.createElement('canvas');
                         canvas.width = 200; canvas.height = 200;
                         const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, 200, 200);
-                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.6); // 60% quality
-                        document.getElementById('photoBase64').value = compressedBase64;
-                        document.getElementById('imagePreview').src = compressedBase64;
+                        
+                        // সেন্টার ক্রপিং (Square Crop)
+                        let side = Math.min(img.width, img.height);
+                        let x = (img.width - side) / 2;
+                        let y = (img.height - side) / 2;
+                        
+                        ctx.drawImage(img, x, y, side, side, 0, 0, 200, 200);
+                        
+                        // কোয়ালিটি ০.৪ দিলে ছবি ২০-৩৫ কেবি এর মধ্যে থাকবে
+                        const compressed = canvas.toDataURL('image/jpeg', 0.4);
+                        document.getElementById('photoBase64').value = compressed;
+                        document.getElementById('imagePreview').src = compressed;
                         document.getElementById('imagePreview').classList.remove('hidden');
                         document.getElementById('imgPlaceholder').classList.add('hidden');
                     };
@@ -189,13 +194,16 @@
         window.switchTab = (id) => {
             document.getElementById('entryTab').classList.toggle('hidden', id !== 'entryTab');
             document.getElementById('viewTab').classList.toggle('hidden', id !== 'viewTab');
-            document.getElementById('btnView').className = id === 'viewTab' ? "px-6 py-2 text-sm font-bold rounded-xl bg-white shadow-sm" : "px-6 py-2 text-sm font-bold rounded-xl text-slate-500";
-            document.getElementById('btnEntry').className = id === 'entryTab' ? "px-6 py-2 text-sm font-bold rounded-xl bg-white shadow-sm" : "px-6 py-2 text-sm font-bold rounded-xl text-slate-500";
+            document.getElementById('btnView').classList.toggle('tab-active', id === 'viewTab');
+            document.getElementById('btnEntry').classList.toggle('tab-active', id === 'entryTab');
         };
 
         document.getElementById('loginBtn').addEventListener('click', () => {
-            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(() => alert('DENIED'));
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(() => alert('DENIED: ACCESS REVOKED'));
         });
+
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
         function loadData(searchTerm = "") {
@@ -207,24 +215,29 @@
 
                 Object.keys(data).sort((a,b) => data[a].roll - data[b].roll).forEach(id => {
                     const s = data[id];
-                    if (s.name.includes(searchTerm) || s.roll.toString().includes(searchTerm)) {
+                    if (s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.roll.toString().includes(searchTerm)) {
                         body.innerHTML += `
-                            <tr class="hover:bg-slate-50 transition-all border-b border-slate-100">
-                                <td class="p-5 flex items-center gap-4">
-                                    <img src="${s.photo || 'https://via.placeholder.com/200'}" class="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-md">
-                                    <span class="font-bold text-blue-600">রোল-${s.roll}</span>
+                            <tr class="hover:bg-white/5 transition-all group">
+                                <td class="p-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-14 h-14 rounded-2xl bg-slate-800 border border-white/10 overflow-hidden shadow-lg group-hover:border-blue-500/50 transition-all">
+                                            <img src="${s.photo || 'https://via.placeholder.com/200'}" class="w-full h-full object-cover">
+                                        </div>
+                                        <span class="font-black text-blue-500 text-xl tracking-tighter">#${s.roll}</span>
+                                    </div>
                                 </td>
-                                <td class="p-5 uppercase font-bold text-slate-700">
-                                    ${s.name} <br> <span class="text-[10px] text-slate-400 lowercase">${s.className}</span>
+                                <td class="p-6">
+                                    <div class="font-bold text-slate-200 uppercase tracking-wider">${s.name}</div>
+                                    <div class="text-[10px] text-slate-500 font-mono mt-1">${s.className} Segment</div>
                                 </td>
-                                <td class="p-5 text-xs">
-                                    <div class="mb-1">👨‍👦 ${s.fName || '-'} <span class="text-blue-500 ml-2">${s.fMobile || ''}</span></div>
-                                    <div>👩‍👦 ${s.mName || '-'} <span class="text-pink-500 ml-2">${s.mMobile || ''}</span></div>
+                                <td class="p-6 text-xs text-slate-400">
+                                    <div class="mb-1">F: ${s.fName || '-'} <span class="text-blue-500/70 ml-2">${s.fMobile || ''}</span></div>
+                                    <div>M: ${s.mName || '-'} <span class="text-pink-500/70 ml-2">${s.mMobile || ''}</span></div>
                                 </td>
-                                <td class="p-5 no-print text-center">
+                                <td class="p-6 no-print text-center">
                                     <div class="flex justify-center gap-2">
-                                        <button onclick="editRec('${id}')" class="p-2 bg-slate-100 rounded-xl hover:bg-blue-100 text-blue-600 transition-all">✏️</button>
-                                        ${window.currentUserRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="p-2 bg-slate-100 rounded-xl hover:bg-red-100 text-red-500 transition-all">🗑️</button>` : ''}
+                                        <button onclick="editRec('${id}')" class="p-3 bg-white/5 rounded-xl hover:bg-blue-600/20 text-blue-400 transition-all active:scale-90">✏️</button>
+                                        ${window.currentUserRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="p-3 bg-white/5 rounded-xl hover:bg-red-600/20 text-red-400 transition-all active:scale-90">🗑️</button>` : ''}
                                     </div>
                                 </td>
                             </tr>`;
@@ -237,16 +250,20 @@
             e.preventDefault();
             const id = document.getElementById('editKey').value;
             const student = {
-                name: document.getElementById('stName').value, roll: document.getElementById('roll').value, className: document.getElementById('class').value,
+                name: document.getElementById('stName').value, 
+                roll: document.getElementById('roll').value, 
+                className: document.getElementById('class').value,
                 photo: document.getElementById('photoBase64').value,
-                fName: document.getElementById('fName').value, fMobile: document.getElementById('fMobile').value,
-                mName: document.getElementById('mName').value, mMobile: document.getElementById('mMobile').value,
-                birthReg: document.getElementById('birthReg').value, dob: document.getElementById('dob').value
+                fName: document.getElementById('fName').value, 
+                fMobile: document.getElementById('fMobile').value,
+                mName: document.getElementById('mName').value, 
+                mMobile: document.getElementById('mMobile').value
             };
             set(id ? ref(db, `students/${id}`) : push(ref(db, 'students')), student).then(() => {
                 document.getElementById('studentForm').reset();
                 document.getElementById('imagePreview').classList.add('hidden');
                 document.getElementById('imgPlaceholder').classList.remove('hidden');
+                document.getElementById('editKey').value = "";
                 switchTab('viewTab');
             });
         });
@@ -255,16 +272,20 @@
             const s = window.allData[id];
             document.getElementById('editKey').value = id;
             document.getElementById('stName').value = s.name;
+            document.getElementById('roll').value = s.roll;
+            document.getElementById('class').value = s.className;
             document.getElementById('photoBase64').value = s.photo || "";
             if(s.photo) {
                 document.getElementById('imagePreview').src = s.photo;
                 document.getElementById('imagePreview').classList.remove('hidden');
                 document.getElementById('imgPlaceholder').classList.add('hidden');
             }
+            document.getElementById('fName').value = s.fName || ""; document.getElementById('fMobile').value = s.fMobile || "";
+            document.getElementById('mName').value = s.mName || ""; document.getElementById('mMobile').value = s.mMobile || "";
             switchTab('entryTab');
         };
 
-        window.deleteRec = (id) => { if(confirm("REMOVE DATA?")) remove(ref(db, `students/${id}`)); };
+        window.deleteRec = (id) => { if(confirm("PERMANENTLY REMOVE NODE?")) remove(ref(db, `students/${id}`)); };
         document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
     </script>
 </body>
