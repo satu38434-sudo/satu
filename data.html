@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>স্কুল ম্যানেজমেন্ট সিস্টেম | সোলাইমান লিপি</title>
+    <title>স্কুল ম্যানেজমেন্ট সিস্টেম</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
@@ -12,7 +12,6 @@
         .tab-active { background: #2563eb !important; color: white !important; }
         .list-row:hover { background-color: #f8fafc; }
         
-        /* পদবি বক্স কালার সংশোধন */
         .theme-admin { background: #fee2e2; border: 2px solid #ef4444; color: #991b1b !important; }
         .theme-head { background: #dbeafe; border: 2px solid #3b82f6; color: #1e40af !important; }
         .theme-teacher { background: #f1f5f9; border: 2px solid #64748b; color: #334155 !important; }
@@ -143,8 +142,8 @@
         const db = getDatabase(app);
 
         let currentUserRole = "teacher";
-        const ADMIN_ID = "Q9AUB3tOiAYAO9HebLAPpKbjDCx1";
-        const HEAD_ID = "BcQXWMHQkJNrhhYkbJnVtsIffz33";
+        const A_ID = "Q9AUB3tOiAYAO9HebLAPpKbjDCx1";
+        const H_ID = "BcQXWMHQkJNrhhYkbJnVtsIffz33";
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -154,9 +153,9 @@
                 const roleBox = document.getElementById('roleBox');
                 roleBox.classList.remove('theme-admin', 'theme-head', 'theme-teacher');
 
-                if (user.uid === ADMIN_ID) {
+                if (user.uid === A_ID) {
                     currentUserRole = "admin"; roleText.innerText = "অ্যাডমিনিস্ট্রেটর (Admin)"; roleBox.classList.add('theme-admin');
-                } else if (user.uid === HEAD_ID) {
+                } else if (user.uid === H_ID) {
                     currentUserRole = "head_teacher"; roleText.innerText = "প্রধান শিক্ষক (Head Teacher)"; roleBox.classList.add('theme-head');
                 } else {
                     currentUserRole = "teacher"; roleText.innerText = "সহকারী শিক্ষক"; roleBox.classList.add('theme-teacher');
