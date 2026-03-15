@@ -31,7 +31,6 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
-            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .glass { 
@@ -41,24 +40,19 @@
             border-radius: 16px;
         }
 
-        .school-title {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tab-active { 
-            background: var(--accent) !important; 
-            color: #fff !important; 
-        }
+        .school-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         input, select { 
             background: var(--input-bg) !important; 
             border: 1px solid var(--border) !important; 
             color: var(--text-main) !important;
+            padding: 12px;
+            border-radius: 12px;
             outline: none;
+            width: 100%;
         }
 
+        .tab-active { background: var(--accent) !important; color: #fff !important; }
         #viewModal { display: none; }
         @media print { .no-print { display: none !important; } }
     </style>
@@ -69,14 +63,10 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
             <div class="flex items-center gap-2 min-w-0">
                 <img src="/icon.svg" alt="Icon" class="w-8 h-8 flex-shrink-0">
-                <div class="min-w-0">
-                    <h1 class="text-sm md:text-lg font-black school-title">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
-                </div>
+                <h1 class="text-sm md:text-lg font-black school-title">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
             </div>
-            <div class="flex items-center gap-2 flex-shrink-0">
-                <button onclick="toggleTheme()" class="p-2 glass rounded-full">
-                    <i id="themeIcon" data-lucide="moon" size="18"></i>
-                </button>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleTheme()" class="p-2 glass rounded-full"><i id="themeIcon" data-lucide="moon" size="18"></i></button>
                 <button id="logoutBtn" class="hidden text-rose-500 p-2"><i data-lucide="log-out"></i></button>
             </div>
         </div>
@@ -84,12 +74,11 @@
 
     <div id="loginArea" class="min-h-[70vh] flex items-center justify-center p-4 no-print">
         <div class="glass p-8 w-full max-w-sm text-center shadow-xl">
-            <img src="/icon.svg" class="w-12 h-12 mx-auto mb-4">
-            <h2 class="text-xl font-bold mb-6">অ্যাডমিন লগইন</h2>
+            <h2 class="text-xl font-bold mb-6">লগইন করুন</h2>
             <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="ইমেইল" class="w-full p-3 rounded-xl">
-                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full p-3 rounded-xl">
-                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-3 rounded-xl font-bold hover:bg-cyan-500">লগইন</button>
+                <input type="email" id="loginEmail" placeholder="ইমেইল">
+                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
+                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-3 rounded-xl font-bold">লগইন</button>
             </div>
         </div>
     </div>
@@ -107,16 +96,16 @@
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <i data-lucide="search" class="text-slate-400" size="18"></i>
                 </div>
-                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="w-full pl-10 pr-4 py-3 glass">
+                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="pl-10">
             </div>
             <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
         <div id="entryTab" class="hidden glass p-6 max-w-4xl mx-auto no-print">
             <form id="studentForm" class="space-y-6">
-                <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
+                <input type="hidden" id="editKey">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required class="p-3">
+                    <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required>
                     <div class="flex gap-2">
                         <select id="class" class="flex-1" required>
                             <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
@@ -124,17 +113,29 @@
                             <option value="৩য়">৩য় শ্রেণি</option><option value="৪র্থ">৪র্থ শ্রেণি</option>
                             <option value="৫ম">৫ম শ্রেণি</option>
                         </select>
-                        <input type="number" id="roll" placeholder="রোল" class="w-20" required>
+                        <input type="number" id="roll" placeholder="রোল" class="w-24" required>
                     </div>
+                    <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর" required>
+                    <input type="date" id="dob" required>
+                    
+                    <div class="md:col-span-2 border-t border-white/10 pt-4"><p class="text-cyan-500 font-bold mb-2">পিতার তথ্য</p></div>
+                    <input type="text" id="fName" placeholder="পিতার নাম">
+                    <input type="text" id="fNid" placeholder="পিতার NID">
+                    <input type="text" id="fMobile" placeholder="পিতার মোবাইল নম্বর">
+
+                    <div class="md:col-span-2 border-t border-white/10 pt-4"><p class="text-rose-500 font-bold mb-2">মাতার তথ্য</p></div>
+                    <input type="text" id="mName" placeholder="মাতার নাম">
+                    <input type="text" id="mNid" placeholder="মাতার NID">
+                    <input type="text" id="mMobile" placeholder="মাতার মোবাইল নম্বর">
                 </div>
-                <button type="submit" class="w-full bg-cyan-600 text-white py-3 rounded-xl font-bold">ডাটা সেভ করুন</button>
+                <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-bold">সেভ করুন</button>
             </form>
         </div>
     </main>
 
     <div id="viewModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm no-print">
-        <div class="glass w-full max-w-lg p-6 relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 opacity-50"><i data-lucide="x-circle"></i></button>
+        <div class="glass w-full max-w-lg p-6 relative overflow-y-auto max-h-[90vh]">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400"><i data-lucide="x-circle"></i></button>
             <div id="modalContent"></div>
         </div>
     </div>
@@ -142,7 +143,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4",
@@ -155,42 +156,21 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // লগইন লজিক
-        document.getElementById('loginBtn').addEventListener('click', () => {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(e => alert("ভুল ইমেইল বা পাসওয়ার্ড!"));
-        });
-
-        // অথেনটিকেশন ও গ্রিটিং
+        // লগইন এবং গ্রিটিং লজিক
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
 
-                let displayName = "শিক্ষক";
-                let displayTitle = "সহকারী শিক্ষক";
-
-                if (user.uid === "Q9AUB3tOiAYAO9HebLAPpKbjDCx1") {
-                    window.userRole = 'admin';
-                    displayName = "অ্যাডমিন";
-                    displayTitle = "সিস্টেম অ্যাডমিন";
-                } else if (user.uid === "BcQXWMHQkJNrhhYkbJnVtsIffz33") {
-                    window.userRole = 'head_teacher';
-                    displayName = "উত্তম বিশ্বাস";
-                    displayTitle = "প্রধান শিক্ষক";
-                }
+                let name = user.uid === "BcQXWMHQkJNrhhYkbJnVtsIffz33" ? "উত্তম বিশ্বাস" : "অ্যাডমিন";
+                let title = user.uid === "BcQXWMHQkJNrhhYkbJnVtsIffz33" ? "প্রধান শিক্ষক" : "সিস্টেম অ্যাডমিন";
+                window.userRole = user.uid === "Q9AUB3tOiAYAO9HebLAPpKbjDCx1" ? 'admin' : 'head_teacher';
 
                 document.getElementById('userGreeting').innerHTML = `
-                    <div class="max-w-md mx-auto p-4 glass bg-cyan-500/10 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-black">
-                            <i data-lucide="user-check"></i>
-                        </div>
-                        <div>
-                            <p class="text-[10px] font-black opacity-60 uppercase">${displayTitle}</p>
-                            <h3 class="text-sm font-bold">শুভ দিন, <span class="text-cyan-500">${displayName}</span>!</h3>
-                        </div>
+                    <div class="max-w-md mx-auto p-4 glass bg-cyan-500/10 flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500 flex items-center justify-center text-black"><i data-lucide="user-check"></i></div>
+                        <div><p class="text-[10px] opacity-60 uppercase font-black">${title}</p><h3 class="text-sm font-bold">স্বাগতম, <span class="text-cyan-500">${name}</span>!</h3></div>
                     </div>`;
                 lucide.createIcons();
                 loadData();
@@ -200,32 +180,21 @@
             }
         });
 
-        // ডাটা লোড ও ভিউ লজিক
         function loadData(search = "") {
             onValue(ref(db, 'students'), (snap) => {
                 const container = document.getElementById('classWiseContainer');
                 container.innerHTML = "";
                 const data = snap.val() || {};
                 window.allData = data;
-                
                 ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
-                    const filtered = Object.keys(data).filter(id => 
-                        data[id].className === cls && 
-                        (data[id].name.toLowerCase().includes(search.toLowerCase()) || data[id].roll.toString().includes(search))
-                    ).sort((a,b) => data[a].roll - data[b].roll);
-
+                    const filtered = Object.keys(data).filter(id => data[id].name.toLowerCase().includes(search.toLowerCase()) && data[id].className === cls);
                     if(filtered.length > 0) {
                         let html = `<div class="glass overflow-hidden mb-4"><div class="p-3 bg-white/5 border-b border-white/5"><h3 class="font-bold text-xs text-cyan-500">${cls} শ্রেণি</h3></div><div class="divide-y divide-white/5">`;
                         filtered.forEach(id => {
-                            html += `
-                                <div class="p-4 flex justify-between items-center hover:bg-white/5">
-                                    <div class="text-xs"><p class="font-bold">${data[id].name}</p><p class="opacity-50">রোল: ${data[id].roll}</p></div>
-                                    <div class="flex gap-1">
-                                        <button onclick="viewRec('${id}')" class="text-cyan-500 p-2"><i data-lucide="eye" size="18"></i></button>
-                                        <button onclick="editRec('${id}')" class="text-emerald-500 p-2"><i data-lucide="edit-3" size="18"></i></button>
-                                        ${window.userRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="text-rose-500 p-2"><i data-lucide="trash-2" size="18"></i></button>` : ''}
-                                    </div>
-                                </div>`;
+                            html += `<div class="p-4 flex justify-between items-center"><div class="text-xs"><p class="font-bold">${data[id].name}</p><p class="opacity-50">রোল: ${data[id].roll}</p></div><div class="flex gap-1">
+                                <button onclick="viewRec('${id}')" class="text-cyan-500 p-2"><i data-lucide="eye" size="18"></i></button>
+                                ${window.userRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="text-rose-500 p-2"><i data-lucide="trash-2" size="18"></i></button>` : ''}
+                            </div></div>`;
                         });
                         container.innerHTML += html + `</div></div>`;
                         lucide.createIcons();
@@ -237,44 +206,68 @@
         window.viewRec = (id) => {
             const s = window.allData[id];
             document.getElementById('modalContent').innerHTML = `
-                <div class="flex flex-col items-center gap-3 mb-6">
-                    <img src="${s.photo || ''}" class="w-24 h-24 rounded-2xl border-2 border-cyan-500/20 object-cover shadow-xl">
-                    <div class="text-center">
-                        <h2 class="text-xl font-black">${s.name}</h2>
-                        <p class="text-cyan-500 font-bold text-[10px] uppercase">${s.className} শ্রেণি | রোল: ${s.roll}</p>
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-black" style="color: var(--text-main);">${s.name}</h2>
+                    <p class="text-cyan-500 font-bold text-xs uppercase">${s.className} শ্রেণি | রোল: ${s.roll}</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="p-4 glass bg-black/5 border border-white/5 rounded-2xl">
+                        <p class="text-[10px] uppercase font-bold opacity-50 mb-1" style="color: var(--text-main);">জন্ম নিবন্ধন ও তারিখ</p>
+                        <p class="text-lg font-mono font-bold" style="color: var(--text-main);">${s.birthReg || 'নেই'}</p>
+                        <p class="text-sm font-bold text-cyan-500">${s.dob || 'তারিখ নেই'}</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-2xl border-l-4 border-cyan-500 bg-cyan-500/5 glass">
+                            <p class="text-cyan-500 font-black text-xs mb-2">পিতার তথ্য</p>
+                            <p class="text-[11px] font-bold" style="color: var(--text-main);">${s.fName || '---'}</p>
+                            <p class="text-[10px] opacity-60" style="color: var(--text-main);">NID: ${s.fNid || '---'}</p>
+                            <p class="text-[10px] opacity-60" style="color: var(--text-main);">Mob: ${s.fMobile || '---'}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl border-l-4 border-rose-500 bg-rose-500/5 glass">
+                            <p class="text-rose-500 font-black text-xs mb-2">মাতার তথ্য</p>
+                            <p class="text-[11px] font-bold" style="color: var(--text-main);">${s.mName || '---'}</p>
+                            <p class="text-[10px] opacity-60" style="color: var(--text-main);">NID: ${s.mNid || '---'}</p>
+                            <p class="text-[10px] opacity-60" style="color: var(--text-main);">Mob: ${s.mMobile || '---'}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="space-y-4 text-[11px]">
-                    <div class="p-3 glass bg-black/5"><p class="opacity-50 text-[9px]">জন্ম নিবন্ধন</p><p class="font-bold">${s.birthReg || '---'}</p></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 glass bg-cyan-500/5 border-l-4 border-cyan-500">
-                            <p class="text-cyan-500 font-bold mb-1">পিতার তথ্য</p>
-                            <p class="opacity-50 text-[9px]">নাম: ${s.fName || '---'}</p>
-                            <p class="opacity-50 text-[9px]">NID: ${s.fNid || '---'}</p>
-                        </div>
-                        <div class="p-4 glass bg-rose-500/5 border-l-4 border-rose-500">
-                            <p class="text-rose-500 font-bold mb-1">মাতার তথ্য</p>
-                            <p class="opacity-50 text-[9px]">নাম: ${s.mName || '---'}</p>
-                            <p class="opacity-50 text-[9px]">NID: ${s.mNid || '---'}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-6 flex gap-2">
-                    <button onclick="window.print()" class="flex-1 bg-slate-800 p-3 rounded-xl font-bold text-xs">প্রিন্ট</button>
-                    <button onclick="closeModal()" class="flex-1 bg-cyan-600 p-3 rounded-xl font-bold text-xs">বন্ধ করুন</button>
+                <div class="mt-8 flex gap-3 no-print">
+                    <button onclick="window.print()" class="flex-1 bg-slate-800 text-white py-3 rounded-xl font-bold text-xs">প্রিন্ট</button>
+                    <button onclick="closeModal()" class="flex-1 bg-cyan-600 text-white py-3 rounded-xl font-bold text-xs">বন্ধ করুন</button>
                 </div>`;
             document.getElementById('viewModal').style.display = 'flex';
             lucide.createIcons();
         };
 
+        // ফরম সাবমিট
+        document.getElementById('studentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentData = {
+                name: document.getElementById('stName').value,
+                className: document.getElementById('class').value,
+                roll: document.getElementById('roll').value,
+                birthReg: document.getElementById('birthReg').value,
+                dob: document.getElementById('dob').value,
+                fName: document.getElementById('fName').value,
+                fNid: document.getElementById('fNid').value,
+                fMobile: document.getElementById('fMobile').value,
+                mName: document.getElementById('mName').value,
+                mNid: document.getElementById('mNid').value,
+                mMobile: document.getElementById('mMobile').value
+            };
+            push(ref(db, 'students'), studentData).then(() => {
+                alert("ডাটা সফলভাবে সেভ হয়েছে!");
+                e.target.reset();
+                switchTab('viewTab');
+            });
+        });
+
         window.toggleTheme = () => {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
             document.getElementById('themeIcon').setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
             lucide.createIcons();
         };
-        if(localStorage.getItem('theme') === 'light') toggleTheme();
 
         window.switchTab = (id) => {
             document.getElementById('viewTab').classList.toggle('hidden', id !== 'viewTab');
@@ -283,6 +276,9 @@
             document.getElementById('btnEntry').classList.toggle('tab-active', id === 'entryTab');
         };
 
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
+        });
         window.closeModal = () => document.getElementById('viewModal').style.display = 'none';
         document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
         document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
