@@ -8,11 +8,44 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
-        :root { --bg-body: #0a0f1d; --card-bg: rgba(30, 41, 59, 0.7); --text-main: #f1f5f9; --border: rgba(255, 255, 255, 0.1); --accent: #22d3ee; --input-bg: rgba(0, 0, 0, 0.3); }
-        .light-mode { --bg-body: #f8fafc; --card-bg: #ffffff; --text-main: #0f172a; --border: rgba(0, 0, 0, 0.1); --accent: #0891b2; --input-bg: #f1f5f9; }
+        :root { 
+            --bg-body: #0a0f1d; 
+            --card-bg: rgba(30, 41, 59, 0.7); 
+            --text-main: #f1f5f9; 
+            --border: rgba(255, 255, 255, 0.1); 
+            --accent: #22d3ee; 
+            --input-bg: rgba(0, 0, 0, 0.4); /* একটু বেশি ডার্ক করা হয়েছে */
+            --photo-bg: rgba(0, 0, 0, 0.6); /* ফটো আপলোড এরিয়া আরও ডার্ক */
+        }
+        .light-mode { 
+            --bg-body: #f8fafc; 
+            --card-bg: #ffffff; 
+            --text-main: #0f172a; 
+            --border: rgba(0, 0, 0, 0.1); 
+            --accent: #0891b2; 
+            --input-bg: #e2e8f0; 
+            --photo-bg: #cbd5e1;
+        }
         body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; transition: 0.3s; }
         .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; }
-        input, select { background: var(--input-bg) !important; border: 1px solid var(--border) !important; color: var(--text-main) !important; padding: 12px; border-radius: 12px; outline: none; width: 100%; }
+        
+        /* ইনপুট ফিল্ড বড় এবং ফন্ট বড় করা হয়েছে */
+        input, select { 
+            background: var(--input-bg) !important; 
+            border: 1px solid var(--border) !important; 
+            color: var(--text-main) !important; 
+            padding: 16px !important; /* প্যাডিং বাড়ানো হয়েছে */
+            border-radius: 14px; 
+            outline: none; 
+            width: 100%; 
+            font-size: 1.1rem !important; /* ফন্ট সাইজ বাড়ানো হয়েছে */
+        }
+        
+        .photo-area {
+            background: var(--photo-bg) !important;
+            border: 2px dashed var(--accent) !important;
+        }
+
         .tab-active { background: var(--accent) !important; color: #fff !important; }
         #viewModal { display: none; }
         @media print { .no-print { display: none !important; } }
@@ -35,11 +68,11 @@
 
     <div id="loginArea" class="min-h-[70vh] flex items-center justify-center p-4 no-print">
         <div class="glass p-8 w-full max-w-sm text-center shadow-xl">
-            <h2 class="text-xl font-bold mb-6">লগইন</h2>
+            <h2 class="text-2xl font-bold mb-6">লগইন</h2>
             <div class="space-y-4">
                 <input type="email" id="loginEmail" placeholder="ইমেইল">
-                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
-                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-3 rounded-xl font-bold">লগইন করুন</button>
+                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
+                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-bold text-lg">লগইন করুন</button>
             </div>
         </div>
     </div>
@@ -48,58 +81,58 @@
         <div id="userGreeting"></div>
 
         <div class="flex justify-center my-6 gap-2 no-print">
-            <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2 glass text-xs font-bold tab-active">শিক্ষার্থী তালিকা</button>
-            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2 glass text-xs font-bold opacity-60">নতুন এন্ট্রি</button>
+            <button onclick="switchTab('viewTab')" id="btnView" class="px-8 py-3 glass text-sm font-bold tab-active">শিক্ষার্থী তালিকা</button>
+            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-8 py-3 glass text-sm font-bold opacity-60">নতুন এন্ট্রি</button>
         </div>
 
         <div id="viewTab" class="space-y-6">
             <div class="relative max-w-md mx-auto no-print">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                    <i data-lucide="search" size="18"></i>
+                    <i data-lucide="search" size="20"></i>
                 </div>
-                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="pl-10">
+                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="pl-12">
             </div>
             <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
-        <div id="entryTab" class="hidden glass p-6 max-w-4xl mx-auto no-print">
-            <form id="studentForm" class="space-y-6">
+        <div id="entryTab" class="hidden glass p-8 max-w-5xl mx-auto no-print">
+            <form id="studentForm" class="space-y-8">
                 <input type="hidden" id="editKey">
                 <input type="hidden" id="photoBase64">
                 
-                <div class="flex flex-col md:flex-row gap-6 items-center border-b border-white/10 pb-6">
-                    <div class="w-32 h-32 glass relative overflow-hidden rounded-2xl border-2 border-dashed border-white/20 flex items-center justify-center">
+                <div class="flex flex-col md:flex-row gap-8 items-center border-b border-white/10 pb-8">
+                    <div class="w-40 h-40 photo-area relative overflow-hidden rounded-2xl flex items-center justify-center shadow-inner">
                         <img id="imagePreview" class="hidden w-full h-full object-cover">
-                        <span id="imgLabel" class="text-[10px] opacity-50 text-center">ফটো<br>(২০০x২০০)</span>
+                        <span id="imgLabel" class="text-xs font-bold opacity-70 text-center">ফটো সিলেক্ট করুন<br>(২০০x২০০)</span>
                         <input type="file" id="stPhoto" accept="image/*" onchange="processImage(event)" class="absolute inset-0 opacity-0 cursor-pointer">
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1 w-full">
                         <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required>
                         <div class="flex gap-2">
                             <select id="class" class="flex-1" required>
                                 <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
-                                <option value="১ম">১ম</option><option value="২য়">২য়</option>
-                                <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
+                                <option value="১ম">১ম</option><option value="২য়">২য়</option>
+                                <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
                             </select>
-                            <input type="number" id="roll" placeholder="রোল" class="w-24" required>
+                            <input type="number" id="roll" placeholder="রোল" class="w-32" required>
                         </div>
                         <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর" required>
                         <input type="date" id="dob" required>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2"><p class="text-cyan-500 font-bold text-xs uppercase">পিতার তথ্য</p></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div class="md:col-span-2 lg:col-span-3"><p class="text-cyan-500 font-bold text-sm uppercase">পিতার তথ্য</p></div>
                     <input type="text" id="fName" placeholder="পিতার নাম">
                     <input type="text" id="fNid" placeholder="পিতার NID">
-                    <input type="text" id="fMobile" placeholder="পিতার মোবাইল">
+                    <input type="date" id="fDob" title="পিতার জন্ম তারিখ"> <input type="text" id="fMobile" placeholder="পিতার মোবাইল" class="md:col-span-2 lg:col-span-3">
                     
-                    <div class="md:col-span-2 mt-2"><p class="text-rose-500 font-bold text-xs uppercase">মাতার তথ্য</p></div>
+                    <div class="md:col-span-2 lg:col-span-3 mt-4"><p class="text-rose-500 font-bold text-sm uppercase">মাতার তথ্য</p></div>
                     <input type="text" id="mName" placeholder="মাতার নাম">
                     <input type="text" id="mNid" placeholder="মাতার NID">
-                    <input type="text" id="mMobile" placeholder="মাতার মোবাইল">
+                    <input type="date" id="mDob" title="মাতার জন্ম তারিখ"> <input type="text" id="mMobile" placeholder="মাতার মোবাইল" class="md:col-span-2 lg:col-span-3">
                 </div>
-                <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-bold uppercase tracking-widest">ডাটা সেভ করুন</button>
+                <button type="submit" class="w-full bg-cyan-600 text-white py-5 rounded-2xl font-bold text-xl uppercase tracking-widest shadow-lg shadow-cyan-500/20">ডাটা সেভ করুন</button>
             </form>
         </div>
     </main>
@@ -127,7 +160,6 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // ইমেজ প্রসেসিং (২০০x২০০ পিক্সেল)
         window.processImage = (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -155,11 +187,9 @@
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
-
                 let name = user.uid === "BcQXWMHQkJNrhhYkbJnVtsIffz33" ? "উত্তম বিশ্বাস" : "অ্যাডমিন";
                 let title = user.uid === "BcQXWMHQkJNrhhYkbJnVtsIffz33" ? "প্রধান শিক্ষক" : "সিস্টেম অ্যাডমিন";
                 window.userRole = (user.uid === "Q9AUB3tOiAYAO9HebLAPpKbjDCx1") ? 'admin' : 'head_teacher';
-
                 document.getElementById('userGreeting').innerHTML = `
                     <div class="max-w-md mx-auto p-4 glass bg-cyan-500/10 flex items-center gap-4 mb-6">
                         <div class="w-12 h-12 rounded-xl bg-cyan-500 flex items-center justify-center text-black shadow-lg shadow-cyan-500/30"><i data-lucide="user-check"></i></div>
@@ -180,7 +210,7 @@
                 container.innerHTML = "";
                 const data = snap.val() || {};
                 window.allData = data;
-                ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
+                ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
                     const filtered = Object.keys(data).filter(id => data[id].name.toLowerCase().includes(search.toLowerCase()) && data[id].className === cls);
                     if(filtered.length > 0) {
                         let html = `<div class="glass overflow-hidden mb-4"><div class="p-3 bg-white/5 border-b border-white/5"><h3 class="font-bold text-xs text-cyan-500">${cls} শ্রেণি</h3></div><div class="divide-y divide-white/5">`;
@@ -207,28 +237,30 @@
                 <div class="flex flex-col items-center gap-3 mb-6">
                     <img src="${s.photo || ''}" class="w-24 h-24 rounded-2xl border-4 border-cyan-500/20 object-cover shadow-2xl">
                     <div class="text-center">
-                        <h2 class="text-xl font-black" style="color: var(--text-main);">${s.name}</h2>
+                        <h2 class="text-xl font-black">${s.name}</h2>
                         <p class="text-cyan-500 font-bold text-[10px] uppercase tracking-widest">${s.className} শ্রেণি | রোল: ${s.roll}</p>
                     </div>
                 </div>
                 <div class="space-y-4 text-[11px]">
-                    <div class="p-4 glass bg-black/5 rounded-2xl border border-white/5">
-                        <p class="text-[9px] uppercase font-bold opacity-50 mb-1" style="color: var(--text-main);">জন্ম নিবন্ধন ও তারিখ</p>
-                        <p class="text-lg font-mono font-bold" style="color: var(--text-main);">${s.birthReg || 'নেই'}</p>
+                    <div class="p-4 glass bg-black/5 rounded-2xl border border-white/5 text-center">
+                        <p class="text-[9px] uppercase font-bold opacity-50 mb-1">জন্ম নিবন্ধন ও তারিখ</p>
+                        <p class="text-lg font-mono font-bold">${s.birthReg || 'নেই'}</p>
                         <p class="text-cyan-500 font-bold mt-1 uppercase tracking-tighter">${s.dob || ''}</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="p-4 rounded-2xl border-l-4 border-cyan-500 bg-cyan-500/5 glass text-[10px]">
                             <p class="text-cyan-500 font-black mb-2 uppercase">পিতার তথ্য</p>
-                            <p style="color: var(--text-main);">নাম: ${s.fName || '---'}</p>
-                            <p style="color: var(--text-main);">NID: ${s.fNid || '---'}</p>
-                            <p style="color: var(--text-main);">মোবাইল: ${s.fMobile || '---'}</p>
+                            <p>নাম: ${s.fName || '---'}</p>
+                            <p>NID: ${s.fNid || '---'}</p>
+                            <p>DOB: ${s.fDob || '---'}</p>
+                            <p>মোবাইল: ${s.fMobile || '---'}</p>
                         </div>
                         <div class="p-4 rounded-2xl border-l-4 border-rose-500 bg-rose-500/5 glass text-[10px]">
                             <p class="text-rose-500 font-black mb-2 uppercase">মাতার তথ্য</p>
-                            <p style="color: var(--text-main);">নাম: ${s.mName || '---'}</p>
-                            <p style="color: var(--text-main);">NID: ${s.mNid || '---'}</p>
-                            <p style="color: var(--text-main);">মোবাইল: ${s.mMobile || '---'}</p>
+                            <p>নাম: ${s.mName || '---'}</p>
+                            <p>NID: ${s.mNid || '---'}</p>
+                            <p>DOB: ${s.mDob || '---'}</p>
+                            <p>মোবাইল: ${s.mMobile || '---'}</p>
                         </div>
                     </div>
                 </div>
@@ -250,9 +282,11 @@
             document.getElementById('dob').value = s.dob;
             document.getElementById('fName').value = s.fName || "";
             document.getElementById('fNid').value = s.fNid || "";
+            document.getElementById('fDob').value = s.fDob || "";
             document.getElementById('fMobile').value = s.fMobile || "";
             document.getElementById('mName').value = s.mName || "";
             document.getElementById('mNid').value = s.mNid || "";
+            document.getElementById('mDob').value = s.mDob || "";
             document.getElementById('mMobile').value = s.mMobile || "";
             if(s.photo) {
                 document.getElementById('photoBase64').value = s.photo;
@@ -277,12 +311,12 @@
                 birthReg: document.getElementById('birthReg').value,
                 dob: document.getElementById('dob').value,
                 photo: document.getElementById('photoBase64').value,
-                fName: document.getElementById('fName').value, fNid: document.getElementById('fNid').value, fMobile: document.getElementById('fMobile').value,
-                mName: document.getElementById('mName').value, mNid: document.getElementById('mNid').value, mMobile: document.getElementById('mMobile').value
+                fName: document.getElementById('fName').value, fNid: document.getElementById('fNid').value, fDob: document.getElementById('fDob').value, fMobile: document.getElementById('fMobile').value,
+                mName: document.getElementById('mName').value, mNid: document.getElementById('mNid').value, mDob: document.getElementById('mDob').value, mMobile: document.getElementById('mMobile').value
             };
             const targetRef = key ? ref(db, `students/${key}`) : push(ref(db, 'students'));
             set(targetRef, data).then(() => {
-                alert("সাফল্যের সাথে সেভ হয়েছে!");
+                alert("সাফল্যের সাথে সেভ হয়েছে!");
                 e.target.reset();
                 document.getElementById('editKey').value = "";
                 document.getElementById('imagePreview').classList.add('hidden');
