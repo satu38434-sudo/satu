@@ -29,6 +29,7 @@
         body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; transition: 0.3s; }
         .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; }
         
+        /* বড় ইনপুট ফিল্ড এবং বড় ফন্ট */
         input, select { 
             background: var(--input-bg) !important; 
             border: 1px solid var(--border) !important; 
@@ -109,9 +110,9 @@
                                 <option value="১ম">১ম</option><option value="২য়">২য়</option>
                                 <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
                             </select>
-                            <input type="number" id="roll" placeholder="রোল (ইংরেজি)" class="w-32" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <input type="text" id="roll" placeholder="রোল (EN)" class="w-32" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
-                        <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর (EN)" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         <input type="date" id="dob" required>
                     </div>
                 </div>
@@ -119,17 +120,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="md:col-span-2 lg:col-span-3"><p class="text-cyan-500 font-bold text-sm uppercase">পিতার তথ্য</p></div>
                     <input type="text" id="fName" placeholder="পিতার নাম">
-                    <input type="text" id="fNid" placeholder="পিতার NID" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="text" id="fNid" placeholder="পিতার NID (EN)" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     <input type="date" id="fDob" title="পিতার জন্ম তারিখ">
-                    <input type="text" id="fMobile" placeholder="পিতার মোবাইল" class="md:col-span-2 lg:col-span-3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="text" id="fMobile" placeholder="পিতার মোবাইল (EN)" class="md:col-span-2 lg:col-span-3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     
                     <div class="md:col-span-2 lg:col-span-3 mt-4"><p class="text-rose-500 font-bold text-sm uppercase">মাতার তথ্য</p></div>
                     <input type="text" id="mName" placeholder="মাতার নাম">
-                    <input type="text" id="mNid" placeholder="মাতার NID" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="text" id="mNid" placeholder="মাতার NID (EN)" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     <input type="date" id="mDob" title="মাতার জন্ম তারিখ">
-                    <input type="text" id="mMobile" placeholder="মাতার মোবাইল" class="md:col-span-2 lg:col-span-3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="text" id="mMobile" placeholder="মাতার মোবাইল (EN)" class="md:col-span-2 lg:col-span-3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
-                <button type="submit" class="w-full bg-cyan-600 text-white py-5 rounded-2xl font-bold text-xl uppercase tracking-widest shadow-lg shadow-cyan-500/20">ডাটা সেভ করুন</button>
+                <button type="submit" class="w-full bg-cyan-600 text-white py-5 rounded-2xl font-bold text-xl uppercase tracking-widest">ডাটা সেভ করুন</button>
             </form>
         </div>
     </main>
@@ -157,12 +158,13 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // ইংরেজি সংখ্যাকে বাংলায় রূপান্তরের ফাংশন
+        // ইংরেজি সংখ্যাকে বাংলায় রূপান্তর
         const toBn = (n) => {
             if(!n) return '---';
             return n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
         }
 
+        // ইমেজ প্রসেসিং
         window.processImage = (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -176,8 +178,9 @@
                     ctx.drawImage(img, 0, 0, 200, 200);
                     const base64 = canvas.toDataURL('image/jpeg', 0.7);
                     document.getElementById('photoBase64').value = base64;
-                    document.getElementById('imagePreview').src = base64;
-                    document.getElementById('imagePreview').classList.remove('hidden');
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = base64;
+                    preview.classList.remove('hidden');
                     document.getElementById('imgLabel').classList.add('hidden');
                 };
                 img.src = event.target.result;
@@ -185,17 +188,20 @@
             reader.readAsDataURL(file);
         };
 
+        // অথেন্টিকেশন স্টেট
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
+                
                 let name = user.uid === "BcQXWMHQkJNrhhYkbJnVtsIffz33" ? "উত্তম বিশ্বাস" : "অ্যাডমিন";
                 let title = user.uid === "BcQXWMHQkJNrhhYkbJnVtsIffz33" ? "প্রধান শিক্ষক" : "সিস্টেম অ্যাডমিন";
                 window.userRole = (user.uid === "Q9AUB3tOiAYAO9HebLAPpKbjDCx1") ? 'admin' : 'head_teacher';
+                
                 document.getElementById('userGreeting').innerHTML = `
                     <div class="max-w-md mx-auto p-4 glass bg-cyan-500/10 flex items-center gap-4 mb-6">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-500 flex items-center justify-center text-black shadow-lg shadow-cyan-500/30"><i data-lucide="user-check"></i></div>
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500 flex items-center justify-center text-black"><i data-lucide="user-check"></i></div>
                         <div><p class="text-[10px] opacity-60 uppercase font-black">${title}</p><h3 class="text-sm font-bold">স্বাগতম, <span class="text-cyan-500">${name}</span>!</h3></div>
                     </div>`;
                 lucide.createIcons();
@@ -207,6 +213,7 @@
             }
         });
 
+        // ডাটা লোড
         function loadData(search = "") {
             onValue(ref(db, 'students'), (snap) => {
                 const container = document.getElementById('classWiseContainer');
@@ -214,12 +221,12 @@
                 const data = snap.val() || {};
                 window.allData = data;
                 ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
-                    const filtered = Object.keys(data).filter(id => data[id].name.toLowerCase().includes(search.toLowerCase()) && data[id].className === cls);
+                    const filtered = Object.keys(data).filter(id => (data[id].name.toLowerCase().includes(search.toLowerCase()) || data[id].roll.includes(search)) && data[id].className === cls);
                     if(filtered.length > 0) {
                         let html = `<div class="glass overflow-hidden mb-4"><div class="p-3 bg-white/5 border-b border-white/5"><h3 class="font-bold text-xs text-cyan-500">${cls} শ্রেণি</h3></div><div class="divide-y divide-white/5">`;
                         filtered.forEach(id => {
                             html += `<div class="p-4 flex justify-between items-center"><div class="flex items-center gap-3 text-xs">
-                                <img src="${data[id].photo || ''}" class="w-8 h-8 rounded bg-slate-800 object-cover">
+                                <img src="${data[id].photo || ''}" class="w-10 h-10 rounded-lg bg-slate-800 object-cover">
                                 <div><p class="font-bold">${data[id].name}</p><p class="opacity-50">রোল: ${toBn(data[id].roll)}</p></div>
                             </div><div class="flex gap-1">
                                 <button onclick="viewRec('${id}')" class="text-cyan-500 p-2"><i data-lucide="eye" size="18"></i></button>
@@ -234,29 +241,124 @@
             });
         }
 
+        // গ্লোবাল উইন্ডো ফাংশনসমূহ
         window.viewRec = (id) => {
             const s = window.allData[id];
             document.getElementById('modalContent').innerHTML = `
                 <div class="flex flex-col items-center gap-3 mb-6">
-                    <img src="${s.photo || ''}" class="w-24 h-24 rounded-2xl border-4 border-cyan-500/20 object-cover shadow-2xl">
+                    <img src="${s.photo || ''}" class="w-24 h-24 rounded-2xl border-4 border-cyan-500/20 object-cover">
                     <div class="text-center">
                         <h2 class="text-xl font-black">${s.name}</h2>
                         <p class="text-cyan-500 font-bold text-[10px] uppercase tracking-widest">${s.className} শ্রেণি | রোল: ${toBn(s.roll)}</p>
                     </div>
                 </div>
                 <div class="space-y-4 text-[11px]">
-                    <div class="p-4 glass bg-black/5 rounded-2xl border border-white/5 text-center">
+                    <div class="p-4 glass bg-black/5 rounded-2xl text-center">
                         <p class="text-[9px] uppercase font-bold opacity-50 mb-1">জন্ম নিবন্ধন ও তারিখ</p>
-                        <p class="text-lg font-mono font-bold">${toBn(s.birthReg) || 'নেই'}</p>
-                        <p class="text-cyan-500 font-bold mt-1 uppercase tracking-tighter">${toBn(s.dob) || ''}</p>
+                        <p class="text-lg font-mono font-bold">${toBn(s.birthReg)}</p>
+                        <p class="text-cyan-500 font-bold mt-1 uppercase">${toBn(s.dob)}</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 rounded-2xl border-l-4 border-cyan-500 bg-cyan-500/5 glass text-[10px]">
+                        <div class="p-4 rounded-2xl border-l-4 border-cyan-500 bg-cyan-500/5 glass">
                             <p class="text-cyan-500 font-black mb-2 uppercase">পিতার তথ্য</p>
-                            <p>নাম: ${s.fName || '---'}</p>
-                            <p>NID: ${toBn(s.fNid)}</p>
-                            <p>জন্ম তারিখ: ${toBn(s.fDob)}</p>
-                            <p>মোবাইল: ${toBn(s.fMobile)}</p>
+                            <p>নাম: ${s.fName || '---'}</p><p>NID: ${toBn(s.fNid)}</p><p>জন্ম: ${toBn(s.fDob)}</p><p>মোবাইল: ${toBn(s.fMobile)}</p>
                         </div>
-                        <div class="p-4 rounded-2xl border-l-4 border-rose-500 bg-rose-500/5 glass text-[10px]">
-                            <p class="text-rose-500
+                        <div class="p-4 rounded-2xl border-l-4 border-rose-500 bg-rose-500/5 glass">
+                            <p class="text-rose-500 font-black mb-2 uppercase">মাতার তথ্য</p>
+                            <p>নাম: ${s.mName || '---'}</p><p>NID: ${toBn(s.mNid)}</p><p>জন্ম: ${toBn(s.mDob)}</p><p>মোবাইল: ${toBn(s.mMobile)}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 flex gap-3 no-print">
+                    <button onclick="window.print()" class="flex-1 bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs">প্রিন্ট</button>
+                    <button onclick="closeModal()" class="flex-1 bg-cyan-600 text-white py-3.5 rounded-xl font-bold text-xs">বন্ধ করুন</button>
+                </div>`;
+            document.getElementById('viewModal').style.display = 'flex';
+            lucide.createIcons();
+        };
+
+        window.editRec = (id) => {
+            const s = window.allData[id];
+            document.getElementById('editKey').value = id;
+            document.getElementById('stName').value = s.name;
+            document.getElementById('class').value = s.className;
+            document.getElementById('roll').value = s.roll;
+            document.getElementById('birthReg').value = s.birthReg;
+            document.getElementById('dob').value = s.dob;
+            document.getElementById('fName').value = s.fName || "";
+            document.getElementById('fNid').value = s.fNid || "";
+            document.getElementById('fDob').value = s.fDob || "";
+            document.getElementById('fMobile').value = s.fMobile || "";
+            document.getElementById('mName').value = s.mName || "";
+            document.getElementById('mNid').value = s.mNid || "";
+            document.getElementById('mDob').value = s.mDob || "";
+            document.getElementById('mMobile').value = s.mMobile || "";
+            if(s.photo) {
+                document.getElementById('photoBase64').value = s.photo;
+                document.getElementById('imagePreview').src = s.photo;
+                document.getElementById('imagePreview').classList.remove('hidden');
+                document.getElementById('imgLabel').classList.add('hidden');
+            }
+            switchTab('entryTab');
+        };
+
+        window.deleteRec = (id) => {
+            if(confirm("আপনি কি নিশ্চিতভাবে ডিলিট করতে চান?")) remove(ref(db, `students/${id}`));
+        };
+
+        window.toggleTheme = () => {
+            document.body.classList.toggle('light-mode');
+            document.getElementById('themeIcon').setAttribute('data-lucide', document.body.classList.contains('light-mode') ? 'sun' : 'moon');
+            lucide.createIcons();
+        };
+
+        window.switchTab = (id) => {
+            document.getElementById('viewTab').classList.toggle('hidden', id !== 'viewTab');
+            document.getElementById('entryTab').classList.toggle('hidden', id !== 'entryTab');
+            document.getElementById('btnView').classList.toggle('tab-active', id === 'viewTab');
+            document.getElementById('btnEntry').classList.toggle('tab-active', id === 'entryTab');
+            if(id === 'entryTab' && !document.getElementById('editKey').value) document.getElementById('studentForm').reset();
+        };
+
+        window.closeModal = () => document.getElementById('viewModal').style.display = 'none';
+
+        // ইভেন্ট লিসেনারস (Script মডিউলের ভেতর থাকতে হবে)
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            if(!email || !pass) return alert("ইমেইল ও পাসওয়ার্ড দিন");
+            
+            signInWithEmailAndPassword(auth, email, pass).catch(err => alert("লগইন ভুল: " + err.message));
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+        document.getElementById('studentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const key = document.getElementById('editKey').value;
+            const data = {
+                name: document.getElementById('stName').value,
+                className: document.getElementById('class').value,
+                roll: document.getElementById('roll').value,
+                birthReg: document.getElementById('birthReg').value,
+                dob: document.getElementById('dob').value,
+                photo: document.getElementById('photoBase64').value,
+                fName: document.getElementById('fName').value, fNid: document.getElementById('fNid').value, fDob: document.getElementById('fDob').value, fMobile: document.getElementById('fMobile').value,
+                mName: document.getElementById('mName').value, mNid: document.getElementById('mNid').value, mDob: document.getElementById('mDob').value, mMobile: document.getElementById('mMobile').value
+            };
+            const targetRef = key ? ref(db, `students/${key}`) : push(ref(db, 'students'));
+            set(targetRef, data).then(() => {
+                alert("সাফল্যের সাথে সেভ হয়েছে!");
+                e.target.reset();
+                document.getElementById('editKey').value = "";
+                document.getElementById('imagePreview').classList.add('hidden');
+                document.getElementById('imgLabel').classList.remove('hidden');
+                switchTab('viewTab');
+            });
+        });
+
+        document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
+        lucide.createIcons();
+    </script>
+</body>
+</html>
