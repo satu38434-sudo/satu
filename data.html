@@ -14,8 +14,8 @@
             --text-main: #f1f5f9; 
             --border: rgba(255, 255, 255, 0.1); 
             --accent: #22d3ee; 
-            --input-bg: rgba(0, 0, 0, 0.4); /* একটু বেশি ডার্ক করা হয়েছে */
-            --photo-bg: rgba(0, 0, 0, 0.6); /* ফটো আপলোড এরিয়া আরও ডার্ক */
+            --input-bg: rgba(0, 0, 0, 0.4);
+            --photo-bg: rgba(0, 0, 0, 0.6);
         }
         .light-mode { 
             --bg-body: #f8fafc; 
@@ -29,23 +29,18 @@
         body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; transition: 0.3s; }
         .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; }
         
-        /* ইনপুট ফিল্ড বড় এবং ফন্ট বড় করা হয়েছে */
         input, select { 
             background: var(--input-bg) !important; 
             border: 1px solid var(--border) !important; 
             color: var(--text-main) !important; 
-            padding: 16px !important; /* প্যাডিং বাড়ানো হয়েছে */
+            padding: 16px !important; 
             border-radius: 14px; 
             outline: none; 
             width: 100%; 
-            font-size: 1.1rem !important; /* ফন্ট সাইজ বাড়ানো হয়েছে */
+            font-size: 1.1rem !important; 
         }
         
-        .photo-area {
-            background: var(--photo-bg) !important;
-            border: 2px dashed var(--accent) !important;
-        }
-
+        .photo-area { background: var(--photo-bg) !important; border: 2px dashed var(--accent) !important; }
         .tab-active { background: var(--accent) !important; color: #fff !important; }
         #viewModal { display: none; }
         @media print { .no-print { display: none !important; } }
@@ -114,9 +109,9 @@
                                 <option value="১ম">১ম</option><option value="২য়">২য়</option>
                                 <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
                             </select>
-                            <input type="number" id="roll" placeholder="রোল" class="w-32" required>
+                            <input type="number" id="roll" placeholder="রোল (ইংরেজি)" class="w-32" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
-                        <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর" required>
+                        <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         <input type="date" id="dob" required>
                     </div>
                 </div>
@@ -124,13 +119,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     <div class="md:col-span-2 lg:col-span-3"><p class="text-cyan-500 font-bold text-sm uppercase">পিতার তথ্য</p></div>
                     <input type="text" id="fName" placeholder="পিতার নাম">
-                    <input type="text" id="fNid" placeholder="পিতার NID">
-                    <input type="date" id="fDob" title="পিতার জন্ম তারিখ"> <input type="text" id="fMobile" placeholder="পিতার মোবাইল" class="md:col-span-2 lg:col-span-3">
+                    <input type="text" id="fNid" placeholder="পিতার NID" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="date" id="fDob" title="পিতার জন্ম তারিখ">
+                    <input type="text" id="fMobile" placeholder="পিতার মোবাইল" class="md:col-span-2 lg:col-span-3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     
                     <div class="md:col-span-2 lg:col-span-3 mt-4"><p class="text-rose-500 font-bold text-sm uppercase">মাতার তথ্য</p></div>
                     <input type="text" id="mName" placeholder="মাতার নাম">
-                    <input type="text" id="mNid" placeholder="মাতার NID">
-                    <input type="date" id="mDob" title="মাতার জন্ম তারিখ"> <input type="text" id="mMobile" placeholder="মাতার মোবাইল" class="md:col-span-2 lg:col-span-3">
+                    <input type="text" id="mNid" placeholder="মাতার NID" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="date" id="mDob" title="মাতার জন্ম তারিখ">
+                    <input type="text" id="mMobile" placeholder="মাতার মোবাইল" class="md:col-span-2 lg:col-span-3" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
                 <button type="submit" class="w-full bg-cyan-600 text-white py-5 rounded-2xl font-bold text-xl uppercase tracking-widest shadow-lg shadow-cyan-500/20">ডাটা সেভ করুন</button>
             </form>
@@ -159,6 +156,12 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
+
+        // ইংরেজি সংখ্যাকে বাংলায় রূপান্তরের ফাংশন
+        const toBn = (n) => {
+            if(!n) return '---';
+            return n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
+        }
 
         window.processImage = (e) => {
             const file = e.target.files[0];
@@ -217,7 +220,7 @@
                         filtered.forEach(id => {
                             html += `<div class="p-4 flex justify-between items-center"><div class="flex items-center gap-3 text-xs">
                                 <img src="${data[id].photo || ''}" class="w-8 h-8 rounded bg-slate-800 object-cover">
-                                <div><p class="font-bold">${data[id].name}</p><p class="opacity-50">রোল: ${data[id].roll}</p></div>
+                                <div><p class="font-bold">${data[id].name}</p><p class="opacity-50">রোল: ${toBn(data[id].roll)}</p></div>
                             </div><div class="flex gap-1">
                                 <button onclick="viewRec('${id}')" class="text-cyan-500 p-2"><i data-lucide="eye" size="18"></i></button>
                                 <button onclick="editRec('${id}')" class="text-emerald-500 p-2"><i data-lucide="edit-3" size="18"></i></button>
@@ -238,115 +241,22 @@
                     <img src="${s.photo || ''}" class="w-24 h-24 rounded-2xl border-4 border-cyan-500/20 object-cover shadow-2xl">
                     <div class="text-center">
                         <h2 class="text-xl font-black">${s.name}</h2>
-                        <p class="text-cyan-500 font-bold text-[10px] uppercase tracking-widest">${s.className} শ্রেণি | রোল: ${s.roll}</p>
+                        <p class="text-cyan-500 font-bold text-[10px] uppercase tracking-widest">${s.className} শ্রেণি | রোল: ${toBn(s.roll)}</p>
                     </div>
                 </div>
                 <div class="space-y-4 text-[11px]">
                     <div class="p-4 glass bg-black/5 rounded-2xl border border-white/5 text-center">
                         <p class="text-[9px] uppercase font-bold opacity-50 mb-1">জন্ম নিবন্ধন ও তারিখ</p>
-                        <p class="text-lg font-mono font-bold">${s.birthReg || 'নেই'}</p>
-                        <p class="text-cyan-500 font-bold mt-1 uppercase tracking-tighter">${s.dob || ''}</p>
+                        <p class="text-lg font-mono font-bold">${toBn(s.birthReg) || 'নেই'}</p>
+                        <p class="text-cyan-500 font-bold mt-1 uppercase tracking-tighter">${toBn(s.dob) || ''}</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="p-4 rounded-2xl border-l-4 border-cyan-500 bg-cyan-500/5 glass text-[10px]">
                             <p class="text-cyan-500 font-black mb-2 uppercase">পিতার তথ্য</p>
                             <p>নাম: ${s.fName || '---'}</p>
-                            <p>NID: ${s.fNid || '---'}</p>
-                            <p>DOB: ${s.fDob || '---'}</p>
-                            <p>মোবাইল: ${s.fMobile || '---'}</p>
+                            <p>NID: ${toBn(s.fNid)}</p>
+                            <p>জন্ম তারিখ: ${toBn(s.fDob)}</p>
+                            <p>মোবাইল: ${toBn(s.fMobile)}</p>
                         </div>
                         <div class="p-4 rounded-2xl border-l-4 border-rose-500 bg-rose-500/5 glass text-[10px]">
-                            <p class="text-rose-500 font-black mb-2 uppercase">মাতার তথ্য</p>
-                            <p>নাম: ${s.mName || '---'}</p>
-                            <p>NID: ${s.mNid || '---'}</p>
-                            <p>DOB: ${s.mDob || '---'}</p>
-                            <p>মোবাইল: ${s.mMobile || '---'}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-8 flex gap-3 no-print">
-                    <button onclick="window.print()" class="flex-1 bg-slate-800 text-white py-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2"><i data-lucide="printer" size="14"></i> প্রিন্ট</button>
-                    <button onclick="closeModal()" class="flex-1 bg-cyan-600 text-white py-3.5 rounded-xl font-bold text-xs">বন্ধ করুন</button>
-                </div>`;
-            document.getElementById('viewModal').style.display = 'flex';
-            lucide.createIcons();
-        };
-
-        window.editRec = (id) => {
-            const s = window.allData[id];
-            document.getElementById('editKey').value = id;
-            document.getElementById('stName').value = s.name;
-            document.getElementById('class').value = s.className;
-            document.getElementById('roll').value = s.roll;
-            document.getElementById('birthReg').value = s.birthReg;
-            document.getElementById('dob').value = s.dob;
-            document.getElementById('fName').value = s.fName || "";
-            document.getElementById('fNid').value = s.fNid || "";
-            document.getElementById('fDob').value = s.fDob || "";
-            document.getElementById('fMobile').value = s.fMobile || "";
-            document.getElementById('mName').value = s.mName || "";
-            document.getElementById('mNid').value = s.mNid || "";
-            document.getElementById('mDob').value = s.mDob || "";
-            document.getElementById('mMobile').value = s.mMobile || "";
-            if(s.photo) {
-                document.getElementById('photoBase64').value = s.photo;
-                document.getElementById('imagePreview').src = s.photo;
-                document.getElementById('imagePreview').classList.remove('hidden');
-                document.getElementById('imgLabel').classList.add('hidden');
-            }
-            switchTab('entryTab');
-        };
-
-        window.deleteRec = (id) => {
-            if(confirm("আপনি কি নিশ্চিতভাবে এই শিক্ষার্থীকে ডিলিট করতে চান?")) remove(ref(db, `students/${id}`));
-        };
-
-        document.getElementById('studentForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const key = document.getElementById('editKey').value;
-            const data = {
-                name: document.getElementById('stName').value,
-                className: document.getElementById('class').value,
-                roll: document.getElementById('roll').value,
-                birthReg: document.getElementById('birthReg').value,
-                dob: document.getElementById('dob').value,
-                photo: document.getElementById('photoBase64').value,
-                fName: document.getElementById('fName').value, fNid: document.getElementById('fNid').value, fDob: document.getElementById('fDob').value, fMobile: document.getElementById('fMobile').value,
-                mName: document.getElementById('mName').value, mNid: document.getElementById('mNid').value, mDob: document.getElementById('mDob').value, mMobile: document.getElementById('mMobile').value
-            };
-            const targetRef = key ? ref(db, `students/${key}`) : push(ref(db, 'students'));
-            set(targetRef, data).then(() => {
-                alert("সাফল্যের সাথে সেভ হয়েছে!");
-                e.target.reset();
-                document.getElementById('editKey').value = "";
-                document.getElementById('imagePreview').classList.add('hidden');
-                document.getElementById('imgLabel').classList.remove('hidden');
-                switchTab('viewTab');
-            });
-        });
-
-        window.toggleTheme = () => {
-            document.body.classList.toggle('light-mode');
-            const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('themeIcon').setAttribute('data-lucide', isLight ? 'sun' : 'moon');
-            lucide.createIcons();
-        };
-
-        window.switchTab = (id) => {
-            document.getElementById('viewTab').classList.toggle('hidden', id !== 'viewTab');
-            document.getElementById('entryTab').classList.toggle('hidden', id !== 'entryTab');
-            document.getElementById('btnView').classList.toggle('tab-active', id === 'viewTab');
-            document.getElementById('btnEntry').classList.toggle('tab-active', id === 'entryTab');
-            if(id === 'entryTab' && !document.getElementById('editKey').value) document.getElementById('studentForm').reset();
-        };
-
-        document.getElementById('loginBtn').addEventListener('click', () => {
-            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
-        });
-        window.closeModal = () => document.getElementById('viewModal').style.display = 'none';
-        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
-        document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
-        lucide.createIcons();
-    </script>
-</body>
-</html>
+                            <p class="text-rose-500
