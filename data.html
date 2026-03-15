@@ -1,1 +1,294 @@
-grur
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সপ্রাবি | ডাটাবেস</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0a0f1d;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f1f5f9;
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #22d3ee;
+            --input-bg: rgba(0, 0, 0, 0.3);
+        }
+
+        .light-mode {
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --border: rgba(0, 0, 0, 0.1);
+            --accent: #0891b2;
+            --input-bg: #f1f5f9;
+        }
+
+        body { 
+            font-family: 'SolaimanLipi', sans-serif; 
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .glass { 
+            background: var(--card-bg); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid var(--border); 
+            border-radius: 16px;
+        }
+
+        .school-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tab-active { 
+            background: var(--accent) !important; 
+            color: #fff !important; 
+            box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3); 
+        }
+
+        input, select { 
+            background: var(--input-bg) !important; 
+            border: 1px solid var(--border) !important; 
+            color: var(--text-main) !important;
+            padding: 10px;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        #viewModal { display: none; }
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+
+    <header class="sticky top-0 z-50 glass !rounded-none border-b no-print px-4 py-3">
+        <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
+            <div class="flex items-center gap-2 min-w-0">
+                <img src="/icon.svg" alt="Icon" class="w-8 h-8 flex-shrink-0">
+                <div class="min-w-0">
+                    <h1 class="text-sm md:text-lg font-black tracking-tight school-title">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleTheme()" class="p-2 glass rounded-full">
+                    <i id="themeIcon" data-lucide="moon" size="18"></i>
+                </button>
+                <button id="logoutBtn" class="hidden text-rose-500 p-2"><i data-lucide="log-out"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <div id="loginArea" class="min-h-[70vh] flex items-center justify-center p-4 no-print">
+        <div class="glass p-8 w-full max-w-sm text-center shadow-2xl">
+            <img src="/icon.svg" class="w-12 h-12 mx-auto mb-4">
+            <h2 class="text-xl font-bold mb-6">অ্যাডমিন লগইন</h2>
+            <div class="space-y-4">
+                <input type="email" id="loginEmail" placeholder="ইমেইল" class="w-full">
+                <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="w-full">
+                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-3 rounded-xl font-bold hover:bg-cyan-500 transition-all">লগইন করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto py-6">
+        <div id="userGreeting"></div>
+
+        <div class="flex justify-center mb-8 gap-2 no-print">
+            <button onclick="switchTab('viewTab')" id="btnView" class="px-8 py-2 glass text-xs font-bold tab-active">শিক্ষার্থী তালিকা</button>
+            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-8 py-2 glass text-xs font-bold opacity-60">নতুন এন্ট্রি</button>
+        </div>
+
+        <div id="viewTab" class="space-y-6">
+            <div class="relative max-w-md mx-auto no-print">
+                <i data-lucide="search" class="absolute left-3.5 top-3 opacity-50" size="18"></i>
+                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="w-full pl-10 glass">
+            </div>
+            <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <div id="entryTab" class="hidden glass p-6 max-w-4xl mx-auto no-print">
+            <form id="studentForm" class="space-y-6">
+                <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
+                <div class="flex flex-col md:flex-row gap-6 border-b border-white/10 pb-6">
+                    <div class="w-28 h-28 glass mx-auto md:mx-0 rounded-2xl flex items-center justify-center overflow-hidden relative border-dashed border-2 border-slate-400">
+                        <img id="imagePreview" class="hidden w-full h-full object-cover">
+                        <span id="imgPlaceholder" class="text-[10px] opacity-60">ছবি</span>
+                        <input type="file" id="stPhoto" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                        <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required>
+                        <select id="class" required>
+                            <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
+                            <option value="১ম">১ম শ্রেণি</option><option value="২য়">২য় শ্রেণি</option>
+                            <option value="৩য়">৩য় শ্রেণি</option><option value="৪র্থ">৪র্থ শ্রেণি</option>
+                            <option value="৫ম">৫ম শ্রেণি</option>
+                        </select>
+                        <input type="number" id="roll" placeholder="রোল" required>
+                        <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-bold uppercase">ডাটা সেভ করুন</button>
+            </form>
+        </div>
+    </main>
+
+    <div id="viewModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm no-print">
+        <div class="glass w-full max-w-md p-6 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-rose-500"><i data-lucide="x-circle"></i></button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4",
+            authDomain: "my-school-database.firebaseapp.com",
+            projectId: "my-school-database",
+            databaseURL: "https://my-school-database-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // লগইন ইভেন্ট
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(e => alert("ভুল ইমেইল বা পাসওয়ার্ড!"));
+        });
+
+        // অথেনটিকেশন এবং গ্রিটিং লজিক
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('loginArea').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+
+                let displayTitle = "";
+                let displayName = "";
+                const hour = new Date().getHours();
+                const greet = hour < 12 ? "শুভ সকাল" : hour < 18 ? "শুভ অপরাহ্ণ" : "শুভ সন্ধ্যা";
+
+                if (user.uid === "Q9AUB3tOiAYAO9HebLAPpKbjDCx1") {
+                    window.userRole = 'admin';
+                    displayTitle = "সিস্টেম অ্যাডমিন";
+                    displayName = "অ্যাডমিন";
+                } else if (user.uid === "BcQXWMHQkJNrhhYkbJnVtsIffz33") {
+                    window.userRole = 'head_teacher';
+                    displayTitle = "প্রধান শিক্ষক";
+                    displayName = "উত্তম বিশ্বাস";
+                } else {
+                    window.userRole = 'teacher';
+                    displayTitle = "সহকারী শিক্ষক";
+                    displayName = "শিক্ষক";
+                }
+
+                document.getElementById('userGreeting').innerHTML = `
+                    <div class="max-w-md mx-auto mb-6 p-4 glass bg-cyan-500/10 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-black shadow-lg shadow-cyan-500/20">
+                            <i data-lucide="user-check"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-widest opacity-60">${displayTitle}</p>
+                            <h3 class="text-sm font-bold">${greet}, <span class="text-cyan-500">${displayName}</span>!</h3>
+                        </div>
+                    </div>`;
+                lucide.createIcons();
+                loadData();
+            } else {
+                document.getElementById('loginArea').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.add('hidden');
+            }
+        });
+
+        // ডাটা লোড (রোল ভিত্তিক বাটন কন্ট্রোল)
+        function loadData(search = "") {
+            onValue(ref(db, 'students'), (snap) => {
+                const container = document.getElementById('classWiseContainer');
+                container.innerHTML = "";
+                const data = snap.val() || {};
+                window.allData = data;
+                
+                ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
+                    const filtered = Object.keys(data).filter(id => 
+                        data[id].className === cls && 
+                        (data[id].name.toLowerCase().includes(search.toLowerCase()) || data[id].roll.toString().includes(search))
+                    ).sort((a,b) => data[a].roll - data[b].roll);
+
+                    if(filtered.length > 0) {
+                        let html = `<div class="glass overflow-hidden"><div class="p-3 bg-white/5 border-b border-white/5"><h3 class="font-bold text-xs text-cyan-500">${cls} শ্রেণি</h3></div><div class="divide-y divide-white/5">`;
+                        filtered.forEach(id => {
+                            html += `
+                                <div class="p-3 flex justify-between items-center hover:bg-white/5">
+                                    <div class="text-xs">
+                                        <p class="font-bold">${data[id].name}</p>
+                                        <p class="opacity-50">রোল: ${data[id].roll}</p>
+                                    </div>
+                                    <div class="flex gap-1">
+                                        <button onclick="viewRec('${id}')" class="text-cyan-500 p-2"><i data-lucide="eye" size="16"></i></button>
+                                        <button onclick="editRec('${id}')" class="text-emerald-500 p-2"><i data-lucide="edit-3" size="16"></i></button>
+                                        ${window.userRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="text-rose-500 p-2"><i data-lucide="trash-2" size="16"></i></button>` : ''}
+                                    </div>
+                                </div>`;
+                        });
+                        container.innerHTML += html + `</div></div>`;
+                        lucide.createIcons();
+                    }
+                });
+            });
+        }
+
+        // থিম সুইচ
+        window.toggleTheme = () => {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            document.getElementById('themeIcon').setAttribute('data-lucide', isLight ? 'sun' : 'moon');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            lucide.createIcons();
+        };
+        if(localStorage.getItem('theme') === 'light') toggleTheme();
+
+        window.switchTab = (id) => {
+            document.getElementById('viewTab').classList.toggle('hidden', id !== 'viewTab');
+            document.getElementById('entryTab').classList.toggle('hidden', id !== 'entryTab');
+            document.getElementById('btnView').classList.toggle('tab-active', id === 'viewTab');
+            document.getElementById('btnEntry').classList.toggle('tab-active', id === 'entryTab');
+        };
+
+        window.viewRec = (id) => {
+            const s = window.allData[id];
+            document.getElementById('modalContent').innerHTML = `
+                <div class="text-center space-y-4">
+                    <img src="${s.photo || ''}" class="w-20 h-20 mx-auto rounded-2xl border-2 border-cyan-500 object-cover shadow-lg">
+                    <div>
+                        <h2 class="text-lg font-bold">${s.name}</h2>
+                        <p class="text-xs opacity-70">${s.className} | রোল: ${s.roll}</p>
+                        <p class="text-[10px] mt-2 opacity-50">জন্ম নিবন্ধন: ${s.birthReg || 'নেই'}</p>
+                    </div>
+                    <button onclick="window.print()" class="w-full bg-slate-800 py-2 rounded-lg text-xs font-bold">প্রিন্ট প্রোফাইল</button>
+                </div>`;
+            document.getElementById('viewModal').style.display = 'flex';
+            lucide.createIcons();
+        };
+
+        window.closeModal = () => document.getElementById('viewModal').style.display = 'none';
+        window.deleteRec = (id) => { if(confirm("মুছে ফেলতে চান?")) remove(ref(db, `students/${id}`)); };
+        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+        document.getElementById('searchBar').addEventListener('input', (e) => loadData(e.target.value));
+        lucide.createIcons();
+    </script>
+</body>
+</html>
