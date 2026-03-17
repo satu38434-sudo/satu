@@ -72,7 +72,11 @@
                 <p class="text-xs font-bold mb-2 opacity-70">তারিখ নির্বাচন করুন</p>
                 <input type="date" id="attDate" class="mb-4 !w-auto mx-auto" onchange="initAttendance()">
                 <div id="attList" class="space-y-2 mt-4 text-left"></div>
-                <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full mt-6 bg-cyan-600 text-white py-3.5 rounded-xl font-bold">আজকের উপস্থিতি নিশ্চিত করুন</button>
+                <div class="flex flex-col gap-2 mt-6">
+                    <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full bg-cyan-600 text-white py-3.5 rounded-xl font-bold">আজকের উপস্থিতি নিশ্চিত করুন</button>
+                    <button onclick="viewDailyReport()" class="w-full bg-slate-800 text-cyan-400 py-3 rounded-xl font-bold border border-cyan-500/30">দৈনিক রিপোর্ট দেখুন</button>
+                    <button onclick="viewMonthlyReport()" class="w-full bg-slate-800 text-emerald-400 py-3 rounded-xl font-bold border border-emerald-500/30">মাসিক রিপোর্ট জেনারেট করুন</button>
+                </div>
             </div>
         </div>
 
@@ -133,7 +137,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4", authDomain: "my-school-database.firebaseapp.com", projectId: "my-school-database", databaseURL: "https://my-school-database-default-rtdb.firebaseio.com" };
         const app = initializeApp(firebaseConfig);
@@ -182,14 +186,7 @@
             
             Object.keys(window.allData).sort((a,b) => window.allData[a].roll - window.allData[b].roll).forEach(id => {
                 const s = window.allData[id];
-                container.innerHTML += `
-                    <div class="flex justify-between items-center p-3 glass mb-2">
-                        <div class="text-[11px]"><p class="font-bold">${s.name}</p><p class="opacity-60">${s.className} | রোল: ${toBn(s.roll)}</p></div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="att-check sr-only peer" data-id="${id}" checked>
-                            <div class="w-11 h-6 bg-rose-500 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
-                        </label>
-                    </div>`;
+                container.innerHTML += `<div class="flex justify-between items-center p-3 glass mb-2"><div class="text-[11px]"><p class="font-bold">${s.name}</p><p class="opacity-60">${s.className} | রোল: ${toBn(s.roll)}</p></div><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="att-check sr-only peer" data-id="${id}" checked><div class="w-11 h-6 bg-rose-500 rounded-full peer peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div></label></div>`;
             });
         };
 
@@ -197,7 +194,50 @@
             const date = document.getElementById('attDate').value;
             const attData = {};
             document.querySelectorAll('.att-check').forEach(chk => { attData[chk.dataset.id] = chk.checked ? "P" : "A"; });
-            set(ref(db, `attendance/${date}`), attData).then(() => alert("উপস্থিতি সফলভাবে সেভ হয়েছে!"));
+            set(ref(db, `attendance/${date}`), attData).then(() => alert("উপস্থিতি সেভ হয়েছে!"));
+        };
+
+        window.viewDailyReport = () => {
+            const date = document.getElementById('attDate').value;
+            if(!date) return alert("তারিখ নির্বাচন করুন!");
+            get(ref(db, `attendance/${date}`)).then(snap => {
+                const attData = snap.val();
+                if(!attData) return alert("রেকর্ড পাওয়া যায়নি!");
+                let p = 0, a = 0;
+                let html = `<div class="p-4 bg-white text-black rounded-lg"><h2 class="text-center font-black border-b pb-2 mb-4">ডেইলি রিপোর্ট: ${toBn(date)}</h2>`;
+                Object.keys(window.allData).forEach(id => {
+                    const status = attData[id] || "---";
+                    if(status === "P") p++; else a++;
+                    html += `<div class="flex justify-between text-[11px] py-1 border-b"><span>${window.allData[id].name} (${toBn(window.allData[id].roll)})</span><span class="font-bold ${status === 'P' ? 'text-emerald-600' : 'text-rose-600'}">${status === 'P' ? 'উপস্থিত' : 'অনুপস্থিত'}</span></div>`;
+                });
+                html += `<div class="mt-4 p-2 bg-slate-100 flex justify-around text-xs font-bold"><p>উপস্থিত: ${toBn(p)}</p><p>অনুপস্থিত: ${toBn(a)}</p></div></div><button onclick="window.print()" class="w-full mt-4 bg-slate-800 text-white py-2 rounded-lg font-bold text-xs no-print">প্রিন্ট রিপোর্ট</button>`;
+                document.getElementById('modalContent').innerHTML = html;
+                document.getElementById('viewModal').style.display = 'flex';
+            });
+        };
+
+        window.viewMonthlyReport = () => {
+            const dateInput = document.getElementById('attDate').value;
+            if(!dateInput) return alert("প্রথমে ওই মাসের যেকোনো একটি তারিখ সিলেক্ট করুন!");
+            const targetMonth = dateInput.substring(0, 7); // YYYY-MM
+            get(ref(db, `attendance`)).then(snap => {
+                const allAtt = snap.val() || {};
+                const days = Object.keys(allAtt).filter(d => d.startsWith(targetMonth));
+                if(days.length === 0) return alert("এই মাসে কোনো রেকর্ড নেই!");
+                
+                let html = `<div class="p-4 bg-white text-black rounded-lg"><h2 class="text-center font-black border-b pb-2 mb-4">মাসিক রিপোর্ট: ${targetMonth}</h2><table class="w-full text-[10px] text-left"><thead><tr class="border-b"><th>নাম (রোল)</th><th class="text-center">উপস্থিতি (%)</th></tr></thead><tbody>`;
+                
+                Object.keys(window.allData).forEach(id => {
+                    let present = 0;
+                    days.forEach(d => { if(allAtt[d][id] === "P") present++; });
+                    const percent = ((present / days.length) * 100).toFixed(0);
+                    html += `<tr class="border-b"><td class="py-1">${window.allData[id].name} (${toBn(window.allData[id].roll)})</td><td class="text-center font-bold">${toBn(present)}/${toBn(days.length)} (${toBn(percent)}%)</td></tr>`;
+                });
+                
+                html += `</tbody></table><p class="mt-4 text-[9px] opacity-50 italic text-center">মোট কার্যদিবস: ${toBn(days.length)} দিন</p></div><button onclick="window.print()" class="w-full mt-4 bg-slate-800 text-white py-2 rounded-lg font-bold text-xs no-print">প্রিন্ট রিপোর্ট</button>`;
+                document.getElementById('modalContent').innerHTML = html;
+                document.getElementById('viewModal').style.display = 'flex';
+            });
         };
 
         window.processImage = (e) => {
@@ -245,14 +285,7 @@
                         let html = `<div class="glass overflow-hidden mb-3"><div class="p-2 bg-white/5 border-b border-white/5"><h3 class="font-bold text-[10px] text-cyan-500">${cls} শ্রেণি</h3></div><div class="divide-y divide-white/5">`;
                         filtered.forEach(id => {
                             const age = calculateAge(data[id].dob);
-                            html += `<div class="p-3 flex justify-between items-center"><div class="flex items-center gap-2 text-[11px]">
-                                <img src="${data[id].photo || ''}" class="w-8 h-8 rounded-lg bg-slate-800 object-cover">
-                                <div><p class="font-bold">${data[id].name}</p><p class="opacity-50 text-[9px]">রোল: ${toBn(data[id].roll)} | বয়স: ${toBn(age)}</p></div>
-                            </div><div class="flex gap-1">
-                                <button onclick="viewRec('${id}')" class="text-cyan-500 p-1.5"><i data-lucide="eye" size="16"></i></button>
-                                <button onclick="editRec('${id}')" class="text-emerald-500 p-1.5"><i data-lucide="edit-3" size="16"></i></button>
-                                ${window.userRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="text-rose-500 p-1.5"><i data-lucide="trash-2" size="16"></i></button>` : ''}
-                            </div></div>`;
+                            html += `<div class="p-3 flex justify-between items-center"><div class="flex items-center gap-2 text-[11px]"><img src="${data[id].photo || ''}" class="w-8 h-8 rounded-lg bg-slate-800 object-cover"><div><p class="font-bold">${data[id].name}</p><p class="opacity-50 text-[9px]">রোল: ${toBn(data[id].roll)} | বয়স: ${toBn(age)}</p></div></div><div class="flex gap-1"><button onclick="viewRec('${id}')" class="text-cyan-500 p-1.5"><i data-lucide="eye" size="16"></i></button><button onclick="editRec('${id}')" class="text-emerald-500 p-1.5"><i data-lucide="edit-3" size="16"></i></button>${window.userRole === 'admin' ? `<button onclick="deleteRec('${id}')" class="text-rose-500 p-1.5"><i data-lucide="trash-2" size="16"></i></button>` : ''}</div></div>`;
                         });
                         container.innerHTML += html + `</div></div>`;
                         lucide.createIcons();
@@ -264,37 +297,7 @@
         window.viewRec = (id) => {
             const s = window.allData[id];
             const age = calculateAge(s.dob);
-            document.getElementById('modalContent').innerHTML = `
-                <div id="printableCard" class="p-4 bg-white text-black rounded-lg">
-                    <div class="flex flex-col items-center gap-2 mb-4">
-                        <img src="${s.photo || ''}" class="w-20 h-20 rounded-xl border-2 border-cyan-500 object-cover">
-                        <div class="text-center">
-                            <h2 class="text-lg font-black">${s.name}</h2>
-                            <p class="text-cyan-600 font-bold text-[10px] uppercase">${s.className} শ্রেণি | রোল: ${toBn(s.roll)} | বয়স: ${toBn(age)}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-3 text-[10px]">
-                        <div class="p-2 border rounded-lg text-center bg-slate-50">
-                            <p class="font-bold opacity-50 mb-1">জন্ম নিবন্ধন ও তারিখ</p>
-                            <p class="text-base font-bold">${toBn(s.birthReg)}</p>
-                            <p class="text-cyan-600 font-bold">${toBn(s.dob)}</p>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div class="p-2 border-l-2 border-cyan-500 bg-cyan-50">
-                                <p class="text-cyan-600 font-black mb-1">পিতার তথ্য</p>
-                                <p>নাম: ${s.fName || '---'}</p><p>NID: ${toBn(s.fNid)}</p><p>মোবাইল: ${toBn(s.fMobile)}</p>
-                            </div>
-                            <div class="p-2 border-l-2 border-rose-500 bg-rose-50">
-                                <p class="text-rose-600 font-black mb-1">মাতার তথ্য</p>
-                                <p>নাম: ${s.mName || '---'}</p><p>NID: ${toBn(s.mNid)}</p><p>মোবাইল: ${toBn(s.mMobile)}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-6 flex gap-2 no-print">
-                    <button onclick="window.print()" class="flex-1 bg-slate-800 text-white py-2.5 rounded-lg font-bold text-xs">প্রিন্ট কার্ড</button>
-                    <button onclick="closeModal()" class="flex-1 bg-cyan-600 text-white py-2.5 rounded-lg font-bold text-xs">বন্ধ করুন</button>
-                </div>`;
+            document.getElementById('modalContent').innerHTML = `<div id="printableCard" class="p-4 bg-white text-black rounded-lg"><div class="flex flex-col items-center gap-2 mb-4"><img src="${s.photo || ''}" class="w-20 h-20 rounded-xl border-2 border-cyan-500 object-cover"><div class="text-center"><h2 class="text-lg font-black">${s.name}</h2><p class="text-cyan-600 font-bold text-[10px] uppercase">${s.className} শ্রেণি | রোল: ${toBn(s.roll)} | বয়স: ${toBn(age)}</p></div></div><div class="space-y-3 text-[10px]"><div class="p-2 border rounded-lg text-center bg-slate-50"><p class="font-bold opacity-50 mb-1">জন্ম নিবন্ধন ও তারিখ</p><p class="text-base font-bold">${toBn(s.birthReg)}</p><p class="text-cyan-600 font-bold">${toBn(s.dob)}</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><div class="p-2 border-l-2 border-cyan-500 bg-cyan-50"><p class="text-cyan-600 font-black mb-1">পিতার তথ্য</p><p>নাম: ${s.fName || '---'}</p><p>NID: ${toBn(s.fNid)}</p><p>মোবাইল: ${toBn(s.fMobile)}</p></div><div class="p-2 border-l-2 border-rose-500 bg-rose-50"><p class="text-rose-600 font-black mb-1">মাতার তথ্য</p><p>নাম: ${s.mName || '---'}</p><p>NID: ${toBn(s.mNid)}</p><p>মোাবাইল: ${toBn(s.mMobile)}</p></div></div></div></div><div class="mt-6 flex gap-2 no-print"><button onclick="window.print()" class="flex-1 bg-slate-800 text-white py-2.5 rounded-lg font-bold text-xs">প্রিন্ট কার্ড</button><button onclick="closeModal()" class="flex-1 bg-cyan-600 text-white py-2.5 rounded-lg font-bold text-xs">বন্ধ করুন</button></div>`;
             document.getElementById('viewModal').style.display = 'flex';
             lucide.createIcons();
         };
@@ -307,66 +310,31 @@
             document.getElementById('roll').value = s.roll;
             document.getElementById('birthReg').value = s.birthReg;
             document.getElementById('dob').value = s.dob;
-            document.getElementById('fName').value = s.fName || "";
-            document.getElementById('fNid').value = s.fNid || "";
-            document.getElementById('fDob').value = s.fDob || "";
-            document.getElementById('fMobile').value = s.fMobile || "";
-            document.getElementById('mName').value = s.mName || "";
-            document.getElementById('mNid').value = s.mNid || "";
-            document.getElementById('mDob').value = s.mDob || "";
-            document.getElementById('mMobile').value = s.mMobile || "";
-            if(s.photo) {
-                document.getElementById('photoBase64').value = s.photo;
-                document.getElementById('imagePreview').src = s.photo;
-                document.getElementById('imagePreview').classList.remove('hidden');
-                document.getElementById('imgLabel').classList.add('hidden');
-            }
+            document.getElementById('fName').value = s.fName || ""; document.getElementById('fNid').value = s.fNid || ""; document.getElementById('fDob').value = s.fDob || ""; document.getElementById('fMobile').value = s.fMobile || "";
+            document.getElementById('mName').value = s.mName || ""; document.getElementById('mNid').value = s.mNid || ""; document.getElementById('mDob').value = s.mDob || ""; document.getElementById('mMobile').value = s.mMobile || "";
+            if(s.photo) { document.getElementById('photoBase64').value = s.photo; document.getElementById('imagePreview').src = s.photo; document.getElementById('imagePreview').classList.remove('hidden'); document.getElementById('imgLabel').classList.add('hidden'); }
             updateStudentAgePreview();
             switchTab('entryTab');
         };
 
         window.deleteRec = (id) => { if(confirm("আপনি কি নিশ্চিত?")) remove(ref(db, `students/${id}`)); };
-        window.toggleTheme = () => {
-            document.body.classList.toggle('light-mode');
-            const icon = document.body.classList.contains('light-mode') ? 'sun' : 'moon';
-            document.getElementById('themeIcon').setAttribute('data-lucide', icon);
-            lucide.createIcons();
-        };
-
-        window.switchTab = (id) => {
-            ['viewTab', 'entryTab', 'attendanceTab'].forEach(tab => document.getElementById(tab).classList.toggle('hidden', tab !== id));
-            ['btnView', 'btnEntry', 'btnAttendance'].forEach(btn => document.getElementById(btn).classList.toggle('tab-active', btn.toLowerCase().includes(id.replace('Tab','').toLowerCase())));
-            if(id === 'entryTab' && !document.getElementById('editKey').value) {
-                document.getElementById('studentForm').reset();
-                document.getElementById('imagePreview').classList.add('hidden');
-                document.getElementById('imgLabel').classList.remove('hidden');
-                document.getElementById('studentAgePreview').innerText = "";
-            }
-        };
-
+        window.toggleTheme = () => { document.body.classList.toggle('light-mode'); const icon = document.body.classList.contains('light-mode') ? 'sun' : 'moon'; document.getElementById('themeIcon').setAttribute('data-lucide', icon); lucide.createIcons(); };
+        window.switchTab = (id) => { ['viewTab', 'entryTab', 'attendanceTab'].forEach(tab => document.getElementById(tab).classList.toggle('hidden', tab !== id)); ['btnView', 'btnEntry', 'btnAttendance'].forEach(btn => document.getElementById(btn).classList.toggle('tab-active', btn.toLowerCase().includes(id.replace('Tab','').toLowerCase()))); };
         window.closeModal = () => document.getElementById('viewModal').style.display = 'none';
 
-        document.getElementById('loginBtn').addEventListener('click', () => {
-            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(err => alert(err.message));
-        });
-
+        document.getElementById('loginBtn').addEventListener('click', () => { signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value).catch(err => alert(err.message)); });
         document.getElementById('studentForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const dob = document.getElementById('dob').value;
-            const birthReg = document.getElementById('birthReg').value;
-            const fNid = document.getElementById('fNid').value;
-            const mNid = document.getElementById('mNid').value;
+            const br = document.getElementById('birthReg').value;
             const age = calculateAge(dob);
-            if (age < 5 || age > 17) return alert("বয়স ৫ থেকে ১৭ বছর হতে হবে!");
-            if (birthReg.length !== 17) return alert("জন্ম নিবন্ধন ১৭ ডিজিট হতে হবে!");
-            const vnid = (n) => n.length === 0 || n.length === 10 || n.length === 17;
-            if (!vnid(fNid) || !vnid(mNid)) return alert("NID ১০ অথবা ১৭ ডিজিট হতে হবে!");
+            if (age < 5 || age > 17) return alert("বয়স ৫-১৭ হতে হবে!");
+            if (br.length !== 17) return alert("জন্ম নিবন্ধন ১৭ ডিজিট হতে হবে!");
             const key = document.getElementById('editKey').value;
             const data = {
-                name: document.getElementById('stName').value, className: document.getElementById('class').value, roll: document.getElementById('roll').value,
-                birthReg: birthReg, dob: dob, photo: document.getElementById('photoBase64').value,
-                fName: document.getElementById('fName').value, fNid: fNid, fDob: document.getElementById('fDob').value, fMobile: document.getElementById('fMobile').value,
-                mName: document.getElementById('mName').value, mNid: mNid, mDob: document.getElementById('mDob').value, mMobile: document.getElementById('mMobile').value
+                name: document.getElementById('stName').value, className: document.getElementById('class').value, roll: document.getElementById('roll').value, birthReg: br, dob: dob, photo: document.getElementById('photoBase64').value,
+                fName: document.getElementById('fName').value, fNid: document.getElementById('fNid').value, fDob: document.getElementById('fDob').value, fMobile: document.getElementById('fMobile').value,
+                mName: document.getElementById('mName').value, mNid: document.getElementById('mNid').value, mDob: document.getElementById('mDob').value, mMobile: document.getElementById('mMobile').value
             };
             set(key ? ref(db, `students/${key}`) : push(ref(db, 'students')), data).then(() => { alert("সেভ হয়েছে!"); switchTab('viewTab'); });
         });
