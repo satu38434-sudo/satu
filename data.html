@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয় | ডাটাবেস</title>
+    <title>২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয় | ডাটাবেস</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
@@ -29,7 +29,6 @@
         body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; transition: 0.3s; }
         .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 12px; }
         
-        /* ইনপুট ফিল্ড ও ফন্ট সাইজ কিছুটা ছোট করা হয়েছে */
         input, select { 
             background: var(--input-bg) !important; 
             border: 1px solid var(--border) !important; 
@@ -60,7 +59,7 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
             <div class="flex items-center gap-2 min-w-0">
                 <img src="/icon.svg" class="w-7 h-7 flex-shrink-0">
-                <h1 class="text-xs md:text-base font-black truncate">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
+                <h1 class="text-xs md:text-base font-black truncate">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="toggleTheme()" class="p-2 glass rounded-full"><i id="themeIcon" data-lucide="moon" size="16"></i></button>
@@ -90,10 +89,10 @@
 
         <div id="viewTab" class="space-y-4">
             <div class="relative max-w-md mx-auto no-print">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
                     <i data-lucide="search" size="16"></i>
                 </div>
-                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="pl-10">
+                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="pr-10">
             </div>
             <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"></div>
         </div>
