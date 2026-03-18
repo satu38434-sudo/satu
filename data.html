@@ -16,6 +16,7 @@
         .input-style { background: rgba(0,0,0,0.03) !important; border: 1.5px solid var(--border) !important; color: var(--text) !important; padding: 12px; border-radius: 12px; width: 100%; outline: none; }
         .tab-active { background: linear-gradient(135deg, #0891b2, #06b6d4) !important; color: #fff !important; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(8, 145, 178, 0.3); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        @media print { .no-print { display: none !important; } #viewModal { position: absolute; left: 0; top: 0; width: 100%; display: block !important; visibility: visible; } }
     </style>
 </head>
 <body class="light-mode">
@@ -23,10 +24,10 @@
     <header class="sticky top-0 z-50 glass !rounded-none border-b px-4 py-4 no-print mb-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-cyan-500 p-2 rounded-xl"><i data-lucide="graduation-cap" class="text-white w-6 h-6"></i></div>
+                <div class="bg-cyan-500 p-2 rounded-xl shadow-lg"><i data-lucide="graduation-cap" class="text-white w-6 h-6"></i></div>
                 <div>
                     <h1 id="userGreeting" class="text-sm md:text-xl font-black">লোড হচ্ছে...</h1>
-                    <p class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">Digital Management</p>
+                    <p class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">Digital Management System</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -48,7 +49,7 @@
         </div>
     </div>
 
-    <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto">
+    <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto no-print">
         <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
             <div class="glass p-6 min-w-[200px] text-center border-b-4 border-cyan-500">
                 <p class="text-[10px] font-bold opacity-60">মোট শিক্ষার্থী</p>
@@ -58,29 +59,41 @@
 
         <nav class="flex justify-center mb-10 gap-3 overflow-x-auto pb-2 no-scrollbar">
             <button onclick="switchTab('viewTab')" id="btnView" class="px-8 py-3 glass text-xs font-black tab-active whitespace-nowrap">তালিকা</button>
-            <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-8 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">হাজিরা</button>
+            <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-8 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">হাজিরা রিপোর্ট</button>
             <button onclick="switchTab('entryTab')" id="btnEntry" class="px-8 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">নতুন এন্ট্রি</button>
         </nav>
 
         <section id="viewTab" class="space-y-6">
+            <div class="relative max-w-xl mx-auto mb-10">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-40"></i>
+                <input type="text" id="searchBar" oninput="renderList()" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="input-style !pl-12">
+            </div>
             <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
         <section id="attendanceTab" class="hidden glass p-8 max-w-2xl mx-auto text-center">
             <input type="date" id="attDate" class="input-style max-w-xs mx-auto mb-6" onchange="loadAttendance()">
-            <div id="attList" class="space-y-2 text-left"></div>
-            <button onclick="saveAttendance()" id="saveBtn" class="hidden w-full bg-cyan-600 text-white py-4 mt-6 rounded-xl font-bold">সেভ করুন</button>
+            <div id="attList" class="space-y-2 text-left max-h-[400px] overflow-y-auto no-scrollbar"></div>
+            <button onclick="saveAttendance()" id="saveBtn" class="hidden w-full bg-cyan-600 text-white py-4 mt-6 rounded-xl font-bold">হাজিরা সেভ করুন</button>
         </section>
 
         <section id="entryTab" class="hidden glass p-8 max-w-xl mx-auto">
             <form id="studentForm" class="space-y-4">
                 <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="input-style" required>
-                <select id="class" class="input-style"><option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option></select>
+                <select id="class" class="input-style"><option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option><option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option></select>
                 <input type="number" id="roll" placeholder="রোল" class="input-style" required>
+                <input type="tel" id="fMobile" placeholder="মোবাইল নম্বর" class="input-style">
                 <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-bold">সেভ ডাটা</button>
             </form>
         </section>
     </main>
+
+    <div id="viewModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 hidden">
+        <div class="glass w-full max-w-md p-8 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-rose-500"><i data-lucide="circle-x"></i></button>
+            <div id="modalContent" class="text-center"></div>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -95,15 +108,12 @@
         const ADMIN_ID = "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2";
         const toBn = (n) => n ? n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]) : '০';
 
-        // Login Logic Fixed
+        // Fix Login Listener
         document.getElementById('loginBtn').addEventListener('click', () => {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
-            
             if(!email || !pass) return Swal.fire("ইমেইল ও পাসওয়ার্ড দিন", "", "warning");
-
-            signInWithEmailAndPassword(auth, email, pass)
-                .catch(err => Swal.fire("লগইন ব্যর্থ!", "ইমেইল বা পাসওয়ার্ড ভুল", "error"));
+            signInWithEmailAndPassword(auth, email, pass).catch(() => Swal.fire("ব্যর্থ!", "ইমেইল বা পাসওয়ার্ড ভুল", "error"));
         });
 
         onAuthStateChanged(auth, (user) => {
@@ -111,13 +121,12 @@
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
-                document.getElementById('userGreeting').innerText = user.uid === ADMIN_ID ? "সুপ্রভাত, অ্যাডমিন!" : "সুপ্রভাত, শিক্ষক!";
+                document.getElementById('userGreeting').innerText = user.uid === ADMIN_ID ? "সুপ্রভাত, অ্যাডমিন!" : "সুপ্রভাত, প্রধান শিক্ষক!";
                 loadData();
             } else {
                 document.getElementById('loginArea').classList.remove('hidden');
                 document.getElementById('mainApp').classList.add('hidden');
                 document.getElementById('logoutBtn').classList.add('hidden');
-                document.getElementById('userGreeting').innerText = "স্বাগতম!";
             }
             lucide.createIcons();
         });
@@ -132,29 +141,77 @@
 
         window.renderList = () => {
             const container = document.getElementById('classWiseContainer');
+            const search = document.getElementById('searchBar').value.toLowerCase();
             container.innerHTML = "";
-            ["১ম", "২য়", "৩য়", "৪র্থ", "৫ম"].forEach(cls => {
-                const students = Object.keys(window.allData || {}).filter(id => window.allData[id].className === cls);
+            ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
+                const students = Object.keys(window.allData).filter(id => {
+                    const s = window.allData[id];
+                    return s.className === cls && (s.name.toLowerCase().includes(search) || s.roll.toString().includes(search));
+                });
                 if(students.length > 0) {
                     let html = `<div class="glass p-5 border-t-4 border-cyan-500"><b>${cls} শ্রেণি</b><div class="mt-3 space-y-2">`;
                     students.forEach(id => {
-                        html += `<div class="p-2 bg-black/5 rounded">${window.allData[id].name} (রোল: ${toBn(window.allData[id].roll)})</div>`;
+                        html += `<div onclick="showProfile('${id}')" class="p-3 bg-black/5 rounded cursor-pointer hover:bg-cyan-500 hover:text-white transition-all flex justify-between">
+                            <span>${window.allData[id].name}</span> <b>রোল: ${toBn(window.allData[id].roll)}</b>
+                        </div>`;
                     });
                     container.innerHTML += html + `</div></div>`;
                 }
             });
         };
 
+        window.showProfile = (id) => {
+            const s = window.allData[id];
+            document.getElementById('modalContent').innerHTML = `
+                <div class="w-20 h-20 bg-cyan-100 rounded-full mx-auto mb-4 flex items-center justify-center"><i data-lucide="user" class="text-cyan-600"></i></div>
+                <h3 class="text-xl font-bold">${s.name}</h3>
+                <p>${s.className} | রোল: ${toBn(s.roll)}</p>
+                <div class="mt-4 p-4 bg-black/5 rounded text-left">মোবাইল: ${s.fMobile || 'নাই'}</div>
+            `;
+            document.getElementById('viewModal').classList.remove('hidden');
+            lucide.createIcons();
+        };
+
+        window.loadAttendance = async () => {
+            const date = document.getElementById('attDate').value;
+            const snap = await get(ref(db, `attendance/${date}`));
+            const att = snap.val() || {};
+            const list = document.getElementById('attList');
+            list.innerHTML = "";
+            Object.keys(window.allData).forEach(id => {
+                const s = window.allData[id];
+                list.innerHTML += `<div class="flex justify-between p-3 glass"><span>${s.name}</span>
+                <select id="sel-${id}" class="bg-transparent font-bold">
+                    <option value="P" ${att[id]=='P'?'selected':''}>উপস্থিত</option>
+                    <option value="A" ${att[id]=='A'?'selected':''}>অনুপস্থিত</option>
+                </select></div>`;
+            });
+            document.getElementById('saveBtn').classList.remove('hidden');
+        };
+
+        window.saveAttendance = () => {
+            const date = document.getElementById('attDate').value;
+            const updates = {};
+            Object.keys(window.allData).forEach(id => updates[id] = document.getElementById(`sel-${id}`).value);
+            set(ref(db, `attendance/${date}`), updates).then(() => Swal.fire("সফল!", "হাজিরা সেভ হয়েছে", "success"));
+        };
+
+        document.getElementById('studentForm').onsubmit = (e) => {
+            e.preventDefault();
+            const data = { name: document.getElementById('stName').value, className: document.getElementById('class').value, roll: document.getElementById('roll').value, fMobile: document.getElementById('fMobile').value };
+            push(ref(db, 'students'), data).then(() => { Swal.fire("সফল!", "শিক্ষার্থী যুক্ত হয়েছে", "success"); e.target.reset(); });
+        };
+
         window.switchTab = (id) => {
             ['viewTab', 'attendanceTab', 'entryTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             ['btnView', 'btnAttendance', 'btnEntry'].forEach(b => document.getElementById(b).classList.remove('tab-active', 'opacity-60'));
-            const map = { viewTab: 'btnView', attendanceTab: 'btnAttendance', entryTab: 'btnEntry' };
-            document.getElementById(map[id]).classList.add('tab-active');
+            document.getElementById(`btn${id.charAt(0).toUpperCase() + id.slice(1, -3)}`).classList.add('tab-active');
         };
 
         window.handleLogout = () => signOut(auth);
         window.toggleTheme = () => document.body.classList.toggle('dark-mode');
+        window.closeModal = () => document.getElementById('viewModal').classList.add('hidden');
 
         lucide.createIcons();
     </script>
