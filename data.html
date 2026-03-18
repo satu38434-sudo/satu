@@ -9,46 +9,21 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
-        /* Default Light Mode Vars */
-        :root { 
-            --bg: #f1f5f9; 
-            --card: #ffffff; 
-            --text: #1e293b; 
-            --border: rgba(0, 0, 0, 0.08); 
-            --accent: #0891b2; 
-        }
-        
-        /* Dark Mode Vars */
-        .dark-mode { 
-            --bg: #0f172a; 
-            --card: rgba(30, 41, 59, 0.7); 
-            --text: #f1f5f9; 
-            --accent: #22d3ee; 
-            --border: rgba(255, 255, 255, 0.08); 
-        }
-
+        :root { --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: rgba(0, 0, 0, 0.08); --accent: #0891b2; }
+        .dark-mode { --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); --text: #f1f5f9; --accent: #22d3ee; --border: rgba(255, 255, 255, 0.08); }
         body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg); color: var(--text); min-height: 100vh; transition: 0.4s; overflow-x: hidden; }
         .glass { background: var(--card); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 16px; }
-        
-        /* Dropdown fix for dark mode readability */
         select option { background-color: var(--card) !important; color: var(--text) !important; }
-
         .input-style { background: rgba(0,0,0,0.05) !important; border: 1.5px solid var(--border) !important; color: var(--text) !important; padding: 12px; border-radius: 12px; width: 100%; outline: none; appearance: none; }
         .dark-mode .input-style { background: rgba(0,0,0,0.2) !important; }
-        
         .tab-active { background: linear-gradient(135deg, #0891b2, #22d3ee) !important; color: #fff !important; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(34, 211, 238, 0.3); }
-        .photo-preview { width: 100px; height: 100px; object-fit: cover; border-radius: 16px; border: 2px solid var(--accent); }
-        
-        @media print { 
-            body { background: white !important; color: black !important; }
-            .no-print { display: none !important; }
-            #viewModal { position: absolute; left: 0; top: 0; width: 100%; display: block !important; visibility: visible; }
-            .glass { border: none !important; box-shadow: none !important; background: transparent !important; }
-        }
+        @media print { .no-print { display: none !important; } #viewModal { position: absolute; left: 0; top: 0; width: 100%; display: block !important; visibility: visible; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="light-mode"> <header class="sticky top-0 z-50 glass !rounded-none border-b px-4 py-4 no-print mb-6">
+<body class="light-mode">
+
+    <header class="sticky top-0 z-50 glass !rounded-none border-b px-4 py-4 no-print mb-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="bg-cyan-500 p-2 rounded-xl shadow-lg shadow-cyan-500/20"><i data-lucide="graduation-cap" class="text-white w-6 h-6"></i></div>
@@ -59,7 +34,7 @@
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="toggleTheme()" class="p-2.5 glass rounded-xl"><i id="themeIcon" data-lucide="sun" size="20"></i></button>
-                <button id="logoutBtn" class="hidden text-rose-500 p-2.5 glass rounded-xl"><i data-lucide="log-out" size="20"></i></button>
+                <button id="logoutBtn" onclick="handleLogout()" class="hidden text-rose-500 p-2.5 glass rounded-xl"><i data-lucide="log-out" size="20"></i></button>
             </div>
         </div>
     </header>
@@ -97,46 +72,21 @@
         <section id="viewTab" class="space-y-6">
             <div class="relative max-w-xl mx-auto mb-10">
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-40"></i>
-                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে শিক্ষার্থী খুঁজুন..." class="input-style !pl-12 shadow-xl">
+                <input type="text" id="searchBar" oninput="renderList()" placeholder="নাম বা রোল দিয়ে শিক্ষার্থী খুঁজুন..." class="input-style !pl-12 shadow-xl">
             </div>
             <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center"></div>
         </section>
 
         <section id="attendanceTab" class="hidden space-y-8 max-w-3xl mx-auto">
             <div class="glass p-8 space-y-8 text-center">
-                <div class="space-y-2">
-                    <h3 class="text-xl font-black text-cyan-600 flex items-center justify-center gap-3"><i data-lucide="calendar-days"></i> দৈনিক হাজিরা</h3>
-                    <input type="date" id="attDate" class="input-style max-w-xs mx-auto text-center font-black" onchange="initAttendance()">
-                </div>
+                <input type="date" id="attDate" class="input-style max-w-xs mx-auto text-center font-black" onchange="initAttendance()">
                 <div id="attList" class="space-y-2 text-left max-h-[400px] overflow-y-auto pr-3 no-scrollbar"></div>
-                <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full bg-cyan-600 text-white py-4 rounded-xl font-black text-lg shadow-xl active:scale-95">হাজিরা সেভ করুন</button>
-                
-                <div class="pt-8 border-t border-black/5 dark:border-white/10">
-                    <h4 class="text-[10px] font-black mb-6 opacity-60 uppercase tracking-[0.3em]">রিপোর্ট সেন্টার</h4>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <select id="reportYear" class="input-style font-bold"><option value="2026">২০২৬</option><option value="2025">২০২৫</option></select>
-                        <select id="reportMonth" class="input-style font-bold">
-                            <option value="01">জানুয়ারি</option><option value="02">ফেব্রুয়ারি</option><option value="03">মার্চ</option>
-                            <option value="04">এপ্রিল</option><option value="05">মে</option><option value="06">জুন</option>
-                            <option value="07">জুলাই</option><option value="08">আগস্ট</option><option value="09">সেপ্টেম্বর</option>
-                            <option value="10">অক্টোবর</option><option value="11">নভেম্বর</option><option value="12">ডিসেম্বর</option>
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <button onclick="viewDailyReport()" class="bg-slate-200 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 py-3 rounded-xl text-[11px] font-black">দৈনিক তালিকা</button>
-                        <button onclick="generateMonthlyReport()" class="bg-slate-200 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 py-3 rounded-xl text-[11px] font-black">মাসিক রিপোর্ট</button>
-                        <div class="flex gap-2">
-                            <button onclick="generateSixMonthReport('01','06')" class="flex-1 bg-slate-200 dark:bg-slate-800 text-blue-600 dark:text-blue-400 py-3 rounded-xl text-[10px] font-black">১ম ৬ মাস</button>
-                            <button onclick="generateSixMonthReport('07','12')" class="flex-1 bg-slate-200 dark:bg-slate-800 text-orange-600 dark:text-orange-400 py-3 rounded-xl text-[10px] font-black">২য় ৬ মাস</button>
-                        </div>
-                    </div>
-                </div>
+                <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full bg-cyan-600 text-white py-4 rounded-xl font-black shadow-xl">হাজিরা সেভ করুন</button>
             </div>
         </section>
 
         <section id="entryTab" class="hidden glass p-8 max-w-5xl mx-auto">
             <form id="studentForm" class="space-y-6">
-                <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required class="input-style">
                     <div class="flex gap-2">
@@ -159,19 +109,17 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4", authDomain: "my-school-database.firebaseapp.com", projectId: "my-school-database", databaseURL: "https://my-school-database-default-rtdb.firebaseio.com" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        const ADMIN_UID = "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2";
+        const ADMIN_UID = "7Lxi5lfMR0ZWHRbBHM;
         let isDarkMode = false;
-
         const toBn = (n) => n ? n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]) : '০';
 
-        // Theme Toggle Logic
         window.toggleTheme = () => {
             isDarkMode = !isDarkMode;
             document.body.classList.toggle('dark-mode', isDarkMode);
@@ -185,7 +133,7 @@
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
-                document.getElementById('userGreeting').innerText = u.uid === ADMIN_UID ? "সুপ্রভাত, অ্যাডমিন স্যার!" : "সুপ্রভাত, প্রধান শিক্ষক!";
+                document.getElementById('userGreeting').innerText = u.uid === "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2" ? "সুপ্রভাত, অ্যাডমিন স্যার!" : "সুপ্রভাত, প্রধান শিক্ষক!";
                 document.getElementById('userRoleTag').innerText = "২১৭নং স্কুল ম্যানেজমেন্ট";
                 loadData();
             } else {
@@ -195,45 +143,28 @@
             lucide.createIcons();
         });
 
-        // Simplified data loading for demo
         function loadData() {
             onValue(ref(db, 'students'), (snap) => {
-                const data = snap.val() || {};
-                window.allData = data;
-                document.getElementById('totalCount').innerText = toBn(Object.keys(data).length);
+                window.allData = snap.val() || {};
+                document.getElementById('totalCount').innerText = toBn(Object.keys(window.allData).length);
                 renderList();
             });
         }
 
-        function renderList() {
+        window.renderList = () => {
             const container = document.getElementById('classWiseContainer');
+            const search = document.getElementById('searchBar').value.toLowerCase();
             container.innerHTML = "";
             ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
-                const filtered = Object.keys(window.allData || {}).filter(id => window.allData[id].className === cls);
+                const filtered = Object.keys(window.allData || {}).filter(id => {
+                    const s = window.allData[id];
+                    return s.className === cls && (s.name.toLowerCase().includes(search) || s.roll.includes(search));
+                });
                 if(filtered.length > 0) {
                     let html = `<div class="glass p-4"><b>${cls} শ্রেণি</b><div class="mt-2 text-xs">`;
                     filtered.forEach(id => html += `<div class="p-2 border-b border-black/5">${window.allData[id].name} (রোল: ${toBn(window.allData[id].roll)})</div>`);
                     container.innerHTML += html + `</div></div>`;
                 }
-            });
-        }
-
-        // 6 Month Report with Percentage Logic
-        window.generateSixMonthReport = (startM, endM) => {
-            get(ref(db, `attendance`)).then(snap => {
-                const all = snap.val() || {};
-                let html = `<h2 class="text-center font-bold mb-4">৬ মাসের সামারি রিপোর্ট</h2><table class="w-full border text-[10px]"><tr><th>নাম</th><th>উপস্থিতি</th><th>শতকরা</th></tr>`;
-                Object.keys(window.allData).forEach(id => {
-                    let count = 0;
-                    Object.keys(all).forEach(date => {
-                        const m = date.split('-')[1];
-                        if(m >= startM && m <= endM && all[date][id] === 'P') count++;
-                    });
-                    const pct = ((count / 120) * 100).toFixed(0); // Assuming 120 days approx
-                    html += `<tr><td class="border p-1">${window.allData[id].name}</td><td class="border p-1 text-center">${toBn(count)}</td><td class="border p-1 text-center">${toBn(pct)}%</td></tr>`;
-                });
-                document.getElementById('modalContent').innerHTML = html + `</table>`;
-                document.getElementById('viewModal').classList.remove('hidden');
             });
         };
 
@@ -241,13 +172,15 @@
             ['viewTab', 'attendanceTab', 'entryTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             ['btnView', 'btnAttendance', 'btnEntry'].forEach(b => document.getElementById(b).classList.remove('tab-active', 'opacity-60'));
-            document.getElementById(`btn${id.charAt(0).toUpperCase() + id.slice(1, -3)}`).classList.add('tab-active');
+            const btnId = `btn${id.charAt(0).toUpperCase() + id.slice(1, -3)}`;
+            document.getElementById(btnId).classList.add('tab-active');
         };
 
         document.getElementById('loginBtn').onclick = () => {
             signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
         };
         
+        window.handleLogout = () => signOut(auth);
         window.closeModal = () => document.getElementById('viewModal').classList.add('hidden');
         lucide.createIcons();
     </script>
