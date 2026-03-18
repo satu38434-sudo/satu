@@ -16,7 +16,6 @@
         .input-style { background: rgba(0,0,0,0.03) !important; border: 1.5px solid var(--border) !important; color: var(--text) !important; padding: 12px; border-radius: 12px; width: 100%; outline: none; }
         .tab-active { background: linear-gradient(135deg, #0891b2, #06b6d4) !important; color: #fff !important; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(8, 145, 178, 0.3); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        @media print { .no-print { display: none !important; } #viewModal { position: absolute; left: 0; top: 0; width: 100%; display: block !important; visibility: visible; } }
     </style>
 </head>
 <body class="light-mode">
@@ -24,10 +23,10 @@
     <header class="sticky top-0 z-50 glass !rounded-none border-b px-4 py-4 no-print mb-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-cyan-500 p-2 rounded-xl shadow-lg"><i data-lucide="graduation-cap" class="text-white w-6 h-6"></i></div>
+                <div class="bg-cyan-500 p-2 rounded-xl"><i data-lucide="graduation-cap" class="text-white w-6 h-6"></i></div>
                 <div>
                     <h1 id="userGreeting" class="text-sm md:text-xl font-black">লোড হচ্ছে...</h1>
-                    <p class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">Digital Management System</p>
+                    <p class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">Digital Management</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -37,7 +36,7 @@
         </div>
     </header>
 
-    <div id="loginArea" class="min-h-[70vh] flex items-center justify-center p-4 no-print">
+    <div id="loginArea" class="min-h-[70vh] flex items-center justify-center p-4">
         <div class="glass p-10 w-full max-w-sm text-center shadow-2xl">
             <i data-lucide="shield-check" class="mx-auto mb-6 text-cyan-500" size="48"></i>
             <h2 class="text-2xl font-black mb-8">অফিস লগইন</h2>
@@ -49,70 +48,39 @@
         </div>
     </div>
 
-    <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto no-print">
+    <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
             <div class="glass p-6 min-w-[200px] text-center border-b-4 border-cyan-500">
-                <p class="text-[10px] font-bold opacity-60 uppercase">মোট শিক্ষার্থী</p>
+                <p class="text-[10px] font-bold opacity-60">মোট শিক্ষার্থী</p>
                 <p id="totalCount" class="text-3xl font-black text-cyan-500">০</p>
-            </div>
-            <div class="glass p-6 min-w-[200px] text-center border-b-4 border-emerald-500">
-                <p class="text-[10px] font-bold opacity-60 uppercase">আজকের উপস্থিতি</p>
-                <p id="todayCount" class="text-3xl font-black text-emerald-500">০</p>
             </div>
         </div>
 
         <nav class="flex justify-center mb-10 gap-3 overflow-x-auto pb-2 no-scrollbar">
-            <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-3 glass text-xs font-black tab-active whitespace-nowrap">শিক্ষার্থী তালিকা</button>
-            <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-6 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">হাজিরা ও রিপোর্ট</button>
-            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">নতুন এন্ট্রি</button>
+            <button onclick="switchTab('viewTab')" id="btnView" class="px-8 py-3 glass text-xs font-black tab-active whitespace-nowrap">তালিকা</button>
+            <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-8 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">হাজিরা</button>
+            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-8 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">নতুন এন্ট্রি</button>
         </nav>
 
         <section id="viewTab" class="space-y-6">
-            <div class="relative max-w-xl mx-auto mb-10">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-40"></i>
-                <input type="text" id="searchBar" oninput="renderList()" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="input-style !pl-12 shadow-md">
-            </div>
             <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <section id="attendanceTab" class="hidden space-y-8 max-w-3xl mx-auto">
-            <div class="glass p-8 space-y-8 text-center">
-                <div>
-                    <h3 class="font-black text-lg mb-4 text-cyan-600">দৈনিক হাজিরা ও ইতিহাস</h3>
-                    <input type="date" id="attDate" class="input-style max-w-xs mx-auto text-center font-bold" onchange="loadAttendanceForDate()">
-                </div>
-                <div id="attList" class="space-y-2 text-left max-h-[400px] overflow-y-auto pr-2 no-scrollbar">
-                    <p class="text-center opacity-50 py-10">তারিখ সিলেক্ট করুন...</p>
-                </div>
-                <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full bg-cyan-600 text-white py-4 rounded-xl font-black shadow-xl">হাজিরা আপডেট করুন</button>
-            </div>
+        <section id="attendanceTab" class="hidden glass p-8 max-w-2xl mx-auto text-center">
+            <input type="date" id="attDate" class="input-style max-w-xs mx-auto mb-6" onchange="loadAttendance()">
+            <div id="attList" class="space-y-2 text-left"></div>
+            <button onclick="saveAttendance()" id="saveBtn" class="hidden w-full bg-cyan-600 text-white py-4 mt-6 rounded-xl font-bold">সেভ করুন</button>
         </section>
 
-        <section id="entryTab" class="hidden glass p-8 max-w-2xl mx-auto">
-            <form id="studentForm" class="space-y-6">
-                <div class="grid grid-cols-1 gap-4">
-                    <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required class="input-style">
-                    <div class="flex gap-2">
-                        <select id="class" class="input-style flex-1">
-                            <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
-                            <option value="১ম">১ম</option><option value="২য়">২য়</option>
-                            <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
-                        </select>
-                        <input type="number" id="roll" placeholder="রোল" required class="input-style w-24">
-                    </div>
-                    <input type="tel" id="fMobile" placeholder="অভিভাবকের মোবাইল" class="input-style">
-                </div>
-                <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-black shadow-lg">ডাটা সেভ করুন</button>
+        <section id="entryTab" class="hidden glass p-8 max-w-xl mx-auto">
+            <form id="studentForm" class="space-y-4">
+                <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" class="input-style" required>
+                <select id="class" class="input-style"><option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option></select>
+                <input type="number" id="roll" placeholder="রোল" class="input-style" required>
+                <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-bold">সেভ ডাটা</button>
             </form>
         </section>
     </main>
-
-    <div id="viewModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 hidden">
-        <div class="glass w-full max-w-md p-8 relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 no-print text-rose-500"><i data-lucide="circle-x"></i></button>
-            <div id="modalContent" class="text-center"></div>
-        </div>
-    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -124,34 +92,36 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        const ADMIN_UID = "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2";
-        let isDarkMode = false;
+        const ADMIN_ID = "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2";
         const toBn = (n) => n ? n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]) : '০';
 
-        // Theme Toggle
-        window.toggleTheme = () => {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark-mode', isDarkMode);
-            document.getElementById('themeIcon').setAttribute('data-lucide', isDarkMode ? 'sun' : 'moon');
-            lucide.createIcons();
-        };
+        // Login Logic Fixed
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            
+            if(!email || !pass) return Swal.fire("ইমেইল ও পাসওয়ার্ড দিন", "", "warning");
 
-        // Auth Observer
-        onAuthStateChanged(auth, (u) => {
-            if(u) {
+            signInWithEmailAndPassword(auth, email, pass)
+                .catch(err => Swal.fire("লগইন ব্যর্থ!", "ইমেইল বা পাসওয়ার্ড ভুল", "error"));
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
-                document.getElementById('userGreeting').innerText = u.uid === ADMIN_UID ? "সুপ্রভাত, অ্যাডমিন স্যার!" : "সুপ্রভাত, প্রধান শিক্ষক!";
+                document.getElementById('userGreeting').innerText = user.uid === ADMIN_ID ? "সুপ্রভাত, অ্যাডমিন!" : "সুপ্রভাত, শিক্ষক!";
                 loadData();
             } else {
                 document.getElementById('loginArea').classList.remove('hidden');
                 document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.add('hidden');
+                document.getElementById('userGreeting').innerText = "স্বাগতম!";
             }
             lucide.createIcons();
         });
 
-        // Load Students
         function loadData() {
             onValue(ref(db, 'students'), (snap) => {
                 window.allData = snap.val() || {};
@@ -160,96 +130,18 @@
             });
         }
 
-        // Render List with Profile Click
         window.renderList = () => {
             const container = document.getElementById('classWiseContainer');
-            const search = document.getElementById('searchBar').value.toLowerCase();
             container.innerHTML = "";
-            ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
-                const students = Object.keys(window.allData || {}).filter(id => {
-                    const s = window.allData[id];
-                    return s.className === cls && (s.name.toLowerCase().includes(search) || s.roll.toString().includes(search));
-                });
+            ["১ম", "২য়", "৩য়", "৪র্থ", "৫ম"].forEach(cls => {
+                const students = Object.keys(window.allData || {}).filter(id => window.allData[id].className === cls);
                 if(students.length > 0) {
-                    let html = `<div class="glass p-5 border-t-4 border-cyan-500"><b class="block mb-3 text-cyan-600">${cls} শ্রেণি</b><div class="space-y-2">`;
-                    students.sort((a,b) => window.allData[a].roll - window.allData[b].roll).forEach(id => {
-                        const s = window.allData[id];
-                        html += `<div onclick="showProfile('${id}')" class="flex justify-between p-3 bg-black/5 rounded-lg cursor-pointer hover:bg-cyan-500 hover:text-white transition-all">
-                            <span>${s.name}</span> <span class="font-bold">রোল: ${toBn(s.roll)}</span>
-                        </div>`;
+                    let html = `<div class="glass p-5 border-t-4 border-cyan-500"><b>${cls} শ্রেণি</b><div class="mt-3 space-y-2">`;
+                    students.forEach(id => {
+                        html += `<div class="p-2 bg-black/5 rounded">${window.allData[id].name} (রোল: ${toBn(window.allData[id].roll)})</div>`;
                     });
                     container.innerHTML += html + `</div></div>`;
                 }
-            });
-        };
-
-        // Student Profile View
-        window.showProfile = (id) => {
-            const s = window.allData[id];
-            document.getElementById('modalContent').innerHTML = `
-                <div class="w-24 h-24 bg-cyan-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <i data-lucide="user" class="text-cyan-600 w-12 h-12"></i>
-                </div>
-                <h2 class="text-2xl font-black">${s.name}</h2>
-                <p class="text-cyan-600 font-bold">${s.className} শ্রেণি | রোল: ${toBn(s.roll)}</p>
-                <div class="mt-6 text-left space-y-3 bg-black/5 p-4 rounded-xl">
-                    <p><b>মোবাইল:</b> ${s.fMobile || 'নাই'}</p>
-                    <p><b>সেশন:</b> ২০২৬</p>
-                </div>
-                <button onclick="printID('${id}')" class="mt-6 w-full bg-slate-800 text-white py-3 rounded-lg font-bold">আইডি কার্ড প্রিন্ট</button>
-            `;
-            document.getElementById('viewModal').classList.remove('hidden');
-            lucide.createIcons();
-        };
-
-        // Attendance History Logic
-        window.loadAttendanceForDate = async () => {
-            const date = document.getElementById('attDate').value;
-            if(!date) return;
-            const snap = await get(ref(db, `attendance/${date}`));
-            const attData = snap.val() || {};
-            const list = document.getElementById('attList');
-            list.innerHTML = "";
-            
-            Object.keys(window.allData).forEach(id => {
-                const s = window.allData[id];
-                const status = attData[id] || 'A';
-                list.innerHTML += `
-                    <div class="flex items-center justify-between p-3 glass">
-                        <div><p class="font-bold">${s.name}</p><p class="text-[10px] opacity-60">${s.className} - রোল: ${toBn(s.roll)}</p></div>
-                        <select id="sel-${id}" class="bg-transparent font-black ${status === 'P' ? 'text-emerald-500' : 'text-rose-500'}">
-                            <option value="P" ${status === 'P' ? 'selected' : ''}>উপস্থিত</option>
-                            <option value="A" ${status === 'A' ? 'selected' : ''}>অনুপস্থিত</option>
-                        </select>
-                    </div>
-                `;
-            });
-            document.getElementById('saveAttBtn').classList.remove('hidden');
-        };
-
-        window.saveAttendance = () => {
-            const date = document.getElementById('attDate').value;
-            const updates = {};
-            Object.keys(window.allData).forEach(id => {
-                updates[id] = document.getElementById(`sel-${id}`).value;
-            });
-            set(ref(db, `attendance/${date}`), updates).then(() => {
-                Swal.fire("সফল!", "হাজিরা সেভ করা হয়েছে", "success");
-            });
-        };
-
-        // Form Submit
-        document.getElementById('studentForm').onsubmit = (e) => {
-            e.preventDefault();
-            const sData = {
-                name: document.getElementById('stName').value,
-                className: document.getElementById('class').value,
-                roll: document.getElementById('roll').value,
-                fMobile: document.getElementById('fMobile').value
-            };
-            push(ref(db, 'students'), sData).then(() => {
-                Swal.fire("অভিনন্দন!", "নতুন শিক্ষার্থী যুক্ত হয়েছে", "success");
-                e.target.reset();
             });
         };
 
@@ -257,14 +149,12 @@
             ['viewTab', 'attendanceTab', 'entryTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
             ['btnView', 'btnAttendance', 'btnEntry'].forEach(b => document.getElementById(b).classList.remove('tab-active', 'opacity-60'));
-            document.getElementById(`btn${id.charAt(0).toUpperCase() + id.slice(1, -3)}`).classList.add('tab-active');
+            const map = { viewTab: 'btnView', attendanceTab: 'btnAttendance', entryTab: 'btnEntry' };
+            document.getElementById(map[id]).classList.add('tab-active');
         };
 
         window.handleLogout = () => signOut(auth);
-        window.closeModal = () => document.getElementById('viewModal').classList.add('hidden');
-        document.getElementById('loginBtn').onclick = () => {
-            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
-        };
+        window.toggleTheme = () => document.body.classList.toggle('dark-mode');
 
         lucide.createIcons();
     </script>
