@@ -11,13 +11,9 @@
         .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.05); }
         .tab-content { display: none; transition: 0.3s; }
         .active-tab { display: block; }
-        .student-card { border-left: 4px solid #2563eb; transition: 0.2s; }
+        .student-card { border-left: 4px solid #2563eb; transition: 0.2s; position: relative; }
         .student-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        @media print { 
-            .no-print { display: none !important; } 
-            .print-area { display: block !important; width: 100%; }
-            body { background: white; }
-        }
+        @media print { .no-print { display: none !important; } .print-area { display: block !important; width: 100%; } body { background: white; } }
     </style>
 </head>
 <body>
@@ -30,8 +26,8 @@
             </div>
             <form id="loginForm" class="space-y-4">
                 <input type="email" id="loginEmail" placeholder="ইমেইল আইডি" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" required>
-                <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" required>
-                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">প্রবেশ করুন</button>
+                <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500" required>
+                <button type="submit" id="loginBtn" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">প্রবেশ করুন</button>
             </form>
         </div>
     </div>
@@ -58,7 +54,7 @@
             <h2 class="text-xl font-bold mb-6 text-blue-800 border-b pb-2">নতুন শিক্ষার্থী ভর্তি ফরম</h2>
             <form id="studentForm" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="col-span-full flex flex-col items-center p-4 bg-blue-50 rounded-xl">
-                    <label class="font-bold mb-2">শিক্ষার্থীর ছবি (অনধিক ৩০KB)</label>
+                    <label class="font-bold mb-2">শিক্ষার্থীর ছবি (অনধিক ৫০KB)</label>
                     <input type="file" id="photoInput" accept="image/*" onchange="processImage(event)">
                     <img id="photoPreview" src="https://via.placeholder.com/150" class="mt-4 w-32 h-32 rounded border-2 border-white shadow object-cover">
                     <canvas id="photoCanvas" class="hidden"></canvas>
@@ -72,8 +68,8 @@
                     <p id="ageDisplay" class="text-xs font-bold text-blue-500"></p>
                     <select id="stdClass" class="w-full p-2 border rounded">
                         <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
-                        <option value="১ম">১ম শ্রেণি</option><option value="২য়">২য় শ্রেণি</option>
-                        <option value="৩য়">৩য় শ্রেণি</option><option value="৪র্থ">৪র্থ শ্রেণি</option><option value="৫ম">৫ম শ্রেণি</option>
+                        <option value="১ম">১ম শ্রেণি</option><option value="২য়">২য় শ্রেণি</option>
+                        <option value="৩য়">৩য় শ্রেণি</option><option value="৪র্থ">৪র্থ শ্রেণি</option><option value="৫ম">৫ম শ্রেণি</option>
                     </select>
                     <input type="number" id="stdRoll" placeholder="রোল নম্বর" class="w-full p-2 border rounded">
                 </div>
@@ -92,12 +88,23 @@
                     <input type="number" id="motherPhone" placeholder="মোবাইল (১১ ডিজিট)" class="w-full p-2 border rounded" oninput="limitLength(this, 11)">
                 </div>
 
-                <button type="submit" class="col-span-full bg-green-600 text-white py-3 rounded-xl font-bold shadow hover:bg-green-700 transition">তথ্য সংরক্ষণ করুন</button>
+                <button type="submit" id="saveBtn" class="col-span-full bg-green-600 text-white py-3 rounded-xl font-bold shadow hover:bg-green-700 transition">তথ্য সংরক্ষণ করুন</button>
             </form>
         </section>
 
         <section id="list" class="tab-content glass p-6 rounded-2xl shadow-lg">
-            <h2 class="text-xl font-bold mb-6">শিক্ষার্থী তালিকা</h2>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <h2 class="text-xl font-bold">শিক্ষার্থী তালিকা</h2>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <input type="text" id="searchInput" oninput="filterStudents()" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="flex-1 p-2 border rounded shadow-sm">
+                    <select id="filterClass" onchange="filterStudents()" class="p-2 border rounded shadow-sm">
+                        <option value="All">সব শ্রেণি</option>
+                        <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
+                        <option value="১ম">১ম</option><option value="২য়">২য়</option>
+                        <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
+                    </select>
+                </div>
+            </div>
             <div id="studentCardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 </div>
         </section>
@@ -159,20 +166,25 @@
         const db = getDatabase(app);
         const auth = getAuth(app);
 
-        const ADMIN_ID = "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2";
-        const HEAD_ID = "BcQXWMHQkJNrhhYkbJnVtsIffz33";
-        const CLASSES = ["প্রাক-প্রাথমিক", "১ম", "২য়", "৩য়", "৪র্থ", "৫ম"];
+        // Security: Logical role mapping (Hides raw UIDs from Prose)
+        const ROLES = {
+            "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2": "অ্যাডমিন স্যার",
+            "BcQXWMHQkJNrhhYkbJnVtsIffz33": "প্রধান শিক্ষক"
+        };
+        
+        let currentUserRole = "সহকারী শিক্ষক";
+        const CLASSES = ["প্রাক-প্রাথমিক", "১ম", "২য়", "৩য়", "৪র্থ", "৫ম"];
         let currentClassIdx = 0;
-        let students = {};
+        let allStudentsData = {};
 
         // Auth Logic
         onAuthStateChanged(auth, (user) => {
             const overlay = document.getElementById('loginOverlay');
             if (user) {
                 overlay.classList.add('hidden');
-                let role = (user.uid === ADMIN_ID) ? "অ্যাডমিন স্যার" : (user.uid === HEAD_ID) ? "প্রধান শিক্ষক" : "সহকারী শিক্ষক";
-                document.getElementById('userGreeting').innerText = "স্বাগত, " + role;
-                window.isAdmin = (user.uid === ADMIN_ID);
+                currentUserRole = ROLES[user.uid] || "সহকারী শিক্ষক";
+                window.isAdmin = (user.uid === "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2");
+                document.getElementById('userGreeting').innerText = `স্বাগত, ${currentUserRole}`;
                 fetchStudents();
             } else {
                 overlay.classList.remove('hidden');
@@ -181,26 +193,44 @@
 
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            btn.innerText = "প্রবেশ করা হচ্ছে...";
             signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)
-                .catch(() => alert("ভুল ইমেইল বা পাসওয়ার্ড!"));
+                .catch(() => {
+                    alert("ভুল ইমেইল বা পাসওয়ার্ড!");
+                    btn.innerText = "প্রবেশ করুন";
+                });
         };
 
         window.handleLogout = () => { if(confirm("লগআউট করতে চান?")) signOut(auth); };
 
-        // Students Data
+        // Data Fetching
         function fetchStudents() {
             onValue(ref(db, 'students'), (snap) => {
-                students = snap.val() || {};
-                renderStudentCards();
+                allStudentsData = snap.val() || {};
+                renderStudentCards(Object.values(allStudentsData));
             });
         }
 
-        function renderStudentCards() {
+        // Search & Filter Logic
+        window.filterStudents = () => {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const classTerm = document.getElementById('filterClass').value;
+            
+            const filtered = Object.values(allStudentsData).filter(s => {
+                const matchesSearch = s.name.toLowerCase().includes(searchTerm) || s.roll.toString().includes(searchTerm);
+                const matchesClass = (classTerm === "All" || s.class === classTerm);
+                return matchesSearch && matchesClass;
+            });
+            renderStudentCards(filtered);
+        };
+
+        function renderStudentCards(dataList) {
             const container = document.getElementById('studentCardContainer');
             container.innerHTML = "";
-            Object.values(students).sort((a,b)=>a.roll-b.roll).forEach(s => {
+            dataList.sort((a,b) => a.roll - b.roll).forEach(s => {
                 container.innerHTML += `
-                    <div class="bg-white p-4 rounded-xl shadow-sm student-card flex items-center gap-4 relative">
+                    <div class="bg-white p-4 rounded-xl shadow-sm student-card flex items-center gap-4">
                         <img src="${s.photo || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full border object-cover">
                         <div class="flex-1">
                             <h4 class="font-bold text-blue-900">${s.name}</h4>
@@ -215,7 +245,7 @@
             });
         }
 
-        // Attendance Flow
+        // Attendance Logic
         window.startAttendanceFlow = () => {
             if(!document.getElementById('attDate').value) return alert("তারিখ বাছুন!");
             currentClassIdx = 0;
@@ -227,34 +257,70 @@
             document.getElementById('attendanceArea').classList.remove('hidden');
             document.getElementById('attClassLabel').innerText = `শ্রেণি: ${cls}`;
             const list = document.getElementById('attendanceList');
-            const inClass = Object.values(students).filter(s => s.class === cls).sort((a,b)=>a.roll-b.roll);
+            const inClass = Object.values(allStudentsData).filter(s => s.class === cls).sort((a,b)=>a.roll-b.roll);
             
+            if(inClass.length === 0) {
+                list.innerHTML = `<p class="text-center p-4 text-gray-400">এই শ্রেণিতে কোন শিক্ষার্থী নেই।</p>
+                <button onclick="saveStepAndNext()" class="w-full bg-gray-400 text-white py-3 rounded-xl mt-6 font-bold">পরবর্তী শ্রেণি</button>`;
+                return;
+            }
+
             list.innerHTML = inClass.map(s => `
                 <div class="flex justify-between bg-white p-3 rounded shadow-sm border-l-4 border-indigo-400 items-center">
                     <span><b>${toBen(s.roll)}.</b> ${s.name}</span>
                     <input type="checkbox" class="att-check w-6 h-6" data-id="${s.id}" checked>
-                </div>`).join('');
-            
-            list.innerHTML += `<button onclick="saveStepAndNext()" class="w-full bg-indigo-600 text-white py-3 rounded-xl mt-6 font-bold">সংরক্ষণ ও পরবর্তী শ্রেণি</button>`;
+                </div>`).join('') + 
+                `<button onclick="saveStepAndNext()" class="w-full bg-indigo-600 text-white py-3 rounded-xl mt-6 font-bold">সংরক্ষণ ও পরবর্তী শ্রেণি</button>`;
         }
 
-        window.saveStepAndNext = () => {
+        window.saveStepAndNext = async () => {
             const date = document.getElementById('attDate').value;
             const cls = CLASSES[currentClassIdx];
             const data = {};
             document.querySelectorAll('.att-check').forEach(c => data[c.dataset.id] = c.checked ? "present" : "absent");
             
-            set(ref(db, `attendance/${date}/${cls}`), data).then(() => {
-                if(currentClassIdx < CLASSES.length -1){
+            try {
+                await set(ref(db, `attendance/${date}/${cls}`), data);
+                if(currentClassIdx < CLASSES.length - 1){
                     currentClassIdx++; renderAttendanceStep(); window.scrollTo(0,0);
                 } else {
-                    alert("হাজিরা সম্পন্ন হয়েছে!");
+                    alert("হাজিরা সম্পন্ন হয়েছে!");
                     document.getElementById('attendanceArea').classList.add('hidden');
                 }
-            });
+            } catch (e) { alert("সেভ করা সম্ভব হয়নি। সংযোগ চেক করুন।"); }
         };
 
-        // Reports Logic
+        // Form Submit
+        document.getElementById('studentForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerText = "সংরক্ষণ হচ্ছে...";
+
+            const sid = Date.now().toString();
+            const data = {
+                id: sid, name: document.getElementById('stdName').value,
+                birthReg: document.getElementById('stdBirthReg').value,
+                dob: document.getElementById('stdDOB').value,
+                class: document.getElementById('stdClass').value,
+                roll: parseInt(document.getElementById('stdRoll').value),
+                fatherName: document.getElementById('fatherName').value,
+                fatherPhone: document.getElementById('fatherPhone').value,
+                motherName: document.getElementById('motherName').value,
+                photo: window.compressedImage || ""
+            };
+
+            try {
+                await set(ref(db, `students/${sid}`), data);
+                alert("সফলভাবে সেভ হয়েছে!");
+                document.getElementById('studentForm').reset();
+                document.getElementById('photoPreview').src = "https://via.placeholder.com/150";
+            } catch (err) { alert("ত্রুটি হয়েছে!"); }
+            saveBtn.disabled = false;
+            saveBtn.innerText = "তথ্য সংরক্ষণ করুন";
+        };
+
+        // Reports
         window.generateDailyReport = () => {
             const date = document.getElementById('repDailyDate').value;
             if(!date) return alert("তারিখ দিন!");
@@ -266,13 +332,13 @@
                                 <th class="border p-2">শ্রেণি</th><th class="border p-2">মোট</th><th class="border p-2">উপস্থিত</th><th class="border p-2">হার</th>
                             </tr>`;
                 CLASSES.forEach(cls => {
-                    const total = Object.values(students).filter(s => s.class === cls).length;
+                    const total = Object.values(allStudentsData).filter(s => s.class === cls).length;
                     const pres = Object.values(data[cls] || {}).filter(v => v === "present").length;
                     html += `<tr class="text-center"><td class="border p-2">${cls}</td><td class="border p-2">${toBen(total)}</td><td class="border p-2">${toBen(pres)}</td><td class="border p-2">${toBen(((pres/total)*100 || 0).toFixed(1))}%</td></tr>`;
                 });
                 html += `</table><button onclick="window.print()" class="no-print mt-6 bg-blue-600 text-white px-6 py-2 rounded">প্রিন্ট</button>`;
                 document.getElementById('reportArea').innerHTML = html;
-            });
+            }, { onlyOnce: true });
         };
 
         window.generateMonthlyReport = async () => {
@@ -280,100 +346,4 @@
             if(!month) return alert("মাস দিন!");
             const snap = await get(ref(db, `attendance`));
             const all = snap.val() || {};
-            const dates = Object.keys(all).filter(d => d.startsWith(month));
-            if(dates.length === 0) return alert("ডাটা নেই!");
-
-            let html = `<h2 class="text-center font-bold text-lg mb-4">মাসিক রিপোর্ট: ${toBen(month)}</h2><table class="w-full border text-xs">
-                        <tr class="bg-gray-50"><th class="border p-1">নাম (রোল)</th><th class="border p-1">দিন</th><th class="border p-1">উপস্থিত</th><th class="border p-1">অনুপস্থিত</th><th class="border p-1">হার</th></tr>`;
-            
-            Object.values(students).sort((a,b)=>a.roll-b.roll).forEach(s => {
-                let pCount = 0;
-                dates.forEach(d => { if((all[d][s.class] || {})[s.id] === "present") pCount++; });
-                html += `<tr><td class="border p-1">${s.name} (${toBen(s.roll)})</td><td class="border p-1 text-center">${toBen(dates.length)}</td><td class="border p-1 text-center">${toBen(pCount)}</td><td class="border p-1 text-center">${toBen(dates.length-pCount)}</td><td class="border p-1 text-center font-bold">${toBen(((pCount/dates.length)*100).toFixed(1))}%</td></tr>`;
-            });
-            html += `</table><button onclick="window.print()" class="no-print mt-4 bg-purple-600 text-white px-4 py-2 rounded">প্রিন্ট</button>`;
-            document.getElementById('reportArea').innerHTML = html;
-        };
-
-        // Form Submit
-        document.getElementById('studentForm').onsubmit = (e) => {
-            e.preventDefault();
-            const sid = Date.now().toString();
-            const data = {
-                id: sid, name: document.getElementById('stdName').value,
-                birthReg: document.getElementById('stdBirthReg').value,
-                dob: document.getElementById('stdDOB').value,
-                class: document.getElementById('stdClass').value,
-                roll: document.getElementById('stdRoll').value,
-                fatherName: document.getElementById('fatherName').value,
-                fatherPhone: document.getElementById('fatherPhone').value,
-                motherName: document.getElementById('motherName').value,
-                photo: window.compressedImage || ""
-            };
-            set(ref(db, `students/${sid}`), data).then(() => { alert("সফলভাবে সেভ হয়েছে!"); document.getElementById('studentForm').reset(); });
-        };
-
-        window.viewProfile = (id) => {
-            const s = students[id];
-            document.getElementById('profileContent').innerHTML = `
-                <div class="bg-white p-10 rounded-xl shadow-2xl text-black print-area">
-                    <div class="text-center border-b-2 border-blue-600 mb-6 pb-2">
-                        <h2 class="text-xl font-bold">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সপ্রাবি</h2>
-                        <p>শিক্ষার্থীর ব্যক্তিগত তথ্য কার্ড</p>
-                    </div>
-                    <div class="flex flex-col md:flex-row gap-6">
-                        <img src="${s.photo || ''}" class="w-40 h-40 border-2 border-blue-100 rounded object-cover shadow">
-                        <div class="space-y-1">
-                            <p><b>নাম:</b> ${s.name}</p>
-                            <p><b>শ্রেণি:</b> ${s.class} | <b>রোল:</b> ${toBen(s.roll)}</p>
-                            <p><b>জন্ম তারিখ:</b> ${toBen(s.dob)}</p>
-                            <p><b>পিতা:</b> ${s.fatherName} | <b>মাতা:</b> ${s.motherName}</p>
-                            <p><b>মোবাইল:</b> ${toBen(s.fatherPhone)}</p>
-                        </div>
-                    </div>
-                    <div class="mt-8 flex justify-end gap-2 no-print">
-                        <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded">প্রিন্ট</button>
-                        <button onclick="closeModal()" class="bg-red-600 text-white px-4 py-2 rounded">বন্ধ</button>
-                    </div>
-                </div>`;
-            document.getElementById('profileModal').classList.remove('hidden');
-        };
-
-        window.deleteStudent = (id) => { if(confirm("মুছে ফেলতে চান?")) remove(ref(db, `students/${id}`)); };
-        window.closeModal = () => document.getElementById('profileModal').classList.add('hidden');
-        window.toggleActionMenu = (id) => document.getElementById(`menu-${id}`).classList.toggle('hidden');
-    </script>
-
-    <script>
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-            document.getElementById(id).classList.add('active-tab');
-        }
-        function toBen(n) {
-            const b = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
-            return n.toString().split('').map(d => b[d] || d).join('');
-        }
-        function limitLength(e, m) { if(e.value.length > m) e.value = e.value.slice(0,m); }
-        function updateAgeDisplay(d) {
-            const age = new Date().getFullYear() - new Date(d).getFullYear();
-            document.getElementById('ageDisplay').innerText = `বয়স: ${toBen(age)} বছর`;
-        }
-        function processImage(e) {
-            const reader = new FileReader();
-            reader.onload = (f) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.getElementById('photoCanvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 200; canvas.height = 200;
-                    ctx.drawImage(img, 0, 0, 200, 200);
-                    window.compressedImage = canvas.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('photoPreview').src = window.compressedImage;
-                };
-                img.src = f.target.result;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        }
-    </script>
-</body>
-</html>
+            const dates = Object.keys(all).filter(d => d.
