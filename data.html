@@ -9,245 +9,139 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
-        /* Default Light Mode Vars */
-        :root { 
-            --bg: #f1f5f9; 
-            --card: #ffffff; 
-            --text: #1e293b; 
-            --border: rgba(0, 0, 0, 0.08); 
-            --accent: #0891b2; 
-        }
-        
-        /* Dark Mode Vars */
-        .dark-mode { 
-            --bg: #0f172a; 
-            --card: rgba(30, 41, 59, 0.7); 
-            --text: #f1f5f9; 
-            --accent: #22d3ee; 
-            --border: rgba(255, 255, 255, 0.08); 
-        }
-
-        body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg); color: var(--text); min-height: 100vh; transition: 0.4s; overflow-x: hidden; }
+        :root { --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: rgba(0, 0, 0, 0.08); --accent: #0891b2; }
+        .dark-mode { --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); --text: #f1f5f9; --accent: #22d3ee; --border: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg); color: var(--text); min-height: 100vh; transition: 0.4s; }
         .glass { background: var(--card); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 16px; }
-        
-        /* Dropdown fix for dark mode readability */
-        select option { background-color: var(--card) !important; color: var(--text) !important; }
-
-        .input-style { background: rgba(0,0,0,0.05) !important; border: 1.5px solid var(--border) !important; color: var(--text) !important; padding: 12px; border-radius: 12px; width: 100%; outline: none; appearance: none; }
-        .dark-mode .input-style { background: rgba(0,0,0,0.2) !important; }
-        
+        .input-style { background: rgba(0,0,0,0.05) !important; border: 1.5px solid var(--border) !important; color: var(--text) !important; padding: 12px; border-radius: 12px; width: 100%; outline: none; }
         .tab-active { background: linear-gradient(135deg, #0891b2, #22d3ee) !important; color: #fff !important; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(34, 211, 238, 0.3); }
-        .photo-preview { width: 100px; height: 100px; object-fit: cover; border-radius: 16px; border: 2px solid var(--accent); }
-        
-        @media print { 
-            body { background: white !important; color: black !important; }
-            .no-print { display: none !important; }
-            #viewModal { position: absolute; left: 0; top: 0; width: 100%; display: block !important; visibility: visible; }
-            .glass { border: none !important; box-shadow: none !important; background: transparent !important; }
-        }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        @media print { .no-print { display: none !important; } #viewModal { position: absolute; left: 0; top: 0; width: 100%; display: block !important; } }
     </style>
 </head>
-<body class="light-mode"> <header class="sticky top-0 z-50 glass !rounded-none border-b px-4 py-4 no-print mb-6">
+<body class="light-mode">
+    <header class="sticky top-0 z-50 glass !rounded-none border-b px-4 py-4 no-print mb-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-cyan-500 p-2 rounded-xl shadow-lg shadow-cyan-500/20"><i data-lucide="graduation-cap" class="text-white w-6 h-6"></i></div>
+                <div class="bg-cyan-500 p-2 rounded-xl"><i data-lucide="graduation-cap" class="text-white w-6 h-6"></i></div>
                 <div>
-                    <h1 id="userGreeting" class="text-sm md:text-xl font-black leading-tight">লোড হচ্ছে...</h1>
-                    <p id="userRoleTag" class="text-[10px] font-bold text-cyan-600 uppercase tracking-tighter"></p>
+                    <h1 id="userGreeting" class="text-sm md:text-xl font-black">লোড হচ্ছে...</h1>
+                    <p class="text-[10px] font-bold text-cyan-600 uppercase">২১৭নং স্কুল ম্যানেজমেন্ট</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="toggleTheme()" class="p-2.5 glass rounded-xl"><i id="themeIcon" data-lucide="sun" size="20"></i></button>
-                <button id="logoutBtn" class="hidden text-rose-500 p-2.5 glass rounded-xl"><i data-lucide="log-out" size="20"></i></button>
+                <button onclick="toggleTheme()" class="p-2.5 glass rounded-xl"><i id="themeIcon" data-lucide="moon"></i></button>
+                <button id="logoutBtn" onclick="handleLogout()" class="hidden text-rose-500 p-2.5 glass rounded-xl"><i data-lucide="log-out"></i></button>
             </div>
         </div>
     </header>
 
-    <div id="loginArea" class="min-h-[70vh] flex items-center justify-center p-4 no-print">
-        <div class="glass p-10 w-full max-w-sm text-center shadow-2xl">
-            <i data-lucide="lock" class="mx-auto mb-6 text-cyan-500" size="40"></i>
+    <div id="loginArea" class="min-h-[70vh] flex items-center justify-center p-4">
+        <div class="glass p-10 w-full max-w-sm text-center">
             <h2 class="text-2xl font-black mb-8">প্যানেল লগইন</h2>
             <div class="space-y-4">
                 <input type="email" id="loginEmail" placeholder="ইমেইল" class="input-style">
                 <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="input-style">
-                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-black text-lg shadow-xl active:scale-95">প্রবেশ করুন</button>
+                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-black">প্রবেশ করুন</button>
             </div>
         </div>
     </div>
 
     <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto no-print">
-        <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
-            <div class="glass p-5 min-w-[180px] text-center border-b-4 border-cyan-500">
-                <p class="text-[10px] font-bold opacity-60 uppercase">মোট শিক্ষার্থী</p>
-                <p id="totalCount" class="text-3xl font-black text-cyan-500">০</p>
-            </div>
-            <div class="glass p-5 min-w-[180px] text-center border-b-4 border-emerald-500">
-                <p class="text-[10px] font-bold opacity-60 uppercase">আজকের উপস্থিতি</p>
-                <p id="todayCount" class="text-3xl font-black text-emerald-500">০</p>
-            </div>
+        <div class="flex justify-center items-center gap-4 mb-8">
+            <div class="glass p-5 min-w-[150px] text-center"><p class="text-[10px] font-bold opacity-60">মোট শিক্ষার্থী</p><p id="totalCount" class="text-3xl font-black text-cyan-500">০</p></div>
+            <div class="glass p-5 min-w-[150px] text-center"><p class="text-[10px] font-bold opacity-60">আজকের উপস্থিতি</p><p id="todayCount" class="text-3xl font-black text-emerald-500">০</p></div>
         </div>
 
-        <nav class="flex justify-center mb-10 gap-3 overflow-x-auto pb-2 no-scrollbar">
-            <button onclick="switchTab('viewTab')" id="btnView" class="px-8 py-3 glass text-xs font-black tab-active whitespace-nowrap">শিক্ষার্থী তালিকা</button>
-            <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-8 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">হাজিরা ও রিপোর্ট</button>
-            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-8 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">নতুন এন্ট্রি</button>
+        <nav class="flex justify-center mb-10 gap-3">
+            <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-3 glass text-xs font-black tab-active">শিক্ষার্থী তালিকা</button>
+            <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-6 py-3 glass text-xs font-black opacity-60">হাজিরা</button>
+            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-3 glass text-xs font-black opacity-60">নতুন এন্ট্রি</button>
         </nav>
 
         <section id="viewTab" class="space-y-6">
-            <div class="relative max-w-xl mx-auto mb-10">
-                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-40"></i>
-                <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে শিক্ষার্থী খুঁজুন..." class="input-style !pl-12 shadow-xl">
-            </div>
-            <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-center"></div>
+            <input type="text" id="searchBar" oninput="renderList()" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="input-style max-w-md mx-auto block mb-6">
+            <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <section id="attendanceTab" class="hidden space-y-8 max-w-3xl mx-auto">
-            <div class="glass p-8 space-y-8 text-center">
-                <div class="space-y-2">
-                    <h3 class="text-xl font-black text-cyan-600 flex items-center justify-center gap-3"><i data-lucide="calendar-days"></i> দৈনিক হাজিরা</h3>
-                    <input type="date" id="attDate" class="input-style max-w-xs mx-auto text-center font-black" onchange="initAttendance()">
-                </div>
-                <div id="attList" class="space-y-2 text-left max-h-[400px] overflow-y-auto pr-3 no-scrollbar"></div>
-                <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full bg-cyan-600 text-white py-4 rounded-xl font-black text-lg shadow-xl active:scale-95">হাজিরা সেভ করুন</button>
-                
-                <div class="pt-8 border-t border-black/5 dark:border-white/10">
-                    <h4 class="text-[10px] font-black mb-6 opacity-60 uppercase tracking-[0.3em]">রিপোর্ট সেন্টার</h4>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
-                        <select id="reportYear" class="input-style font-bold"><option value="2026">২০২৬</option><option value="2025">২০২৫</option></select>
-                        <select id="reportMonth" class="input-style font-bold">
-                            <option value="01">জানুয়ারি</option><option value="02">ফেব্রুয়ারি</option><option value="03">মার্চ</option>
-                            <option value="04">এপ্রিল</option><option value="05">মে</option><option value="06">জুন</option>
-                            <option value="07">জুলাই</option><option value="08">আগস্ট</option><option value="09">সেপ্টেম্বর</option>
-                            <option value="10">অক্টোবর</option><option value="11">নভেম্বর</option><option value="12">ডিসেম্বর</option>
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <button onclick="viewDailyReport()" class="bg-slate-200 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 py-3 rounded-xl text-[11px] font-black">দৈনিক তালিকা</button>
-                        <button onclick="generateMonthlyReport()" class="bg-slate-200 dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 py-3 rounded-xl text-[11px] font-black">মাসিক রিপোর্ট</button>
-                        <div class="flex gap-2">
-                            <button onclick="generateSixMonthReport('01','06')" class="flex-1 bg-slate-200 dark:bg-slate-800 text-blue-600 dark:text-blue-400 py-3 rounded-xl text-[10px] font-black">১ম ৬ মাস</button>
-                            <button onclick="generateSixMonthReport('07','12')" class="flex-1 bg-slate-200 dark:bg-slate-800 text-orange-600 dark:text-orange-400 py-3 rounded-xl text-[10px] font-black">২য় ৬ মাস</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="entryTab" class="hidden glass p-8 max-w-5xl mx-auto">
-            <form id="studentForm" class="space-y-6">
-                <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required class="input-style">
-                    <div class="flex gap-2">
-                        <select id="class" class="input-style flex-1"><option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option><option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option></select>
-                        <input type="text" id="roll" placeholder="রোল" class="input-style w-20">
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-black">সেভ করুন</button>
-            </form>
-        </section>
-    </main>
+        </main>
 
     <div id="viewModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 hidden">
         <div class="glass w-full max-w-4xl p-8 relative overflow-y-auto max-h-[95vh]">
-            <button onclick="closeModal()" class="absolute top-6 right-6 no-print"><i data-lucide="x" size="24"></i></button>
+            <button onclick="closeModal()" class="absolute top-6 right-6 no-print text-rose-500"><i data-lucide="x"></i></button>
             <div id="modalContent"></div>
+            <button onclick="window.print()" class="mt-6 bg-cyan-600 text-white px-6 py-2 rounded-lg no-print">প্রিন্ট রিপোর্ট</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4", authDomain: "my-school-database.firebaseapp.com", projectId: "my-school-database", databaseURL: "https://my-school-database-default-rtdb.firebaseio.com" };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        const ADMIN_UID = "7Lxi5lfMR0ZWHRbBHMj4xD0hbVv2";
-        let isDarkMode = false;
+        const toBn = n => n ? n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]) : '০';
 
-        const toBn = (n) => n ? n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]) : '০';
-
-        // Theme Toggle Logic
-        window.toggleTheme = () => {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark-mode', isDarkMode);
-            document.body.classList.toggle('light-mode', !isDarkMode);
-            document.getElementById('themeIcon').setAttribute('data-lucide', isDarkMode ? 'sun' : 'moon');
-            lucide.createIcons();
-        };
-
-        onAuthStateChanged(auth, (u) => {
+        // Auth Logic
+        onAuthStateChanged(auth, u => {
             if(u) {
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
-                document.getElementById('userGreeting').innerText = u.uid === ADMIN_UID ? "সুপ্রভাত, অ্যাডমিন স্যার!" : "সুপ্রভাত, প্রধান শিক্ষক!";
-                document.getElementById('userRoleTag').innerText = "২১৭নং স্কুল ম্যানেজমেন্ট";
+                document.getElementById('userGreeting').innerText = "সুপ্রভাত, " + (u.email.includes('admin') ? "অ্যাডমিন স্যার!" : "প্রধান শিক্ষক!");
                 loadData();
-            } else {
-                document.getElementById('loginArea').classList.remove('hidden');
-                document.getElementById('mainApp').classList.add('hidden');
             }
-            lucide.createIcons();
         });
 
-        // Simplified data loading for demo
-        function loadData() {
+        // Data Management
+        window.loadData = () => {
             onValue(ref(db, 'students'), (snap) => {
-                const data = snap.val() || {};
-                window.allData = data;
-                document.getElementById('totalCount').innerText = toBn(Object.keys(data).length);
+                window.allData = snap.val() || {};
                 renderList();
+                document.getElementById('totalCount').innerText = toBn(Object.keys(window.allData).length);
             });
-        }
+        };
 
-        function renderList() {
+        window.renderList = () => {
+            const query = document.getElementById('searchBar').value.toLowerCase();
             const container = document.getElementById('classWiseContainer');
             container.innerHTML = "";
+            
             ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
-                const filtered = Object.keys(window.allData || {}).filter(id => window.allData[id].className === cls);
-                if(filtered.length > 0) {
-                    let html = `<div class="glass p-4"><b>${cls} শ্রেণি</b><div class="mt-2 text-xs">`;
-                    filtered.forEach(id => html += `<div class="p-2 border-b border-black/5">${window.allData[id].name} (রোল: ${toBn(window.allData[id].roll)})</div>`);
+                const students = Object.keys(window.allData || {})
+                    .filter(id => window.allData[id].className === cls)
+                    .filter(id => window.allData[id].name.toLowerCase().includes(query) || window.allData[id].roll.toString().includes(query));
+
+                if(students.length > 0) {
+                    let html = `<div class="glass p-5 border-t-4 border-cyan-500"><h3 class="font-black mb-3 border-b pb-2">${cls} শ্রেণি</h3><div class="space-y-2">`;
+                    students.forEach(id => {
+                        html += `<div class="flex justify-between items-center text-sm p-2 hover:bg-black/5 rounded-lg">
+                                    <span>${window.allData[id].name}</span>
+                                    <span class="font-bold text-cyan-600">রোল: ${toBn(window.allData[id].roll)}</span>
+                                 </div>`;
+                    });
                     container.innerHTML += html + `</div></div>`;
                 }
             });
-        }
-
-        // 6 Month Report with Percentage Logic
-        window.generateSixMonthReport = (startM, endM) => {
-            get(ref(db, `attendance`)).then(snap => {
-                const all = snap.val() || {};
-                let html = `<h2 class="text-center font-bold mb-4">৬ মাসের সামারি রিপোর্ট</h2><table class="w-full border text-[10px]"><tr><th>নাম</th><th>উপস্থিতি</th><th>শতকরা</th></tr>`;
-                Object.keys(window.allData).forEach(id => {
-                    let count = 0;
-                    Object.keys(all).forEach(date => {
-                        const m = date.split('-')[1];
-                        if(m >= startM && m <= endM && all[date][id] === 'P') count++;
-                    });
-                    const pct = ((count / 120) * 100).toFixed(0); // Assuming 120 days approx
-                    html += `<tr><td class="border p-1">${window.allData[id].name}</td><td class="border p-1 text-center">${toBn(count)}</td><td class="border p-1 text-center">${toBn(pct)}%</td></tr>`;
-                });
-                document.getElementById('modalContent').innerHTML = html + `</table>`;
-                document.getElementById('viewModal').classList.remove('hidden');
-            });
         };
 
-        window.switchTab = (id) => {
-            ['viewTab', 'attendanceTab', 'entryTab'].forEach(t => document.getElementById(t).classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-            ['btnView', 'btnAttendance', 'btnEntry'].forEach(b => document.getElementById(b).classList.remove('tab-active', 'opacity-60'));
-            document.getElementById(`btn${id.charAt(0).toUpperCase() + id.slice(1, -3)}`).classList.add('tab-active');
+        window.handleLogout = () => signOut(auth).then(() => location.reload());
+        window.toggleTheme = () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('themeIcon');
+            icon.setAttribute('data-lucide', document.body.classList.contains('dark-mode') ? 'sun' : 'moon');
+            lucide.createIcons();
         };
 
         document.getElementById('loginBtn').onclick = () => {
-            signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(err => alert("লগইন ব্যর্থ!"));
         };
-        
+
         window.closeModal = () => document.getElementById('viewModal').classList.add('hidden');
         lucide.createIcons();
     </script>
