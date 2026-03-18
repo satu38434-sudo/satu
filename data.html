@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
         :root { --bg-body: #0a0f1d; --card-bg: rgba(30, 41, 59, 0.7); --text-main: #f1f5f9; --border: rgba(255, 255, 255, 0.1); --accent: #22d3ee; --input-bg: rgba(0, 0, 0, 0.4); --photo-bg: rgba(0, 0, 0, 0.6); }
@@ -22,6 +23,7 @@
         @media print { body * { visibility: hidden; } #viewModal, #viewModal *, #modalContent, #modalContent * { visibility: visible; } #viewModal { position: absolute; left: 0; top: 0; width: 100%; background: white !important; color: black !important; } .no-print { display: none !important; } }
         .slogan-animate { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .swal2-popup { font-family: 'SolaimanLipi', sans-serif !important; border-radius: 20px !important; }
     </style>
 </head>
 <body>
@@ -29,12 +31,12 @@
     <header class="sticky top-0 z-50 glass !rounded-none border-b no-print px-4 py-3">
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
             <div class="flex items-center gap-3 min-w-0">
-                <div class="bg-cyan-500 p-1.5 rounded-lg"><i data-lucide="graduation-cap" class="text-white w-5 h-5"></i></div>
-                <h1 class="text-xs md:text-base font-black truncate">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
+                <div class="bg-cyan-500 p-1.5 rounded-lg shadow-lg shadow-cyan-500/20"><i data-lucide="graduation-cap" class="text-white w-5 h-5"></i></div>
+                <h1 class="text-xs md:text-base font-black truncate">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সপ্রাবি</h1>
             </div>
             <div class="flex items-center gap-2">
                 <button onclick="toggleTheme()" class="p-2 glass rounded-full hover:bg-white/10 transition"><i id="themeIcon" data-lucide="moon" size="18"></i></button>
-                <button id="logoutBtn" class="hidden text-rose-500 p-2 glass rounded-full hover:bg-rose-500/10"><i data-lucide="log-out" size="18"></i></button>
+                <button id="logoutBtn" class="hidden text-rose-500 p-2 glass rounded-full hover:bg-rose-500/10 transition-all"><i data-lucide="log-out" size="18"></i></button>
             </div>
         </div>
     </header>
@@ -42,60 +44,49 @@
     <div id="loginArea" class="min-h-[80vh] flex items-center justify-center p-4 no-print">
         <div class="glass p-8 w-full max-w-sm text-center shadow-2xl border-cyan-500/20">
             <div class="w-16 h-16 bg-cyan-600/20 rounded-full flex items-center justify-center mx-auto mb-6"><i data-lucide="lock" class="text-cyan-500"></i></div>
-            <h2 class="text-2xl font-bold mb-6">অ্যাডমিন লগইন</h2>
+            <h2 class="text-2xl font-bold mb-6 tracking-tight">অ্যাডমিন লগইন</h2>
             <div class="space-y-4">
-                <input type="email" id="loginEmail" placeholder="ইমেইল">
+                <input type="email" id="loginEmail" placeholder="ইমেইল (Ex: admin@school.com)">
                 <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
-                <button id="loginBtn" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-3.5 rounded-xl font-bold text-base shadow-lg transition">প্রবেশ করুন</button>
+                <button id="loginBtn" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-3.5 rounded-xl font-bold text-base shadow-lg transition-all active:scale-95">প্রবেশ করুন</button>
             </div>
         </div>
     </div>
 
     <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto">
-        <div class="flex justify-center mb-8 gap-2 no-print overflow-x-auto pb-2 scrollbar-hide">
-            <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2.5 glass text-[10px] font-bold tab-active whitespace-nowrap transition-all">শিক্ষার্থী তালিকা</button>
-            <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-6 py-2.5 glass text-[10px] font-bold opacity-60 whitespace-nowrap transition-all">উপস্থিতি</button>
-            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2.5 glass text-[10px] font-bold opacity-60 whitespace-nowrap transition-all">নতুন এন্ট্রি</button>
+        <div class="text-center mb-6 no-print">
+            <p class="text-[10px] md:text-xs font-bold text-cyan-500 tracking-widest uppercase slogan-animate">ট্যালেন্টপুল বৃত্তি অর্জন আমাদের লক্ষ্য</p>
+        </div>
+
+        <div class="flex justify-center mb-8 gap-2 no-print overflow-x-auto pb-2">
+            <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-2.5 glass text-[10px] font-bold tab-active whitespace-nowrap">শিক্ষার্থী তালিকা</button>
+            <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-6 py-2.5 glass text-[10px] font-bold opacity-60 whitespace-nowrap">উপস্থিতি</button>
+            <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-2.5 glass text-[10px] font-bold opacity-60 whitespace-nowrap">নতুন এন্ট্রি</button>
         </div>
 
         <div id="viewTab" class="space-y-6">
             <div class="max-w-md mx-auto space-y-3 no-print">
                 <div class="relative group">
-                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-cyan-500 transition"><i data-lucide="search" size="18"></i></div>
+                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400"><i data-lucide="search" size="18"></i></div>
                     <input type="text" id="searchBar" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="pr-12 py-3">
                 </div>
                 <button onclick="exportToExcel()" class="w-full bg-emerald-600/10 text-emerald-500 border border-emerald-500/30 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 hover:bg-emerald-600/20 transition">
-                    <i data-lucide="file-spreadsheet" size="16"></i> পূর্ণাঙ্গ ডাটা এক্সেল ডাউনলোড
+                    <i data-lucide="file-spreadsheet" size="16"></i> ডাটা এক্সেল ডাউনলোড
                 </button>
             </div>
             <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
         <div id="attendanceTab" class="hidden max-w-2xl mx-auto space-y-6">
-            <div class="glass p-6 text-center space-y-6 border-cyan-500/10">
-                <div class="space-y-3">
-                    <label class="text-xs font-bold opacity-60 flex items-center justify-center gap-2"><i data-lucide="calendar" size="14"></i> তারিখ নির্বাচন করুন</label>
-                    <input type="date" id="attDate" class="!w-full max-w-xs mx-auto text-center font-bold" onchange="initAttendance()">
-                </div>
-
+            <div class="glass p-6 text-center space-y-6 border-cyan-500/10 shadow-xl">
+                <input type="date" id="attDate" class="!w-full max-w-xs mx-auto text-center font-bold" onchange="initAttendance()">
                 <div id="attList" class="space-y-2 text-left max-h-[400px] overflow-y-auto pr-2"></div>
-                
-                <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full bg-cyan-600 hover:bg-cyan-500 text-white py-4 rounded-xl font-black shadow-lg transition-all scale-up">আজকের উপস্থিতি নিশ্চিত করুন</button>
-
-                <div class="p-5 border border-white/5 rounded-2xl space-y-4 bg-white/5 shadow-inner">
-                    <div class="flex items-center gap-2 justify-center text-emerald-400 mb-2">
-                        <i data-lucide="bar-chart-3" size="16"></i>
-                        <p class="text-xs font-bold uppercase tracking-wider">রিপোর্ট জেনারেশন</p>
-                    </div>
+                <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full bg-cyan-600 hover:bg-cyan-500 text-white py-4 rounded-xl font-black shadow-lg">উপস্থিতি নিশ্চিত করুন</button>
+                <div class="p-5 border border-white/5 rounded-2xl space-y-4 bg-white/5">
                     <div class="grid grid-cols-2 gap-3">
-                        <select id="reportYear" class="text-center font-bold">
-                            <option value="2026">২০২৬</option><option value="2025">২০২৫</option>
-                        </select>
+                        <select id="reportYear" class="text-center font-bold"><option value="2026">২০২৬</option></select>
                         <select id="reportMonth" class="text-center font-bold">
                             <option value="01">জানুয়ারি</option><option value="02">ফেব্রুয়ারি</option><option value="03">মার্চ</option>
-                            <option value="04">এপ্রিল</option><option value="05">মে</option><option value="06">জুন</option>
-                            <option value="07">জুলাই</option><option value="08">আগস্ট</option><option value="09">সেপ্টেম্বর</option>
-                            <option value="10">অক্টোবর</option><option value="11">নভেম্বর</option><option value="12">ডিসেম্বর</option>
                         </select>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -107,72 +98,37 @@
             </div>
         </div>
 
-        <div id="entryTab" class="hidden glass p-6 md:p-8 max-w-4xl mx-auto no-print border-cyan-500/10">
+        <div id="entryTab" class="hidden glass p-6 md:p-8 max-w-4xl mx-auto no-print">
             <form id="studentForm" class="space-y-8" autocomplete="off">
-                <input type="hidden" id="editKey">
-                <input type="hidden" id="photoBase64">
-                
+                <input type="hidden" id="editKey"><input type="hidden" id="photoBase64">
                 <div class="flex flex-col md:flex-row gap-8 items-center">
                     <div class="w-36 h-36 photo-area relative overflow-hidden rounded-2xl flex items-center justify-center shadow-lg group">
                         <img id="imagePreview" class="hidden w-full h-full object-cover">
-                        <div id="imgLabel" class="text-center space-y-2 opacity-60 group-hover:opacity-100 transition">
-                            <i data-lucide="camera" class="mx-auto" size="24"></i>
-                            <p class="text-[10px] font-bold">ছবি যুক্ত করুন</p>
-                        </div>
+                        <div id="imgLabel" class="text-center opacity-60"><i data-lucide="camera" size="24"></i><p class="text-[10px] font-bold">ছবি</p></div>
                         <input type="file" id="stPhoto" accept="image/*" onchange="processImage(event)" class="absolute inset-0 opacity-0 cursor-pointer">
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5 flex-1 w-full">
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-bold opacity-60 ml-2">শিক্ষার্থীর নাম</label>
-                            <input type="text" id="stName" placeholder="নাম লিখুন" required>
+                        <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required>
+                        <div class="flex gap-2">
+                            <select id="class" required><option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option><option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option></select>
+                            <input type="text" id="roll" placeholder="রোল" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
-                        <div class="flex gap-2 items-end">
-                            <div class="flex-1 space-y-1">
-                                <label class="text-[10px] font-bold opacity-60 ml-2">শ্রেণি</label>
-                                <select id="class" required>
-                                    <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
-                                    <option value="১ম">১ম</option><option value="২য়">২য়</option>
-                                    <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
-                                </select>
-                            </div>
-                            <div class="w-24 space-y-1">
-                                <label class="text-[10px] font-bold opacity-60 ml-2">রোল</label>
-                                <input type="text" id="roll" placeholder="রোল" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-                            </div>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-bold opacity-60 ml-2">জন্ম নিবন্ধন (১৭ ডিজিট)</label>
-                            <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="17">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-bold opacity-60 ml-2">জন্ম তারিখ</label>
-                            <input type="date" id="dob" required onchange="updateStudentAgePreview()">
-                            <p id="studentAgePreview" class="text-[10px] font-bold mt-1 ml-2 h-4"></p>
-                        </div>
+                        <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন" required maxlength="17" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <input type="date" id="dob" required onchange="updateStudentAgePreview()">
+                        <p id="studentAgePreview" class="text-[10px] font-bold h-4 ml-2"></p>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pt-6 border-t border-white/5">
-                    <div class="md:col-span-2 lg:col-span-3 flex items-center gap-2 text-cyan-500"><i data-lucide="user" size="14"></i><p class="font-bold text-xs uppercase">পিতার তথ্য</p></div>
-                    <input type="text" id="fName" placeholder="পিতার নাম">
-                    <input type="text" id="fNid" placeholder="পিতার NID (১০/১৭ ডিজিট)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="17">
-                    <input type="text" id="fMobile" placeholder="পিতার মোবাইল (১১ ডিজিট)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="11">
-                    
-                    <div class="md:col-span-2 lg:col-span-3 mt-4 flex items-center gap-2 text-rose-500"><i data-lucide="user-round" size="14"></i><p class="font-bold text-xs uppercase">মাতার তথ্য</p></div>
-                    <input type="text" id="mName" placeholder="মাতার নাম">
-                    <input type="text" id="mNid" placeholder="মাতার NID (১০/১৭ ডিজিট)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="17">
-                    <input type="text" id="mMobile" placeholder="মাতার মোবাইল (১১ ডিজিট)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" maxlength="11">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-6 border-t border-white/5">
+                    <input type="text" id="fName" placeholder="পিতার নাম"><input type="text" id="fNid" placeholder="পিতার NID"><input type="text" id="fMobile" placeholder="পিতার মোবাইল">
+                    <input type="text" id="mName" placeholder="মাতার নাম"><input type="text" id="mNid" placeholder="মাতার NID"><input type="text" id="mMobile" placeholder="মাতার মোবাইল">
                 </div>
-                <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-4 rounded-2xl font-black text-lg shadow-xl transition-all">ডাটাবেসে সেভ করুন</button>
+                <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-2xl font-black shadow-xl transition-all active:scale-95">সেভ করুন</button>
             </form>
         </div>
     </main>
 
     <div id="viewModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-        <div class="glass w-full max-w-xl p-6 relative overflow-y-auto max-h-[95vh] border-white/10">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white no-print"><i data-lucide="x-circle" size="24"></i></button>
-            <div id="modalContent"></div>
-        </div>
+        <div class="glass w-full max-w-xl p-6 relative overflow-y-auto max-h-[95vh]"><div id="modalContent"></div></div>
     </div>
 
     <script type="module">
@@ -180,70 +136,96 @@
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4", authDomain: "my-school-database.firebaseapp.com", projectId: "my-school-database", databaseURL: "https://my-school-database-default-rtdb.firebaseio.com" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4", 
+            authDomain: "my-school-database.firebaseapp.com", 
+            projectId: "my-school-database", 
+            databaseURL: "https://my-school-database-default-rtdb.firebaseio.com" 
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        const toBn = (n) => (!n && n !== 0) ? '---' : n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
-        
-        // Error Fix: Precise Age Calculation
-        const calculateAge = (dob) => {
-            const birthDate = new Date(dob);
-            const today = new Date();
-            let years = today.getFullYear() - birthDate.getFullYear();
-            let months = today.getMonth() - birthDate.getMonth();
-            if (months < 0 || (months === 0 && today.getDate() < birthDate.getDate())) {
-                years--;
-                months += 12;
+        // Toast Message Function
+        const showMsg = (title, icon = 'success') => {
+            Swal.fire({ title, icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true });
+        };
+
+        // Login Logic Fix
+        document.getElementById('loginBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            
+            if(!email || !pass) return showMsg("ইমেইল ও পাসওয়ার্ড দিন", "warning");
+
+            document.getElementById('loginBtn').innerText = "প্রবেশ করা হচ্ছে...";
+            signInWithEmailAndPassword(auth, email, pass)
+                .then(() => showMsg("লগইন সফল!"))
+                .catch(err => {
+                    document.getElementById('loginBtn').innerText = "প্রবেশ করুন";
+                    Swal.fire("ব্যর্থ!", "সঠিক ইমেইল বা পাসওয়ার্ড দিন।", "error");
+                });
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('loginArea').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('logoutBtn').classList.remove('hidden');
+                loadData();
+            } else {
+                document.getElementById('loginArea').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('logoutBtn').classList.add('hidden');
             }
-            return { years, months };
-        }
+        });
 
-        window.updateStudentAgePreview = () => {
-            const dob = document.getElementById('dob').value;
-            const preview = document.getElementById('studentAgePreview');
-            if(dob) {
-                const age = calculateAge(dob);
-                preview.innerText = `বর্তমান বয়স: ${toBn(age.years)} বছর ${toBn(age.months)} মাস`;
-                preview.style.color = (age.years < 5 || age.years > 17) ? "#f43f5e" : "#22d3ee";
-            } else { preview.innerText = ""; }
-        }
-
-        window.processImage = (e) => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 300; canvas.height = 300;
-                    canvas.getContext('2d').drawImage(img, 0, 0, 300, 300);
-                    const base64 = canvas.toDataURL('image/jpeg', 0.8);
-                    document.getElementById('photoBase64').value = base64;
-                    document.getElementById('imagePreview').src = base64;
-                    document.getElementById('imagePreview').classList.remove('hidden');
-                    document.getElementById('imgLabel').classList.add('hidden');
-                };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
+        // Common Functions
+        const toBn = (n) => (!n && n !== 0) ? '---' : n.toString().replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[d]);
+        window.toggleTheme = () => { document.body.classList.toggle('light-mode'); lucide.createIcons(); };
+        window.switchTab = (id) => { 
+            ['viewTab', 'entryTab', 'attendanceTab'].forEach(tab => document.getElementById(tab).classList.toggle('hidden', tab !== id)); 
+            ['btnView', 'btnEntry', 'btnAttendance'].forEach(btn => document.getElementById(btn).classList.toggle('tab-active', btn.id.toLowerCase().includes(id.replace('Tab','').toLowerCase()))); 
+            lucide.createIcons(); 
         };
 
-        window.initAttendance = () => {
-            const date = document.getElementById('attDate').value;
-            const container = document.getElementById('attList');
-            if(!date || !window.allData) return;
-            container.innerHTML = "";
-            document.getElementById('saveAttBtn').classList.remove('hidden');
-            Object.keys(window.allData).sort((a,b) => window.allData[a].roll - window.allData[b].roll).forEach(id => {
-                const s = window.allData[id];
-                container.innerHTML += `<div class="flex justify-between items-center p-4 glass mb-2 border-white/5"><div class="text-[11px]"><p class="font-bold text-base">${s.name}</p><p class="opacity-60">${s.className} | রোল: ${toBn(s.roll)}</p></div><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="att-check sr-only peer" data-id="${id}" checked><div class="w-14 h-7 bg-rose-500 rounded-full peer peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:left-[8px]"></div></label></div>`;
+        // Data Loading
+        function loadData(search = "") {
+            onValue(ref(db, 'students'), (snap) => {
+                const container = document.getElementById('classWiseContainer');
+                container.innerHTML = "";
+                window.allData = snap.val() || {};
+                ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
+                    const filtered = Object.keys(window.allData).filter(id => (window.allData[id].name.toLowerCase().includes(search.toLowerCase()) || window.allData[id].roll.includes(search)) && window.allData[id].className === cls);
+                    if(filtered.length > 0) {
+                        let html = `<div class="glass overflow-hidden mb-4"><div class="p-3 bg-cyan-500/10"><h3 class="font-black text-xs text-cyan-500">${cls} শ্রেণি</h3></div><div class="divide-y divide-white/5">`;
+                        filtered.forEach(id => {
+                            html += `<div class="p-4 flex justify-between items-center"><div class="flex items-center gap-3"><img src="${window.allData[id].photo || ''}" class="w-10 h-10 rounded-xl object-cover"><div><p class="font-bold text-sm">${window.allData[id].name}</p><p class="opacity-50 text-[10px]">রোল: ${toBn(window.allData[id].roll)}</p></div></div><div class="flex gap-1"><button onclick="viewRec('${id}')" class="p-2 text-cyan-500"><i data-lucide="eye" size="18"></i></button><button onclick="deleteRec('${id}')" class="p-2 text-rose-500"><i data-lucide="trash-2" size="18"></i></button></div></div>`;
+                        });
+                        container.innerHTML += html + `</div></div>`;
+                        lucide.createIcons();
+                    }
+                });
             });
-        };
+        }
 
-        window.saveAttendance = () => {
-            const date = document.getElementById('attDate').value;
-            const attData = {};
-            document.querySelectorAll('.att-check').forEach(chk => { attData[chk.dataset.id] = chk.checked ? "P" : "A"; });
-            set(ref(db, `attendance/${date}`), attData).then(() => alert("হাজিরা সফলভাবে সংরক্ষিত!"));
+        // Student Entry
+        document.getElementById('studentForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const key = document.getElementById('editKey').value;
+            const data = {
+                name: document.getElementById('stName').value, className: document.getElementById('class').value, roll: document.getElementById('roll').value, birthReg: document.getElementById('birthReg').value, dob: document.getElementById('dob').value, photo: document.getElementById('photoBase64').value,
+                fName: document.getElementById('fName').value, fNid: document.getElementById('fNid').value, fMobile: document.getElementById('fMobile').value,
+                mName: document.getElementById('mName').value, mNid: document.getElementById('mNid').value, mMobile: document.getElementById('mMobile').value
+            };
+            set(key ? ref(db, `students/${key}`) : push(ref(db, 'students')), data).then(() => { showMsg("সফলভাবে সংরক্ষিত!"); switchTab('viewTab'); document.getElementById('studentForm').reset(); });
+        });
+
+        window.deleteRec = (id) => { if(confirm("মুছে ফেলতে চান?")) remove(ref(db, `students/${id}`)); };
+        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+        lucide.createIcons();
+    </script>
+</body>
+</html>
