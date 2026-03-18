@@ -11,16 +11,17 @@
     <style>
         :root { --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --border: rgba(0, 0, 0, 0.08); --accent: #0891b2; }
         .dark-mode { --bg: #0f172a; --card: rgba(30, 41, 59, 0.7); --text: #f1f5f9; --accent: #22d3ee; --border: rgba(255, 255, 255, 0.08); }
-        body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg); color: var(--text); min-height: 100vh; transition: 0.4s; overflow-x: hidden; }
+        body { font-family: 'SolaimanLipi', sans-serif; background-color: var(--bg); color: var(--text); min-height: 100vh; transition: 0.4s; }
         .glass { background: var(--card); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
         .input-style { background: rgba(0,0,0,0.03) !important; border: 1.5px solid var(--border) !important; color: var(--text) !important; padding: 12px; border-radius: 12px; width: 100%; outline: none; }
         .tab-active { background: linear-gradient(135deg, #0891b2, #06b6d4) !important; color: #fff !important; transform: translateY(-2px); box-shadow: 0 10px 15px rgba(8, 145, 178, 0.3); }
+        .student-img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; background: #e2e8f0; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="light-mode">
 
-    <header class="sticky top-0 z-50 glass !rounded-none border-b px-4 py-4 no-print mb-6">
+    <header class="sticky top-0 z-50 glass !rounded-none border-b px-4 py-4 mb-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="bg-cyan-500 p-2 rounded-xl shadow-lg"><i data-lucide="graduation-cap" class="text-white w-6 h-6"></i></div>
@@ -43,12 +44,12 @@
             <div class="space-y-4">
                 <input type="email" id="loginEmail" placeholder="ইমেইল" class="input-style">
                 <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" class="input-style">
-                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-black shadow-xl active:scale-95">প্রবেশ করুন</button>
+                <button id="loginBtn" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-black shadow-xl">প্রবেশ করুন</button>
             </div>
         </div>
     </div>
 
-    <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto no-print">
+    <main id="mainApp" class="hidden p-4 max-w-7xl mx-auto">
         <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-8 text-center">
             <div class="glass p-6 min-w-[200px] border-b-4 border-cyan-500">
                 <p class="text-[10px] font-bold opacity-60">মোট শিক্ষার্থী</p>
@@ -60,7 +61,7 @@
             </div>
         </div>
 
-        <nav class="flex justify-center mb-10 gap-3 overflow-x-auto pb-2 no-scrollbar">
+        <nav class="flex justify-center mb-10 gap-2 overflow-x-auto pb-2 no-scrollbar">
             <button onclick="switchTab('viewTab')" id="btnView" class="px-6 py-3 glass text-xs font-black tab-active whitespace-nowrap">শিক্ষার্থী তালিকা</button>
             <button onclick="switchTab('attendanceTab')" id="btnAttendance" class="px-6 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">হাজিরা রিপোর্ট</button>
             <button onclick="switchTab('entryTab')" id="btnEntry" class="px-6 py-3 glass text-xs font-black opacity-60 whitespace-nowrap">নতুন এন্ট্রি</button>
@@ -69,13 +70,13 @@
         <section id="viewTab" class="space-y-6">
             <div class="relative max-w-xl mx-auto mb-10">
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 opacity-40"></i>
-                <input type="text" id="searchBar" oninput="renderList()" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="input-style !pl-12">
+                <input type="text" id="searchBar" oninput="renderList()" placeholder="নাম বা রোল দিয়ে খুঁজুন..." class="input-style !pl-12 shadow-lg">
             </div>
             <div id="classWiseContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
         <section id="attendanceTab" class="hidden space-y-8 max-w-3xl mx-auto">
-            <div class="glass p-8 space-y-8 text-center">
+            <div class="glass p-8 space-y-6 text-center">
                 <input type="date" id="attDate" class="input-style max-w-xs mx-auto text-center font-bold" onchange="loadAttendanceForDate()">
                 <div id="attList" class="space-y-2 text-left"></div>
                 <button onclick="saveAttendance()" id="saveAttBtn" class="hidden w-full bg-cyan-600 text-white py-4 rounded-xl font-black shadow-xl">হাজিরা আপডেট করুন</button>
@@ -84,14 +85,25 @@
 
         <section id="entryTab" class="hidden glass p-8 max-w-2xl mx-auto">
             <form id="studentForm" class="space-y-4">
+                <input type="hidden" id="editKey">
+                <div class="flex flex-col items-center mb-4">
+                    <div id="imagePreview" class="w-24 h-24 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-dashed border-cyan-300 overflow-hidden mb-2">
+                        <i data-lucide="image" class="text-cyan-300"></i>
+                    </div>
+                    <input type="file" id="stPhoto" accept="image/*" class="text-xs" onchange="previewImage(this)">
+                </div>
                 <input type="text" id="stName" placeholder="শিক্ষার্থীর নাম" required class="input-style">
-                <input type="text" id="pName" placeholder="পিতা/মাতার নাম" class="input-style">
+                <input type="text" id="pName" placeholder="পিতা/মাতার নাম (Parents Info)" class="input-style">
                 <div class="flex gap-2">
-                    <select id="class" class="input-style flex-1"><option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option><option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option></select>
+                    <select id="class" class="input-style flex-1">
+                        <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
+                        <option value="১ম">১ম</option><option value="২য়">২য়</option>
+                        <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
+                    </select>
                     <input type="number" id="roll" placeholder="রোল" required class="input-style w-24">
                 </div>
-                <input type="tel" id="fMobile" placeholder="মোবাইল নম্বর" class="input-style">
-                <button type="submit" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-black">সেভ করুন</button>
+                <input type="tel" id="fMobile" placeholder="অভিভাবকের মোবাইল নম্বর" class="input-style">
+                <button type="submit" id="submitBtn" class="w-full bg-cyan-600 text-white py-4 rounded-xl font-black">সেভ করুন</button>
             </form>
         </section>
     </main>
@@ -106,7 +118,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, set, push, onValue, get, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, get, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCx74hxIsdqUd7nC_MKdGV4M0GoWHK4uf4", authDomain: "my-school-database.firebaseapp.com", projectId: "my-school-database", databaseURL: "https://my-school-database-default-rtdb.firebaseio.com" };
         const app = initializeApp(firebaseConfig);
@@ -148,25 +160,32 @@
         window.renderList = () => {
             const container = document.getElementById('classWiseContainer');
             const search = document.getElementById('searchBar').value.toLowerCase();
+            const currentUid = auth.currentUser ? auth.currentUser.uid : "";
             container.innerHTML = "";
+            
             ["প্রাক-প্রাথমিক","১ম","২য়","৩য়","৪র্থ","৫ম"].forEach(cls => {
                 const students = Object.keys(window.allData).filter(id => {
                     const s = window.allData[id];
                     return s.className === cls && (s.name.toLowerCase().includes(search) || s.roll.toString().includes(search));
                 });
                 if(students.length > 0) {
-                    let html = `<div class="glass p-5 border-t-4 border-cyan-500"><b>${cls} শ্রেণি</b><div class="mt-3 space-y-2">`;
+                    let html = `<div class="glass p-5 border-t-4 border-cyan-500"><b>${cls} শ্রেণি</b><div class="mt-4 space-y-3">`;
                     students.forEach(id => {
                         const s = window.allData[id];
+                        // শুধুমাত্র অ্যাডমিন হলে ডিলিট বাটন দেখাবে
+                        const deleteBtn = (currentUid === ADMIN_ID) ? 
+                            `<button onclick="deleteStudent('${id}')" class="text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg"><i data-lucide="trash-2" size="16"></i></button>` : "";
+                        
                         html += `
-                            <div class="flex items-center justify-between p-3 bg-black/5 rounded hover:bg-black/10 transition-all">
+                            <div class="flex items-center gap-3 p-3 bg-black/5 rounded-xl">
+                                <img src="${s.photo || ''}" class="student-img" onerror="this.src='https://via.placeholder.com/50'">
                                 <div onclick="showProfile('${id}')" class="flex-1 cursor-pointer">
-                                    <p class="font-bold">${s.name}</p>
-                                    <p class="text-[10px] opacity-60">পিতা: ${s.pName || 'অজানা'} | মোবাইল: ${toBn(s.fMobile)}</p>
+                                    <p class="font-bold text-sm">${s.name}</p>
+                                    <p class="text-[9px] opacity-60">রোল: ${toBn(s.roll)} | পিতা: ${s.pName || 'অজানা'}</p>
                                 </div>
                                 <div class="flex gap-2">
-                                    <span class="text-xs font-black">রোল: ${toBn(s.roll)}</span>
-                                    <button onclick="deleteStudent('${id}')" class="text-rose-500 hover:scale-110"><i data-lucide="trash-2" size="16"></i></button>
+                                    <button onclick="editStudent('${id}')" class="text-cyan-600 hover:bg-cyan-50 p-1.5 rounded-lg"><i data-lucide="edit-3" size="16"></i></button>
+                                    ${deleteBtn}
                                 </div>
                             </div>`;
                     });
@@ -176,25 +195,47 @@
             lucide.createIcons();
         };
 
-        window.showProfile = (id) => {
-            const s = window.allData[id];
-            document.getElementById('modalContent').innerHTML = `
-                <div class="w-16 h-16 bg-cyan-100 rounded-full mx-auto mb-4 flex items-center justify-center text-cyan-600"><i data-lucide="user"></i></div>
-                <h3 class="text-xl font-black">${s.name}</h3>
-                <p class="text-sm opacity-60 mb-6">${s.className} শ্রেণি | রোল: ${toBn(s.roll)}</p>
-                <div class="space-y-3 text-left bg-black/5 p-4 rounded-xl text-sm">
-                    <p><b>পিতা/মাতা:</b> ${s.pName || 'তথ্য নেই'}</p>
-                    <p><b>মোবাইল:</b> ${toBn(s.fMobile) || 'তথ্য নেই'}</p>
-                </div>
-            `;
-            document.getElementById('viewModal').classList.remove('hidden');
-            lucide.createIcons();
+        window.deleteStudent = (studentId) => {
+            if (auth.currentUser.uid !== ADMIN_ID) return Swal.fire("অনুমতি নেই", "শুধুমাত্র অ্যাডমিন ডিলিট করতে পারেন", "error");
+
+            Swal.fire({ title: 'সব রেকর্ড মুছবেন?', text: "শিক্ষার্থীর সাথে তার সকল হাজিরা রেকর্ডও মুছে যাবে!", icon: 'warning', showCancelButton: true, confirmButtonText: 'হ্যাঁ, মুছুন' }).then(async (r) => {
+                if(r.isConfirmed) {
+                    await remove(ref(db, `students/${studentId}`));
+                    const attSnap = await get(ref(db, 'attendance'));
+                    if(attSnap.exists()){
+                        const allAtt = attSnap.val();
+                        for(let date in allAtt) if(allAtt[date][studentId]) await remove(ref(db, `attendance/${date}/${studentId}`));
+                    }
+                    Swal.fire('সফল!', 'সব মুছে ফেলা হয়েছে।', 'success');
+                    updateTodayPresence();
+                }
+            });
         };
 
-        window.deleteStudent = (id) => {
-            Swal.fire({ title: 'আপনি কি নিশ্চিত?', text: "এই ডাটা চিরতরে মুছে যাবে!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#e11d48', confirmButtonText: 'হ্যাঁ, ডিলিট করুন' }).then((result) => {
-                if (result.isConfirmed) remove(ref(db, `students/${id}`)).then(() => Swal.fire('মুছে ফেলা হয়েছে!', '', 'success'));
-            });
+        window.previewImage = (input) => {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('imagePreview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                    window.currentBase64 = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        window.editStudent = (id) => {
+            const s = window.allData[id];
+            document.getElementById('editKey').value = id;
+            document.getElementById('stName').value = s.name;
+            document.getElementById('pName').value = s.pName || '';
+            document.getElementById('class').value = s.className;
+            document.getElementById('roll').value = s.roll;
+            document.getElementById('fMobile').value = s.fMobile || '';
+            document.getElementById('imagePreview').innerHTML = s.photo ? `<img src="${s.photo}" class="w-full h-full object-cover">` : `<i data-lucide="image" class="text-cyan-300"></i>`;
+            window.currentBase64 = s.photo;
+            document.getElementById('submitBtn').innerText = "আপডেট করুন";
+            switchTab('entryTab');
+            lucide.createIcons();
         };
 
         window.loadAttendanceForDate = async () => {
@@ -202,11 +243,17 @@
             const snap = await get(ref(db, `attendance/${date}`));
             const att = snap.val() || {};
             const list = document.getElementById('attList');
-            list.innerHTML = "";
+            
+            // অ্যাডমিন হলে হাজিরা ডিলিট বাটন দেখাবে
+            let deleteFullDayBtn = (auth.currentUser.uid === ADMIN_ID && Object.keys(att).length > 0) ? 
+                `<button onclick="deleteFullDayAtt('${date}')" class="mb-4 text-rose-500 text-xs font-bold block mx-auto flex items-center gap-1"><i data-lucide="calendar-x" size="14"></i> ওই তারিখের সব হাজিরা মুছুন</button>` : "";
+            
+            list.innerHTML = deleteFullDayBtn;
+            
             Object.keys(window.allData).forEach(id => {
                 const s = window.allData[id];
-                list.innerHTML += `<div class="flex justify-between items-center p-3 glass">
-                    <div><p class="font-bold">${s.name}</p><p class="text-[10px]">রোল: ${toBn(s.roll)}</p></div>
+                list.innerHTML += `<div class="flex justify-between items-center p-3 glass mb-2">
+                    <span><b>${s.name}</b> (রোল: ${toBn(s.roll)})</span>
                     <select id="sel-${id}" class="p-2 rounded font-black ${att[id] === 'A' ? 'text-rose-500' : 'text-emerald-500'}">
                         <option value="P" ${att[id] === 'P' ? 'selected' : ''}>উপস্থিত</option>
                         <option value="A" ${att[id] === 'A' || !att[id] ? 'selected' : ''}>অনুপস্থিত</option>
@@ -214,16 +261,20 @@
                 </div>`;
             });
             document.getElementById('saveAttBtn').classList.remove('hidden');
+            lucide.createIcons();
+        };
+
+        window.deleteFullDayAtt = (date) => {
+            Swal.fire({ title: 'নিশ্চিত?', text: "এই তারিখের সব হাজিরা ডিলিট হবে", icon: 'warning', showCancelButton: true }).then(r => {
+                if(r.isConfirmed) remove(ref(db, `attendance/${date}`)).then(() => { loadAttendanceForDate(); updateTodayPresence(); });
+            });
         };
 
         window.saveAttendance = () => {
             const date = document.getElementById('attDate').value;
             const updates = {};
             Object.keys(window.allData).forEach(id => updates[id] = document.getElementById(`sel-${id}`).value);
-            set(ref(db, `attendance/${date}`), updates).then(() => {
-                Swal.fire("সফল!", "হাজিরা আপডেট হয়েছে", "success");
-                updateTodayPresence();
-            });
+            set(ref(db, `attendance/${date}`), updates).then(() => { Swal.fire("সফল!", "হাজিরা সেভ হয়েছে", "success"); updateTodayPresence(); });
         };
 
         async function updateTodayPresence() {
@@ -236,17 +287,39 @@
 
         document.getElementById('studentForm').onsubmit = (e) => {
             e.preventDefault();
+            const editKey = document.getElementById('editKey').value;
             const data = {
                 name: document.getElementById('stName').value,
                 pName: document.getElementById('pName').value,
                 className: document.getElementById('class').value,
                 roll: document.getElementById('roll').value,
-                fMobile: document.getElementById('fMobile').value
+                fMobile: document.getElementById('fMobile').value,
+                photo: window.currentBase64 || ""
             };
-            push(ref(db, 'students'), data).then(() => {
-                Swal.fire("সফল!", "শিক্ষার্থী যুক্ত হয়েছে", "success");
-                e.target.reset();
+            const action = editKey ? update(ref(db, `students/${editKey}`), data) : push(ref(db, 'students'), data);
+            action.then(() => {
+                Swal.fire("সফল!", "", "success");
+                document.getElementById('studentForm').reset();
+                document.getElementById('editKey').value = "";
+                document.getElementById('imagePreview').innerHTML = `<i data-lucide="image" class="text-cyan-300"></i>`;
+                window.currentBase64 = null;
+                switchTab('viewTab');
             });
+        };
+
+        window.showProfile = (id) => {
+            const s = window.allData[id];
+            document.getElementById('modalContent').innerHTML = `
+                <img src="${s.photo || ''}" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-cyan-500 object-cover" onerror="this.src='https://via.placeholder.com/100'">
+                <h3 class="text-xl font-black">${s.name}</h3>
+                <p class="text-sm opacity-60 mb-6">${s.className} শ্রেণি | রোল: ${toBn(s.roll)}</p>
+                <div class="space-y-3 text-left bg-black/5 p-4 rounded-xl text-sm">
+                    <p><b>পিতা/মাতা:</b> ${s.pName || 'তথ্য নেই'}</p>
+                    <p><b>মোবাইল:</b> ${toBn(s.fMobile) || 'তথ্য নেই'}</p>
+                </div>
+            `;
+            document.getElementById('viewModal').classList.remove('hidden');
+            lucide.createIcons();
         };
 
         window.switchTab = (id) => {
