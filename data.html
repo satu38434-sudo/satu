@@ -9,33 +9,29 @@
         :root { --primary: #006a4e; --bg: #f8f9fa; --border: #dee2e6; }
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; padding: 0; }
         
-        /* Login Screen */
-        #login-container {
-            display: flex; justify-content: center; align-items: center; height: 100vh;
-        }
+        #login-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
         .login-box {
             background: white; padding: 40px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             width: 100%; max-width: 350px; text-align: center; border-top: 5px solid var(--primary);
         }
 
-        /* Dashboard (Hidden by default) */
         #dashboard { display: none; padding: 20px; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         
         header { text-align: center; border-bottom: 1px solid var(--border); margin-bottom: 30px; padding-bottom: 10px; position: relative; }
-        .logout-btn { position: absolute; right: 0; top: 0; background: #dc3545; font-size: 14px; padding: 5px 10px; }
+        .logout-btn { position: absolute; right: 0; top: 0; background: #dc3545; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
 
-        /* General UI */
-        .form-section { background: #fdfdfd; border: 1px solid var(--border); padding: 20px; margin-bottom: 30px; }
+        .form-section { background: #fdfdfd; border: 1px solid var(--border); padding: 20px; margin-bottom: 30px; border-radius: 8px; }
         .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Kalpurush'; font-size: 16px; }
-        button { background: var(--primary); color: white; border: none; padding: 10px 20px; cursor: pointer; font-family: 'Kalpurush'; font-weight: 600; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Kalpurush'; font-size: 16px; width: 100%; box-sizing: border-box; }
+        button { background: var(--primary); color: white; border: none; padding: 10px 20px; cursor: pointer; font-family: 'Kalpurush'; font-weight: 600; border-radius: 4px; }
+        button:hover { opacity: 0.9; }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background: #f4f4f4; }
+        th { background: #f4f4f4; color: #333; }
 
-        @media print { .no-print { display: none !important; } #dashboard { display: block !important; } }
+        @media print { .no-print { display: none !important; } #dashboard { display: block !important; padding: 0; } .container { box-shadow: none; border: none; width: 100%; } }
     </style>
 </head>
 <body>
@@ -43,10 +39,10 @@
 <div id="login-container">
     <div class="login-box">
         <h2 style="color: var(--primary);">অ্যাডমিন লগইন</h2>
-        <input type="email" id="loginEmail" placeholder="ইমেইল" style="width: 100%; margin-bottom: 15px;">
-        <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" style="width: 100%; margin-bottom: 15px;">
+        <input type="email" id="loginEmail" placeholder="ইমেইল" style="margin-bottom: 15px;">
+        <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" style="margin-bottom: 15px;">
         <button id="loginBtn" style="width: 100%;">লগইন করুন</button>
-        <p id="loginError" style="color: red; font-size: 13px; margin-top: 10px; display: none;">ভুল ইমেইল বা পাসওয়ার্ড!</p>
+        <p id="loginError" style="color: red; font-size: 13px; margin-top: 10px; display: none;">ভুল ইমেইল বা পাসওয়ার্ড!</p>
     </div>
 </div>
 
@@ -54,7 +50,7 @@
     <div class="container">
         <header>
             <button class="logout-btn no-print" id="logoutBtn">লগআউট</button>
-            <h1 style="color: var(--primary);">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
+            <h1 style="color: var(--primary); margin: 0;">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
             <p>শিক্ষার্থী ম্যানেজমেন্ট সিস্টেম</p>
         </header>
 
@@ -67,28 +63,32 @@
                     <input type="date" id="dob" required>
                     <input type="number" id="roll" placeholder="রোল" required>
                     <select id="className" required>
-                        <option value="">শ্রেণী</option>
-                        <option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option>
+                        <option value="">শ্রেণী নির্বাচন করুন</option>
+                        <option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option>
                         <option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
                     </select>
-                    <input type="text" id="session" placeholder="সেশন">
-                    <input type="tel" id="mobile" placeholder="মোবাইল">
+                    <input type="text" id="session" placeholder="সেশন (যেমন: ২০২৪)">
+                    <input type="tel" id="mobile" placeholder="মোবাইল নম্বর">
                 </div>
-                <button type="submit" style="margin-top: 15px;">সেভ করুন</button>
+                <button type="submit" id="saveBtn" style="margin-top: 15px;">সেভ করুন</button>
             </form>
         </section>
 
         <section>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3>শিক্ষার্থী তালিকা</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0;">শিক্ষার্থী তালিকা</h3>
                 <button onclick="window.print()" class="no-print" style="background: #333;">প্রিন্ট রিপোর্ট</button>
             </div>
-            <table>
-                <thead>
-                    <tr><th>রোল</th><th>নাম</th><th>পিতা/মাতা</th><th>শ্রেণী</th><th>সেশন</th><th>মোবাইল</th></tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr><th>রোল</th><th>নাম</th><th>পিতা/মাতা</th><th>শ্রেণী</th><th>সেশন</th><th>মোবাইল</th></tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <tr><td colspan="6" style="text-align:center;">লোড হচ্ছে...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
 </div>
@@ -96,7 +96,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
@@ -111,14 +111,18 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // AUTH LOGIC
+    // --- AUTHENTICATION ---
     document.getElementById('loginBtn').addEventListener('click', async () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPassword').value;
+        const errorMsg = document.getElementById('loginError');
+        errorMsg.style.display = 'none';
+
         try {
             await signInWithEmailAndPassword(auth, email, pass);
         } catch (err) {
-            document.getElementById('loginError').style.display = 'block';
+            errorMsg.style.display = 'block';
+            console.error("Login Error:", err.message);
         }
     });
 
@@ -128,41 +132,73 @@
         if (user) {
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
-            loadData();
+            syncData(); // Set up real-time listener
         } else {
             document.getElementById('login-container').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'none';
         }
     });
 
-    // DATA LOGIC
+    // --- DATA HANDLING ---
     document.getElementById('studentForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const data = {
-            name: document.getElementById('name').value,
-            parentsName: document.getElementById('parentsName').value,
-            dob: document.getElementById('dob').value,
-            roll: parseInt(document.getElementById('roll').value),
-            className: document.getElementById('className').value,
-            session: document.getElementById('session').value,
-            mobile: document.getElementById('mobile').value || '-',
-            timestamp: new Date()
-        };
-        await addDoc(collection(db, "students"), data);
-        e.target.reset();
-        loadData();
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true;
+        btn.innerText = "সেভ হচ্ছে...";
+
+        try {
+            const data = {
+                name: document.getElementById('name').value,
+                parentsName: document.getElementById('parentsName').value,
+                dob: document.getElementById('dob').value,
+                roll: parseInt(document.getElementById('roll').value),
+                className: document.getElementById('className').value,
+                session: document.getElementById('session').value || '-',
+                mobile: document.getElementById('mobile').value || '-',
+                createdAt: serverTimestamp()
+            };
+            
+            await addDoc(collection(db, "students"), data);
+            e.target.reset();
+        } catch (err) {
+            alert("Error saving data: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "সেভ করুন";
+        }
     });
 
-    async function loadData() {
+    // REAL-TIME DATA SYNC
+    function syncData() {
         const q = query(collection(db, "students"), orderBy("roll", "asc"));
-        const snap = await getDocs(q);
-        const tableBody = document.getElementById('tableBody');
-        tableBody.innerHTML = '';
-        snap.forEach(doc => {
-            const s = doc.data();
-            tableBody.insertAdjacentHTML('beforeend', `<tr><td>${s.roll}</td><td><b>${s.name}</b></td><td>${s.parentsName}</td><td>${s.className}</td><td>${s.session}</td><td>${s.mobile}</td></tr>`);
+        
+        // This listener will automatically update the UI when data changes in Firestore
+        onSnapshot(q, (snap) => {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            if (snap.empty) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">কোনো শিক্ষার্থী পাওয়া যায়নি</td></tr>';
+                return;
+            }
+
+            snap.forEach(doc => {
+                const s = doc.data();
+                const row = `<tr>
+                    <td>${s.roll}</td>
+                    <td><b>${s.name}</b></td>
+                    <td>${s.parentsName}</td>
+                    <td>${s.className}</td>
+                    <td>${s.session}</td>
+                    <td>${s.mobile}</td>
+                </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }, (error) => {
+            console.error("Sync Error:", error);
         });
     }
 </script>
+
 </body>
 </html>
