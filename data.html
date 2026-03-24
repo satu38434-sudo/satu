@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a5d1a;
+            --bg-color: #f4f7f6;
+        }
+        body {
+            font-family: 'Hind Siliguri', 'SolaimanLipi', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h1 { color: var(--primary-color); margin: 0; font-size: 24px; }
+        
+        /* Form Styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        input, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover { opacity: 0.9; }
+
+        /* Report Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th { background: #f8f8f8; }
+
+        /* Print Controls */
+        @media print {
+            .no-print, form, button { display: none !important; }
+            .container { box-shadow: none; border: none; width: 100%; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
+        <p>ছাত্র-ছাত্রী তথ্য ও হাজিরা রিপোর্ট</p>
+    </header>
+
+    <section class="no-print">
+        <h3>নতুন শিক্ষার্থীর তথ্য যোগ করুন</h3>
+        <form id="studentForm">
+            <div class="form-grid">
+                <input type="text" id="name" placeholder="শিক্ষার্থীর নাম" required>
+                <input type="text" id="parentsName" placeholder="পিতা/মাতার নাম" required>
+                <input type="date" id="dob" required>
+                <input type="number" id="roll" placeholder="রোল নম্বর" required>
+                <select id="className">
+                    <option value="">শ্রেণী নির্বাচন করুন</option>
+                    <option value="১ম">১ম</option>
+                    <option value="২য়">২য়</option>
+                    <option value="৩য়">৩য়</option>
+                    <option value="৪র্থ">৪র্থ</option>
+                    <option value="৫ম">৫ম</option>
+                </select>
+                <input type="text" id="session" placeholder="সেশন (যেমন: ২০২৬)">
+            </div>
+            <button type="submit" id="saveBtn">তথ্য সংরক্ষণ করুন</button>
+        </form>
+    </section>
+
+    <hr class="no-print" style="margin: 40px 0;">
+
+    <section>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>শিক্ষার্থী তালিকা (রিপোর্ট)</h3>
+            <button onclick="window.print()" class="no-print" style="background: #444;">প্রিন্ট রিপোর্ট</button>
+        </div>
+        <table id="reportTable">
+            <thead>
+                <tr>
+                    <th>রোল</th>
+                    <th>নাম</th>
+                    <th>পিতা/মাতার নাম</th>
+                    <th>শ্রেণী</th>
+                    <th>সেশন</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </section>
+</div>
+
+<script type="module">
+    // Using the saveStudent function we discussed
+    import { saveStudent, getStudents } from './firebase-config.js';
+
+    const form = document.getElementById('studentForm');
+    const tableBody = document.getElementById('tableBody');
+
+    // Handle Form Submission
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const studentData = {
+            name: document.getElementById('name').value,
+            parentsName: document.getElementById('parentsName').value,
+            dob: document.getElementById('dob').value,
+            roll: document.getElementById('roll').value,
+            className: document.getElementById('className').value,
+            session: document.getElementById('session').value
+        };
+
+        // Call our Firebase save function
+        await saveStudent(studentData);
+        form.reset();
+        loadTableData(); // Refresh table
+    });
+
+    // Function to display data in the table
+    async function loadTableData() {
+        const students = await getStudents(); 
+        tableBody.innerHTML = '';
+        students.forEach(s => {
+            const row = `<tr>
+                <td>${s.roll}</td>
+                <td>${s.name}</td>
+                <td>${s.parentsName}</td>
+                <td>${s.className}</td>
+                <td>${s.session}</td>
+            </tr>`;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    // Load data on page start
+    window.onload = loadTableData;
+</script>
+
+</body>
+</html>
