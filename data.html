@@ -3,78 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Management System</title>
+    <title>School Database - ২১৭নং শেখ ফারিয়া জান্নাত শান্তনা</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #1a5d1a;
-            --bg-color: #f4f7f6;
+            --primary: #1a5d1a;
+            --secondary: #2d3436;
+            --bg: #f0f2f5;
         }
         body {
-            font-family: 'Hind Siliguri', 'SolaimanLipi', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg);
             margin: 0;
             padding: 20px;
+            color: var(--secondary);
         }
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: auto;
             background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         header {
             text-align: center;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
+            border-bottom: 3px double var(--primary);
             margin-bottom: 30px;
+            padding-bottom: 15px;
         }
-        h1 { color: var(--primary-color); margin: 0; font-size: 24px; }
-        
-        /* Form Styling */
-        .form-grid {
+        header h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 26px;
+        }
+        header p { margin: 5px 0 0; color: #666; font-weight: 600; }
+
+        /* Form Layout */
+        .form-section {
+            background: #f9fbf9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+        }
+        .grid-inputs {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
         }
         input, select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            width: 100%;
-            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
         }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 5px rgba(26,93,26,0.2); }
+        
         button {
-            background: var(--primary-color);
+            background: var(--primary);
             color: white;
             padding: 12px 25px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 10px;
+            font-weight: 600;
+            transition: 0.3s;
         }
-        button:hover { opacity: 0.9; }
+        button:hover { background: #134613; }
+        .btn-print { background: #444; margin-top: 10px; }
 
-        /* Report Table */
+        /* Table Styling */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 30px;
+            margin-top: 20px;
         }
         th, td {
-            border: 1px solid #ddd;
             padding: 12px;
+            border: 1px solid #ddd;
             text-align: left;
         }
-        th { background: #f8f8f8; }
+        th { background-color: var(--primary); color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
 
-        /* Print Controls */
+        /* Print Logic */
         @media print {
-            .no-print, form, button { display: none !important; }
-            .container { box-shadow: none; border: none; width: 100%; }
-            body { background: white; }
+            .no-print, .form-section, button { display: none !important; }
+            .container { box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
+            body { background: white; padding: 0; }
+            table { border: 1px solid black; }
+            th { color: black; background: #eee; }
         }
     </style>
 </head>
@@ -83,18 +102,18 @@
 <div class="container">
     <header>
         <h1>২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h1>
-        <p>ছাত্র-ছাত্রী তথ্য ও হাজিরা রিপোর্ট</p>
+        <p>শিক্ষার্থী ডাটাবেজ ও হাজিরা রিপোর্ট</p>
     </header>
 
-    <section class="no-print">
-        <h3>নতুন শিক্ষার্থীর তথ্য যোগ করুন</h3>
+    <section class="form-section no-print">
+        <h3 style="margin-top: 0;">নতুন শিক্ষার্থী তথ্য পূরণ করুন</h3>
         <form id="studentForm">
-            <div class="form-grid">
+            <div class="grid-inputs">
                 <input type="text" id="name" placeholder="শিক্ষার্থীর নাম" required>
                 <input type="text" id="parentsName" placeholder="পিতা/মাতার নাম" required>
                 <input type="date" id="dob" required>
                 <input type="number" id="roll" placeholder="রোল নম্বর" required>
-                <select id="className">
+                <select id="className" required>
                     <option value="">শ্রেণী নির্বাচন করুন</option>
                     <option value="১ম">১ম</option>
                     <option value="২য়">২য়</option>
@@ -102,20 +121,19 @@
                     <option value="৪র্থ">৪র্থ</option>
                     <option value="৫ম">৫ম</option>
                 </select>
-                <input type="text" id="session" placeholder="সেশন (যেমন: ২০২৬)">
+                <input type="text" id="session" placeholder="সেশন (যেমন: ২০২৬)" required>
+                <input type="tel" id="mobile" placeholder="মোবাইল নম্বর">
             </div>
-            <button type="submit" id="saveBtn">তথ্য সংরক্ষণ করুন</button>
+            <button type="submit" style="margin-top: 20px;">ডাটাবেজে সেভ করুন</button>
         </form>
     </section>
 
-    <hr class="no-print" style="margin: 40px 0;">
-
     <section>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3>শিক্ষার্থী তালিকা (রিপোর্ট)</h3>
-            <button onclick="window.print()" class="no-print" style="background: #444;">প্রিন্ট রিপোর্ট</button>
+            <h3>শিক্ষার্থী তালিকা</h3>
+            <button class="btn-print no-print" onclick="window.print()">রিপোর্ট প্রিন্ট করুন</button>
         </div>
-        <table id="reportTable">
+        <table>
             <thead>
                 <tr>
                     <th>রোল</th>
@@ -123,6 +141,7 @@
                     <th>পিতা/মাতার নাম</th>
                     <th>শ্রেণী</th>
                     <th>সেশন</th>
+                    <th>মোবাইল</th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -132,13 +151,27 @@
 </div>
 
 <script type="module">
-    // Using the saveStudent function we discussed
-    import { saveStudent, getStudents } from './firebase-config.js';
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Your provided Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
+        authDomain: "my-school-data-5f899.firebaseapp.com",
+        projectId: "my-school-data-5f899",
+        storageBucket: "my-school-data-5f899.firebasestorage.app",
+        messagingSenderId: "566276841077",
+        appId: "1:566276841077:web:b42f3d65edb922cd03223c"
+    };
+
+    // Initialize Firebase and Firestore
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
     const form = document.getElementById('studentForm');
     const tableBody = document.getElementById('tableBody');
 
-    // Handle Form Submission
+    // 1. Function to Save Data
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -146,35 +179,53 @@
             name: document.getElementById('name').value,
             parentsName: document.getElementById('parentsName').value,
             dob: document.getElementById('dob').value,
-            roll: document.getElementById('roll').value,
+            roll: parseInt(document.getElementById('roll').value),
             className: document.getElementById('className').value,
-            session: document.getElementById('session').value
+            session: document.getElementById('session').value,
+            mobile: document.getElementById('mobile').value,
+            timestamp: new Date()
         };
 
-        // Call our Firebase save function
-        await saveStudent(studentData);
-        form.reset();
-        loadTableData(); // Refresh table
+        try {
+            await addDoc(collection(db, "students"), studentData);
+            alert("সফলভাবে সেভ করা হয়েছে!");
+            form.reset();
+            loadData(); // Reload table
+        } catch (error) {
+            console.error("Error saving:", error);
+            alert("কিছু একটা ভুল হয়েছে! ফায়ারবেস রুলস চেক করুন।");
+        }
     });
 
-    // Function to display data in the table
-    async function loadTableData() {
-        const students = await getStudents(); 
-        tableBody.innerHTML = '';
-        students.forEach(s => {
-            const row = `<tr>
-                <td>${s.roll}</td>
-                <td>${s.name}</td>
-                <td>${s.parentsName}</td>
-                <td>${s.className}</td>
-                <td>${s.session}</td>
-            </tr>`;
-            tableBody.insertAdjacentHTML('beforeend', row);
-        });
+    // 2. Function to Load Data
+    async function loadData() {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">লোড হচ্ছে...</td></tr>';
+        
+        try {
+            const q = query(collection(db, "students"), orderBy("roll", "asc"));
+            const querySnapshot = await getDocs(q);
+            tableBody.innerHTML = '';
+            
+            querySnapshot.forEach((doc) => {
+                const s = doc.data();
+                const row = `<tr>
+                    <td>${s.roll}</td>
+                    <td>${s.name}</td>
+                    <td>${s.parentsName}</td>
+                    <td>${s.className}</td>
+                    <td>${s.session}</td>
+                    <td>${s.mobile || '-'}</td>
+                </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+        } catch (error) {
+            console.error("Error loading:", error);
+            tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">তথ্য পাওয়া যায়নি।</td></tr>';
+        }
     }
 
-    // Load data on page start
-    window.onload = loadTableData;
+    // Initial Load
+    window.onload = loadData;
 </script>
 
 </body>
