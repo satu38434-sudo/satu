@@ -24,14 +24,16 @@
         label { display: block; margin-bottom: 5px; font-weight: bold; color: #444; }
         input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Kalpurush'; width: 100%; box-sizing: border-box; }
         
+        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid var(--primary); border-radius: 5px; font-family: 'Kalpurush'; font-size: 16px; }
+
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background: #f4f4f4; }
         
-        .stu-img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; }
+        .stu-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; background: #eee; }
         .btn-action { padding: 4px 8px; border: none; cursor: pointer; border-radius: 3px; margin: 2px; }
 
-        @media print { .no-print { display: none !important; } table { font-size: 10px; } .stu-img { width: 40px; height: 40px; } }
+        @media print { .no-print { display: none !important; } table { font-size: 10px; } .stu-img { width: 50px; height: 50px; } }
     </style>
 </head>
 <body>
@@ -50,7 +52,7 @@
         <header>
             <button class="logout-btn no-print" id="logoutBtn">লগআউট</button>
             <h2 style="color: var(--primary); margin: 0;">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h2>
-            <p>বিস্তারিত শিক্ষার্থী ম্যানেজমেন্ট সিস্টেম</p>
+            <p>ডিজিটাল শিক্ষার্থী ডাটাবেস সিস্টেম</p>
         </header>
 
         <section class="form-section no-print">
@@ -73,25 +75,30 @@
                     <div><label>মাতার নাম</label><input type="text" id="motherName" required></div>
                     <div><label>মাতার NID</label><input type="text" id="motherNid"></div>
                     <div><label>মোবাইল নম্বর</label><input type="tel" id="mobile" required></div>
-                    <div><label>ছবি (৩০০x৩০০ প্রিফারড)</label><input type="file" id="photo" accept="image/*"></div>
+                    <div><label>ছবি নির্বাচন করুন</label><input type="file" id="photo" accept="image/*"></div>
                 </div>
-                <button type="submit" id="saveBtn" style="margin-top: 20px; background: var(--primary); color: white; padding: 10px 25px; cursor: pointer; border: none;">ডেটা সেভ করুন</button>
+                <button type="submit" id="saveBtn" style="margin-top: 20px; background: var(--primary); color: white; padding: 10px 25px; cursor: pointer; border: none; font-weight: bold;">ডেটা সেভ করুন</button>
             </form>
         </section>
 
         <section>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h3>শিক্ষার্থী তালিকা</h3>
-                <button onclick="window.print()" class="no-print" style="background: #333; color: white; border: none; padding: 8px 15px; cursor: pointer;">প্রিন্ট রিপোর্ট</button>
+                <button onclick="window.print()" class="no-print" style="background: #333; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px;">প্রিন্ট রিপোর্ট</button>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ছবি</th><th>রোল/নাম</th><th>জন্ম তথ্য</th><th>পিতা-মাতার নাম ও NID</th><th>যোগাযোগ</th><th class="no-print">অ্যাকশন</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+            
+            <input type="text" id="searchInput" class="search-box no-print" placeholder="নাম, রোল বা NID দিয়ে খুঁজুন...">
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ছবি</th><th>রোল/নাম</th><th>জন্ম তথ্য</th><th>পিতা-মাতার তথ্য ও NID</th><th>যোগাযোগ</th><th class="no-print">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
         </section>
     </div>
 </div>
@@ -100,13 +107,12 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDoc, doc, query, orderBy, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
         authDomain: "my-school-data-5f899.firebaseapp.com",
         projectId: "my-school-data-5f899",
-        storageBucket: "my-school-data-5f899.appspot.com", // Ensure this matches your project
+        storageBucket: "my-school-data-5f899.firebasestorage.app",
         messagingSenderId: "566276841077",
         appId: "1:566276841077:web:b42f3d65edb922cd03223c"
     };
@@ -114,9 +120,9 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
     let isAdmin = false;
+    let allStudents = [];
 
     // --- AUTH ---
     document.getElementById('loginBtn').addEventListener('click', () => {
@@ -133,81 +139,22 @@
             document.getElementById('dashboard').style.display = 'block';
             syncData();
         } else {
+            isAdmin = false;
             document.getElementById('login-container').style.display = 'flex';
             document.getElementById('dashboard').style.display = 'none';
         }
     });
 
-    // --- FORM SUBMIT ---
-    document.getElementById('studentForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('saveBtn');
-        btn.disabled = true; btn.innerText = "প্রসেসিং...";
-
-        let photoUrl = "https://via.placeholder.com/300?text=No+Photo";
-        const photoFile = document.getElementById('photo').files[0];
-
-        try {
-            if (photoFile) {
-                const storageRef = ref(storage, 'students/' + Date.now() + "_" + photoFile.name);
-                const uploadTask = await uploadBytes(storageRef, photoFile);
-                photoUrl = await getDownloadURL(uploadTask.ref);
-            }
-
-            const data = {
-                name: document.getElementById('name').value,
-                roll: parseInt(document.getElementById('roll').value),
-                birthReg: document.getElementById('birthReg').value,
-                dob: document.getElementById('dob').value,
-                className: document.getElementById('className').value,
-                session: document.getElementById('session').value,
-                fatherName: document.getElementById('fatherName').value,
-                fatherNid: document.getElementById('fatherNid').value,
-                motherName: document.getElementById('motherName').value,
-                motherNid: document.getElementById('motherNid').value,
-                mobile: document.getElementById('mobile').value,
-                photo: photoUrl,
-                timestamp: new Date()
-            };
-
-            await addDoc(collection(db, "students"), data);
-            e.target.reset();
-            alert("সফলভাবে সেভ হয়েছে!");
-        } catch (err) {
-            alert("Error: " + err.message);
-        } finally {
-            btn.disabled = false; btn.innerText = "ডেটা সেভ করুন";
-        }
-    });
-
-    // --- VIEW DATA ---
-    function syncData() {
-        const q = query(collection(db, "students"), orderBy("roll", "asc"));
-        onSnapshot(q, (snap) => {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            snap.forEach(docSnap => {
-                const s = docSnap.data();
-                const id = docSnap.id;
-                tbody.insertAdjacentHTML('beforeend', `
-                    <tr>
-                        <td><img src="${s.photo}" class="stu-img"></td>
-                        <td><b>${s.name}</b><br>রোল: ${s.roll}<br>শ্রেণী: ${s.className}</td>
-                        <td>জন্মনিবন্ধন: ${s.birthReg}<br>তারিখ: ${s.dob}</td>
-                        <td>পিতা: ${s.fatherName} (${s.fatherNid})<br>মাতা: ${s.motherName} (${s.motherNid})</td>
-                        <td>${s.mobile}<br>সেশন: ${s.session}</td>
-                        <td class="no-print">
-                            ${isAdmin ? `<button class="btn-action" style="background:var(--danger);color:white" onclick="deleteStu('${id}')">ডিলিট</button>` : '---'}
-                        </td>
-                    </tr>
-                `);
-            });
-        });
-    }
-
-    window.deleteStu = async (id) => {
-        if(confirm("ডিলিট করতে চান?")) await deleteDoc(doc(db, "students", id));
-    };
-</script>
-</body>
-</html>
+    // --- PHOTO PROCESSING (BASE64) ---
+    const processImage = (file) => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 300; canvas.height = 300;
+                    ctx.drawImage(img, 0, 0, 300
