@@ -11,47 +11,38 @@
         :root { --primary: #006a4e; --sidebar-bg: #1e293b; --bg: #f1f5f9; }
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar & Menu */
-        #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; position: relative; z-index: 1000; transition: 0.3s; }
-        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .sidebar-header { padding: 20px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.3s; }
+        /* Navigation & Sidebar */
+        #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; z-index: 1000; }
+        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; }
+        .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: var(--primary); }
 
-        /* Content Area */
+        /* Main Content */
         #main-content { flex: 1; overflow-y: auto; display: none; padding: 20px; padding-top: 75px; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-        /* Stats Cards */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 15px; border-radius: 12px; text-align: center; border-bottom: 5px solid var(--primary); }
-        .stat-card h2 { margin: 10px 0 0; font-size: 28px; }
+        /* Table - Professional View */
+        .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; min-width: 1250px; background: white; }
+        th { background: #f8fafc; color: var(--primary); padding: 15px; text-align: left; font-weight: bold; position: sticky; top: 0; }
+        td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; vertical-align: top; line-height: 1.5; }
+        .stu-img { width: 60px; height: 60px; border-radius: 6px; object-fit: cover; border: 1px solid #eee; }
+        .info-label { color: #64748b; font-size: 11px; font-weight: bold; display: block; }
 
-        /* Table Styling */
-        .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; min-width: 1300px; }
-        th, td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 13px; vertical-align: top; }
-        th { background: #f8fafc; color: var(--primary); font-weight: bold; position: sticky; top: 0; }
-        .stu-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; }
-        .info-label { color: #64748b; font-size: 11px; font-weight: bold; display: block; margin-top: 2px; }
+        /* Inputs */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-family: 'Kalpurush'; box-sizing: border-box; }
+        
+        .btn-edit { background: #f59e0b; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 5px; width: 80px; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; width: 80px; }
 
-        /* Action Buttons */
-        .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 5px; width: 75px; font-weight: bold; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; width: 75px; font-weight: bold; }
-
-        /* Form Grid */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
-        input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-family: 'Kalpurush'; }
-
-        /* Login Container */
         #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; }
-        .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
+        .login-box { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; }
 
         @media (max-width: 768px) {
             #sidebar { position: fixed; height: 100vh; left: -260px; display: flex; }
             #sidebar.open { left: 0; }
             #menu-toggle { display: block; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
         }
         .hidden { display: none !important; }
     </style>
@@ -62,41 +53,38 @@
 
 <div id="login-container">
     <div class="login-box">
-        <h2 style="color:var(--primary)">অ্যাডমিন লগইন</h2>
+        <h2 style="color:var(--primary)">অ্যাডমিন পোর্টাল</h2>
         <input type="email" id="loginEmail" placeholder="ইমেইল" style="margin-bottom:15px">
         <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" style="margin-bottom:20px">
-        <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">প্রবেশ করুন</button>
+        <button id="loginBtn" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">লগইন করুন</button>
     </div>
 </div>
 
 <aside id="sidebar">
-    <div class="sidebar-header"><h3>স্কুল ম্যানেজমেন্ট</h3></div>
+    <div class="sidebar-header"><h4>স্কুল ম্যানেজমেন্ট</h4></div>
     <div class="nav-item active" data-sec="dashboard-sec">📊 ড্যাশবোর্ড</div>
-    <div class="nav-item" data-sec="entry-sec">📝 নতুন ভর্তি</div>
+    <div class="nav-item" data-sec="entry-sec">📝 নতুন এন্ট্রি</div>
     <div class="nav-item" data-sec="list-sec">📋 শিক্ষার্থী তালিকা</div>
     <div class="nav-item" id="logoutBtn" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</div>
 </aside>
 
 <main id="main-content">
     <section id="dashboard-sec">
-        <div class="stats-grid">
-            <div class="stat-card">মোট শিক্ষার্থী<h2 id="totalCount">0</h2></div>
-            <div class="stat-card">ছাত্র<h2 id="boyCount" style="color:#3b82f6">0</h2></div>
-            <div class="stat-card">ছাত্রী<h2 id="girlCount" style="color:#ec4899">0</h2></div>
+        <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
+            <div>মোট শিক্ষার্থী<h2 id="totalCount">0</h2></div>
+            <div>ছাত্র<h2 id="boyCount" style="color:#3b82f6">0</h2></div>
+            <div>ছাত্রী<h2 id="girlCount" style="color:#ec4899">0</h2></div>
         </div>
-        <div class="card" style="max-width: 500px; margin: auto; text-align: center;">
-            <h3>লিঙ্গ ভিত্তিক অনুপাত</h3>
-            <canvas id="genderChart"></canvas>
-        </div>
+        <div class="card" style="max-width:400px; margin:auto;"><canvas id="genderChart"></canvas></div>
     </section>
 
     <section id="entry-sec" class="hidden">
         <div class="card">
-            <h2 id="formTitle">নতুন শিক্ষার্থী ভর্তি ফরম</h2>
+            <h2 id="formTitle">শিক্ষার্থী তথ্য ফরম</h2>
             <form id="studentForm">
                 <div class="form-grid">
-                    <div><label>শিক্ষার্থীর নাম</label><input type="text" id="name" required></div>
-                    <div><label>রোল নম্বর</label><input type="number" id="roll" required></div>
+                    <div><label>নাম</label><input type="text" id="name" required></div>
+                    <div><label>রোল</label><input type="number" id="roll" required></div>
                     <div><label>শ্রেণি</label><select id="className">
                         <option value="প্রাক">প্রাক-প্রাথমিক</option><option value="১ম">১ম</option>
                         <option value="২য়">২য়</option><option value="৩য়">৩য়</option>
@@ -104,7 +92,7 @@
                     </select></div>
                     <div><label>লিঙ্গ</label><select id="gender"><option value="ছাত্র">ছাত্র</option><option value="ছাত্রী">ছাত্রী</option></select></div>
                     <div><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
-                    <div><label>জন্ম নিবন্ধন নং</label><input type="text" id="birthReg"></div>
+                    <div><label>জন্ম নিবন্ধন</label><input type="text" id="birthReg"></div>
                     <div><label>পিতার নাম</label><input type="text" id="fName"></div>
                     <div><label>পিতার NID</label><input type="text" id="fNid"></div>
                     <div><label>পিতার জন্ম তারিখ</label><input type="date" id="fDob"></div>
@@ -115,24 +103,24 @@
                     <div><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
                     <div><label>ছবি</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
-                <button type="submit" id="saveBtn" style="margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; width:100%">ডাটা সেভ করুন</button>
+                <button type="submit" id="saveBtn" style="margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; width:100%">সংরক্ষণ করুন</button>
             </form>
         </div>
     </section>
 
     <section id="list-sec" class="hidden">
         <div class="card">
-            <h2 style="color: var(--primary);">শিক্ষার্থী তালিকা</h2>
+            <h2 style="color:var(--primary)">শিক্ষার্থী তালিকা</h2>
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
                             <th>ছবি</th>
                             <th>নাম, শ্রেণি ও রোল</th>
-                            <th>নিবন্ধন ও জন্মতারিখ</th>
-                            <th>বাবার তথ্য (NID/DOB/Mob)</th>
-                            <th>মায়ের তথ্য (NID/DOB/Mob)</th>
-                            <th style="text-align:center">অ্যাকশন</th>
+                            <th>জন্ম নিবন্ধন ও তারিখ</th>
+                            <th>পিতার তথ্য (NID/DOB/Mob)</th>
+                            <th>মাতার তথ্য (NID/DOB/Mob)</th>
+                            <th>অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody id="listBody"></tbody>
@@ -162,10 +150,11 @@
 
     let allStudents = [], editId = null, genderChart = null;
 
-    // Auth Logic
+    // Authentication
     document.getElementById('loginBtn').onclick = () => {
-        signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value)
-            .catch(() => Swal.fire('ভুল!', 'ইমেইল বা পাসওয়ার্ড সঠিক নয়', 'error'));
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        signInWithEmailAndPassword(auth, email, pass).catch(err => Swal.fire('Error', 'Invalid Login!', 'error'));
     };
 
     document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
@@ -179,7 +168,7 @@
         }
     });
 
-    // Sidebar/Menu Logic
+    // Navigation Logic
     const menuBtn = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
     menuBtn.onclick = () => sidebar.classList.toggle('open');
@@ -214,12 +203,12 @@
             stats[s.gender]++;
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><img src="${s.photo || 'https://via.placeholder.com/65'}" class="stu-img"></td>
-                <td><b>${s.name}</b><br><span class="info-label">শ্রেণি: ${s.className} | রোল: ${s.roll}</span><span class="info-label">লিঙ্গ: ${s.gender}</span></td>
-                <td><span class="info-label">নিবন্ধন:</span> ${s.birthReg || '-'}<br><span class="info-label">জন্ম:</span> ${s.dob || '-'}</td>
-                <td><b>${s.fName || '-'}</b><br><span class="info-label">NID: ${s.fNid || '-'}</span><span class="info-label">জন্ম: ${s.fDob || '-'}</span><span class="info-label">মোবাইল: ${s.fMobile || '-'}</span></td>
-                <td><b>${s.mName || '-'}</b><br><span class="info-label">NID: ${s.mNid || '-'}</span><span class="info-label">জন্ম: ${s.mDob || '-'}</span><span class="info-label">মোবাইল: ${s.mMobile || '-'}</span></td>
-                <td style="text-align:center"><button class="btn-edit">এডিট</button><br><button class="btn-del">ডিলিট</button></td>`;
+                <td><img src="${s.photo || 'https://via.placeholder.com/60'}" class="stu-img"></td>
+                <td><b>${s.name}</b><br><span class="info-label">শ্রেণি: ${s.className} | রোল: ${s.roll}</span></td>
+                <td><span class="info-label">নিবন্ধন:</span> ${s.birthReg || '-'}<br><span class="info-label">জন্ম:</span> ${s.dob}</td>
+                <td><b>${s.fName || '-'}</b><br><span class="info-label">NID: ${s.fNid || '-'}</span><span class="info-label">মোবাইল: ${s.fMobile || '-'}</span></td>
+                <td><b>${s.mName || '-'}</b><br><span class="info-label">NID: ${s.mNid || '-'}</span><span class="info-label">মোবাইল: ${s.mMobile || '-'}</span></td>
+                <td><button class="btn-edit">এডিট</button><br><button class="btn-del">ডিলিট</button></td>`;
             
             tr.querySelector('.btn-edit').onclick = () => startEdit(s);
             tr.querySelector('.btn-del').onclick = () => deleteStu(s.id);
@@ -234,7 +223,8 @@
 
     function updateChart(stats) {
         if(genderChart) genderChart.destroy();
-        genderChart = new Chart(document.getElementById('genderChart'), {
+        const ctx = document.getElementById('genderChart').getContext('2d');
+        genderChart = new Chart(ctx, {
             type: 'doughnut',
             data: { labels: ['ছাত্র', 'ছাত্রী'], datasets: [{ data: [stats.ছাত্র, stats.ছাত্রী], backgroundColor: ['#3b82f6', '#ec4899'] }] }
         });
@@ -246,7 +236,7 @@
             const i = new Image(); i.src = e.target.result;
             i.onload = () => {
                 const c = document.createElement('canvas'); c.width=100; c.height=100;
-                c.getContext('2d').drawImage(i,0,0,100,100); res(c.toDataURL('image/jpeg',0.5));
+                c.getContext('2d').drawImage(i,0,0,100,100); res(c.toDataURL('image/jpeg',0.6));
             }
         }
     });
@@ -254,15 +244,26 @@
     document.getElementById('studentForm').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('saveBtn'); btn.disabled = true;
+
+        const rollVal = parseInt(document.getElementById('roll').value);
+        const classVal = document.getElementById('className').value;
+
+        // Validation: Duplicate Roll Check
+        const isDuplicate = allStudents.some(s => s.id !== editId && s.roll === rollVal && s.className === classVal);
+        if(isDuplicate) {
+            Swal.fire('সতর্কতা', 'এই শ্রেণিতে এই রোল নম্বরটি ইতিমধ্যে ব্যবহার করা হয়েছে!', 'warning');
+            btn.disabled = false; return;
+        }
+
         try {
-            let imgData = editId ? allStudents.find(x => x.id === editId).photo : "";
+            let imgData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
             const file = document.getElementById('photoInput').files[0];
             if (file) imgData = await processImg(file);
 
             const payload = {
                 name: document.getElementById('name').value,
-                roll: parseInt(document.getElementById('roll').value),
-                className: document.getElementById('className').value,
+                roll: rollVal,
+                className: classVal,
                 gender: document.getElementById('gender').value,
                 dob: document.getElementById('dob').value,
                 birthReg: document.getElementById('birthReg').value || "",
@@ -274,7 +275,7 @@
                 mNid: document.getElementById('mNid').value || "",
                 mDob: document.getElementById('mDob').value || "",
                 mMobile: document.getElementById('mMobile').value || "",
-                photo: imgData || ""
+                photo: imgData
             };
 
             if(editId) { await updateDoc(doc(db, "students", editId), payload); editId = null; }
@@ -283,7 +284,7 @@
             Swal.fire('সফল!', 'তথ্য সংরক্ষিত হয়েছে', 'success');
             e.target.reset();
             document.querySelector('[data-sec="list-sec"]').click();
-        } catch (err) { Swal.fire('ত্রুটি!', err.message, 'error'); }
+        } catch (err) { Swal.fire('Error', err.message, 'error'); }
         btn.disabled = false;
     };
 
@@ -308,7 +309,7 @@
     }
 
     async function deleteStu(id) {
-        const res = await Swal.fire({ title: 'নিশ্চিত?', text: "ডিলিট করলে তথ্য আর ফিরে পাওয়া যাবে না!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
+        const res = await Swal.fire({ title: 'নিশ্চিত তো?', text: "ডিলিট করলে তথ্য আর ফিরে পাওয়া যাবে না!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
         if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
     }
 </script>
