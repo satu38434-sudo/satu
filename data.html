@@ -11,20 +11,21 @@
         :root { --primary: #006a4e; --sidebar-bg: #1e293b; --bg: #f1f5f9; }
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar */
-        #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
-        .sidebar-header { padding: 25px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: all 0.3s; }
+        /* Sidebar & Menu */
+        #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; position: relative; z-index: 1000; transition: all 0.3s ease; }
+        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .sidebar-header { padding: 20px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .nav-item:hover, .nav-item.active { background: var(--primary); }
 
         /* Main Content */
-        #main-content { flex: 1; overflow-y: auto; display: none; padding: 30px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        #main-content { flex: 1; overflow-y: auto; display: none; padding: 25px; padding-top: 65px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 25px; }
 
         /* Stats */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 15px; text-align: center; border-bottom: 5px solid var(--primary); }
-        .stat-card h2 { margin: 10px 0 0; font-size: 32px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; text-align: center; border-bottom: 5px solid var(--primary); }
+        .stat-card h2 { margin: 10px 0 0; font-size: 28px; }
 
         /* Form */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
@@ -32,22 +33,31 @@
         input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-family: 'Kalpurush'; box-sizing: border-box; }
 
         /* Table */
-        .table-wrap { overflow-x: auto; border-radius: 12px; }
+        .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; }
         table { width: 100%; border-collapse: collapse; min-width: 1400px; }
-        th, td { padding: 15px; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 14px; }
+        th, td { padding: 15px; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 14px; vertical-align: middle; }
         th { background: #f8fafc; color: var(--primary); }
         .stu-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         
-        .btn-edit { background: #f59e0b; color: white; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; }
+        .btn-edit { background: #f59e0b; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
 
         /* Login */
-        #login-container { width: 100%; display: flex; justify-content: center; align-items: center; background: var(--primary); }
-        .login-box { background: white; padding: 40px; border-radius: 20px; width: 340px; text-align: center; }
+        #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; }
+
+        @media (max-width: 768px) {
+            #sidebar { position: fixed; height: 100vh; left: -260px; display: flex; }
+            #sidebar.open { left: 0; }
+            #menu-toggle { display: block; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
+
+<button id="menu-toggle">☰ মেনু</button>
 
 <div id="login-container">
     <div class="login-box">
@@ -60,9 +70,9 @@
 
 <aside id="sidebar">
     <div class="sidebar-header"><h3>স্কুল অ্যাডমিন</h3></div>
-    <div class="nav-item active" id="nav-dash">📊 ড্যাশবোর্ড</div>
-    <div class="nav-item" id="nav-entry">📝 নতুন এন্ট্রি</div>
-    <div class="nav-item" id="nav-list">📋 শিক্ষার্থী তালিকা</div>
+    <div class="nav-item active" data-id="dashboard-sec">📊 ড্যাশবোর্ড হোম</div>
+    <div class="nav-item" data-id="entry-sec">📝 নতুন এন্ট্রি ফরম</div>
+    <div class="nav-item" data-id="list-sec">📋 শিক্ষার্থী ডাটাবেস</div>
     <div class="nav-item" id="logoutBtn" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</div>
 </aside>
 
@@ -74,8 +84,8 @@
             <div class="stat-card">ছাত্রী<h2 id="girlCount" style="color:#ec4899">0</h2></div>
         </div>
         <div style="display:flex; gap:20px; flex-wrap:wrap">
-            <div class="card" style="flex:1; min-width:300px"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
-            <div class="card" style="flex:2; min-width:400px"><h3>বয়স ভিত্তিক</h3><canvas id="ageChart"></canvas></div>
+            <div class="card" style="flex:1; min-width:300px; text-align:center"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
+            <div class="card" style="flex:2; min-width:320px"><h3>বয়স ভিত্তিক সংখ্যা</h3><canvas id="ageChart"></canvas></div>
         </div>
     </section>
 
@@ -102,20 +112,20 @@
                     <div><label>মোবাইল</label><input type="tel" id="mobile" required></div>
                     <div><label>ছবি</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
-                <button type="submit" id="saveBtn" style="margin-top:25px; padding:15px 50px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">সেভ করুন</button>
+                <button type="submit" id="saveBtn" style="margin-top:25px; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; width:100%">ডাটা সেভ করুন</button>
             </form>
         </div>
     </section>
 
     <section id="list-sec" class="hidden">
         <div class="card">
-            <h2>শিক্ষার্থী ডেটাবেস</h2>
+            <h2>শিক্ষার্থী তালিকা</h2>
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
                             <th>ছবি</th><th>রোল</th><th>নাম ও BR</th><th>শ্রেণি</th>
-                            <th>পিতা (NID/DOB)</th><th>মাতা (NID/DOB)</th><th>যোগাযোগ</th><th>অ্যাকশন</th>
+                            <th>পিতা (NID/DOB)</th><th>মাতা (NID/DOB)</th><th>যোগাযোগ/DOB</th><th>অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody id="listBody"></tbody>
@@ -145,35 +155,40 @@
 
     let allStudents = [], charts = {}, editId = null;
 
-    // Login
-    document.getElementById('loginBtn').addEventListener('click', () => {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPassword').value;
-        signInWithEmailAndPassword(auth, email, pass).catch(() => Swal.fire('ভুল!', 'ইমেইল বা পাসওয়ার্ড সঠিক নয়', 'error'));
-    });
+    // Menu Toggle Logic
+    const menuBtn = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+    menuBtn.onclick = () => sidebar.classList.toggle('open');
 
+    // Authentication
+    document.getElementById('loginBtn').onclick = () => {
+        signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value).catch(() => Swal.fire('ভুল!', 'ইমেইল বা পাসওয়ার্ড সঠিক নয়', 'error'));
+    };
     document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
 
     onAuthStateChanged(auth, user => {
         if(user) {
             document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('sidebar').style.display = 'flex';
+            sidebar.style.display = 'flex';
             document.getElementById('main-content').style.display = 'block';
             syncData();
         }
     });
 
-    // Navigation
-    const showSec = (id) => {
-        document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    };
-    document.getElementById('nav-dash').onclick = (e) => { showSec('dashboard-sec'); e.target.classList.add('active'); };
-    document.getElementById('nav-entry').onclick = (e) => { showSec('entry-sec'); e.target.classList.add('active'); };
-    document.getElementById('nav-list').onclick = (e) => { showSec('list-sec'); e.target.classList.add('active'); };
+    // Unified Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.onclick = function() {
+            const secId = this.getAttribute('data-id');
+            if(!secId) return;
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(secId).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            this.classList.add('active');
+            if(window.innerWidth <= 768) sidebar.classList.remove('open');
+        };
+    });
 
-    // Image Resize
+    // Image Processor
     const processImg = (file) => new Promise(res => {
         const r = new FileReader(); r.readAsDataURL(file);
         r.onload = (e) => {
@@ -185,10 +200,10 @@
         }
     });
 
-    // Realtime Sync
     function syncData() {
-        onSnapshot(query(collection(db, "students"), orderBy("roll", "asc")), snap => {
+        onSnapshot(query(collection(db, "students")), snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
+            // Rank sorting for Classes
             const rank = {"প্রাক":1, "১ম":2, "২য়":3, "৩য়":4, "৪র্থ":5, "৫ম":6};
             allStudents.sort((a,b) => (rank[a.className]-rank[b.className]) || (a.roll-b.roll));
             updateUI();
@@ -215,12 +230,9 @@
                 <td>${s.mName || '-'}<br><small>NID: ${s.mNid || '-'}</small><br><small>DOB: ${s.mDob || '-'}</small></td>
                 <td>${s.mobile}<br><small>DOB: ${s.dob}</small></td>
                 <td>
-                    <button class="btn-edit" data-id="${s.id}">এডিট</button>
-                    <button class="btn-del" data-id="${s.id}">ডিলিট</button>
+                    <button class="btn-edit" onclick="startEdit('${s.id}')">এডিট</button>
+                    <button class="btn-del" onclick="deleteStu('${s.id}')">ডিলিট</button>
                 </td>`;
-            
-            tr.querySelector('.btn-edit').onclick = () => startEdit(s);
-            tr.querySelector('.btn-del').onclick = () => deleteStu(s.id);
             listBody.appendChild(tr);
         });
 
@@ -236,18 +248,13 @@
         charts.a = new Chart(document.getElementById('ageChart'), { type:'bar', data:{labels:Object.keys(aD), datasets:[{label:'সংখ্যা', data:Object.values(aD), backgroundColor:'#006a4e'}]}});
     }
 
-    // FORM SAVE - Rechecked logic
+    // CRUD - Save with all fields rechecked
     document.getElementById('studentForm').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('saveBtn'); btn.disabled = true;
 
         try {
-            let imgData = "";
-            if (editId) {
-                const existing = allStudents.find(x => x.id === editId);
-                imgData = existing ? existing.photo : "";
-            }
-            
+            let imgData = editId ? allStudents.find(x => x.id === editId).photo : "";
             const file = document.getElementById('photoInput').files[0];
             if (file) imgData = await processImg(file);
 
@@ -268,25 +275,19 @@
                 photo: imgData || ""
             };
 
-            if(editId) {
-                await updateDoc(doc(db, "students", editId), payload);
-                editId = null;
-            } else {
-                await addDoc(collection(db, "students"), payload);
-            }
+            if(editId) { await updateDoc(doc(db, "students", editId), payload); editId = null; }
+            else { await addDoc(collection(db, "students"), payload); }
 
-            Swal.fire({ title: 'সফল হয়েছে!', text: 'তথ্য সংরক্ষিত হয়েছে', icon: 'success', confirmButtonColor: '#006a4e' });
+            Swal.fire('সফল!', 'তথ্য সংরক্ষিত হয়েছে', 'success');
             e.target.reset();
-            showSec('list-sec');
-        } catch (err) {
-            console.error(err);
-            Swal.fire('ত্রুটি!', 'ডাটা সেভ করা সম্ভব হয়নি: ' + err.message, 'error');
-        }
+            document.querySelector('[data-id="list-sec"]').click();
+        } catch (err) { Swal.fire('ত্রুটি!', err.message, 'error'); }
         btn.disabled = false;
     };
 
-    function startEdit(s) {
-        editId = s.id;
+    window.startEdit = (id) => {
+        const s = allStudents.find(x => x.id === id);
+        editId = id;
         document.getElementById('formTitle').innerText = "তথ্য সংশোধন";
         document.getElementById('name').value = s.name;
         document.getElementById('roll').value = s.roll;
@@ -301,13 +302,13 @@
         document.getElementById('mNid').value = s.mNid || "";
         document.getElementById('mDob').value = s.mDob || "";
         document.getElementById('mobile').value = s.mobile;
-        showSec('entry-sec');
-    }
+        document.querySelector('[data-id="entry-sec"]').click();
+    };
 
-    async function deleteStu(id) {
+    window.deleteStu = async (id) => {
         const res = await Swal.fire({ title: 'নিশ্চিত?', text: "ডিলিট করবেন?", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
         if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
-    }
+    };
 </script>
 </body>
 </html>
