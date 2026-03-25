@@ -56,7 +56,7 @@
 
 <div id="login-container">
     <div class="login-box">
-        <h2 style="color:var(--primary)">অ্যাডমিন লগইন</h2>
+        <h2 style="color:var(--primary)">লগইন</h2>
         <input type="email" id="loginEmail" placeholder="ইমেইল" style="margin-bottom:12px">
         <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" style="margin-bottom:18px">
         <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">প্রবেশ করুন</button>
@@ -66,7 +66,7 @@
 <aside id="sidebar">
     <div class="sidebar-header"><h3>স্কুল অ্যাডমিন</h3></div>
     <div class="nav-item active" data-sec="dashboard-sec">📊 ড্যাশবোর্ড</div>
-    <div class="nav-item" data-sec="entry-sec">📝 নতুন ভর্তি</div>
+    <div class="nav-item" data-sec="entry-sec">📝 নতুন শিক্ষার্থী যোগ করুন</div>
     <div class="nav-item" data-sec="list-sec">📋 শিক্ষার্থী তালিকা</div>
     <div class="nav-item" id="logoutBtn" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</div>
 </aside>
@@ -90,14 +90,16 @@
             <form id="studentForm">
                 <div class="form-grid">
                     <div><label>নাম</label><input type="text" id="name" required></div>
-                    <div><label>রোল</label><input type="number" id="roll" required></div>
-                    <div><label>লিঙ্গ</label><select id="gender"><option value="ছাত্র">ছাত্র</option><option value="ছাত্রী">ছাত্রী</option></select></div>
                     <div><label>শ্রেণি</label><select id="className">
                         <option value="প্রাক">প্রাক-প্রাথমিক</option><option value="১ম">১ম</option><option value="২য়">২য়</option>
                         <option value="৩য়">৩য়</option><option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
                     </select></div>
-                    <div><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
+                    <div><label>রোল</label><input type="number" id="roll" required></div>
+                    <div><label>লিঙ্গ</label><select id="gender"><option value="ছাত্র">ছাত্র</option><option value="ছাত্রী">ছাত্রী</option></select></div>
+                    
+                    
                     <div><label>জন্ম নিবন্ধন</label><input type="text" id="birthReg"></div>
+                    <div><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
                     <div><label>পিতার নাম</label><input type="text" id="fName"></div>
                     <div><label>পিতার NID</label><input type="text" id="fNid"></div>
                     <div><label>পিতার জন্ম তারিখ</label><input type="date" id="fDob"></div>
