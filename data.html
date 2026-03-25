@@ -13,23 +13,19 @@
 
         /* Sidebar & Menu */
         #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; position: relative; z-index: 1000; transition: all 0.3s ease; }
-        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; }
+        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .sidebar-header { padding: 20px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .nav-item:hover, .nav-item.active { background: var(--primary); }
 
-        /* Content */
-        #main-content { flex: 1; overflow-y: auto; display: none; padding: 20px; padding-top: 70px; }
+        /* Main Content */
+        #main-content { flex: 1; overflow-y: auto; display: none; padding: 20px; padding-top: 75px; }
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 25px; }
 
-        /* Stats */
+        /* Stats & Forms */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: white; padding: 15px; border-radius: 12px; text-align: center; border-bottom: 4px solid var(--primary); }
-        .stat-card h2 { margin: 5px 0; font-size: 26px; }
-
-        /* Form */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; color: #64748b; }
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Kalpurush'; box-sizing: border-box; }
 
         /* Table */
@@ -37,12 +33,11 @@
         table { width: 100%; border-collapse: collapse; min-width: 1300px; }
         th, td { padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: left; font-size: 14px; }
         th { background: #f8fafc; color: var(--primary); }
-        .stu-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
-        .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; margin-right: 5px; }
+        .stu-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
         .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
 
-        /* Login */
+        /* Login Screen */
         #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; }
         .login-box { background: white; padding: 35px; border-radius: 20px; width: 90%; max-width: 340px; text-align: center; }
 
@@ -64,13 +59,13 @@
         <h2 style="color:var(--primary)">অ্যাডমিন লগইন</h2>
         <input type="email" id="loginEmail" placeholder="ইমেইল" style="margin-bottom:12px">
         <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" style="margin-bottom:18px">
-        <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">লগইন</button>
+        <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">প্রবেশ করুন</button>
     </div>
 </div>
 
 <aside id="sidebar">
-    <div class="sidebar-header"><h3>স্কুল ড্যাশবোর্ড</h3></div>
-    <div class="nav-item active" data-sec="dashboard-sec">📊 হোম</div>
+    <div class="sidebar-header"><h3>স্কুল অ্যাডমিন</h3></div>
+    <div class="nav-item active" data-sec="dashboard-sec">📊 ড্যাশবোর্ড</div>
     <div class="nav-item" data-sec="entry-sec">📝 নতুন ভর্তি</div>
     <div class="nav-item" data-sec="list-sec">📋 শিক্ষার্থী তালিকা</div>
     <div class="nav-item" id="logoutBtn" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</div>
@@ -85,7 +80,7 @@
         </div>
         <div style="display:flex; gap:20px; flex-wrap:wrap">
             <div class="card" style="flex:1; min-width:280px; text-align:center"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
-            <div class="card" style="flex:2; min-width:300px"><h3>বয়স ভিত্তিক সংখ্যা</h3><canvas id="ageChart"></canvas></div>
+            <div class="card" style="flex:2; min-width:300px"><h3>বয়স ভিত্তিক পরিসংখ্যান</h3><canvas id="ageChart"></canvas></div>
         </div>
     </section>
 
@@ -124,8 +119,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ছবি</th><th>রোল</th><th>নাম ও BR</th><th>শ্রেণি</th>
-                            <th>পিতা (NID/DOB)</th><th>মাতা (NID/DOB)</th><th>যোগাযোগ/DOB</th><th>অ্যাকশন</th>
+                            <th>ছবি</th><th>রোল</th><th>নাম/BR</th><th>শ্রেণি</th>
+                            <th>পিতা (NID/DOB)</th><th>মাতা (NID/DOB)</th><th>মোবাইল/DOB</th><th>অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody id="listBody"></tbody>
@@ -138,7 +133,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
@@ -155,14 +150,16 @@
 
     let allStudents = [], charts = {}, editId = null;
 
-    // Mobile Menu
+    // UI Logic
     const menuBtn = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
     menuBtn.onclick = () => sidebar.classList.toggle('open');
 
-    // Auth
+    // Login
     document.getElementById('loginBtn').onclick = () => {
-        signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value).catch(() => Swal.fire('ভুল!', 'সঠিক তথ্য দিন', 'error'));
+        const e = document.getElementById('loginEmail').value;
+        const p = document.getElementById('loginPassword').value;
+        signInWithEmailAndPassword(auth, e, p).catch(() => Swal.fire('ভুল!', 'সঠিক তথ্য দিন', 'error'));
     };
     document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
 
@@ -200,7 +197,7 @@
     });
 
     function syncData() {
-        onSnapshot(query(collection(db, "students")), snap => {
+        onSnapshot(collection(db, "students"), snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
             const rank = {"প্রাক":1, "১ম":2, "২য়":3, "৩য়":4, "৪র্থ":5, "৫ম":6};
             allStudents.sort((a,b) => (rank[a.className]-rank[b.className]) || (a.roll-b.roll));
@@ -216,7 +213,7 @@
         allStudents.forEach(s => {
             stats[s.gender]++;
             const age = Math.floor((Date.now()-new Date(s.dob))/31557600000);
-            const aK = age>=10?"10+":age+"+"; if(ages[aK]!==undefined) ages[aK]++;
+            const aK = (age >= 10 ? "10+" : age + "+"); if(ages[aK]!==undefined) ages[aK]++;
 
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -228,8 +225,8 @@
                 <td>${s.mName || '-'}<br><small>NID: ${s.mNid || '-'}</small><br><small>DOB: ${s.mDob || '-'}</small></td>
                 <td>${s.mobile}<br><small>DOB: ${s.dob}</small></td>
                 <td>
-                    <button class="btn-edit" data-id="${s.id}">এডিট</button>
-                    <button class="btn-del" data-id="${s.id}">ডিলিট</button>
+                    <button class="btn-edit">এডিট</button>
+                    <button class="btn-del">ডিলিট</button>
                 </td>`;
             
             tr.querySelector('.btn-edit').onclick = () => startEdit(s);
