@@ -68,7 +68,7 @@
         <span id="userBadge" class="role-tag">অপেক্ষা করুন...</span>
     </div>
     <button class="nav-item active" data-sec="dashboard-sec">📊 পরিসংখ্যান</button>
-    <button class="nav-item" data-sec="entry-sec">📝 ভর্তি ও সংশোধন ফরম</button>
+    <button class="nav-item" data-sec="entry-sec">📝 শিক্ষার্থী যোগ করুন</button>
     <button class="nav-item" data-sec="list-sec">📋 শিক্ষার্থী ডাটাবেস</button>
     <button id="logoutBtn" class="nav-item" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</button>
 </aside>
@@ -88,7 +88,7 @@
 
     <section id="entry-sec" class="hidden">
         <div class="card">
-            <h2 id="formTitle">শিক্ষার্থী ভর্তি ফরম</h2>
+            <h2 id="formTitle">শিক্ষার্থীর তথ‌্য ফরম</h2>
             <form id="studentForm">
                 <div class="form-grid">
                     <div class="form-group"><label>শিক্ষার্থীর নাম</label><input type="text" id="name" required></div>
@@ -337,7 +337,7 @@
             }
             
             editId = null;
-            document.getElementById('formTitle').innerText = "শিক্ষার্থী ভর্তি ফরম";
+            document.getElementById('formTitle').innerText = "শিক্ষার্থী তথ‌্য ফরম";
             document.getElementById('studentForm').reset();
             Swal.fire('সফল!', 'ডাটা সংরক্ষিত হয়েছে', 'success');
             document.querySelector('[data-sec="list-sec"]').click();
