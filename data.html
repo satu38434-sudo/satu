@@ -24,25 +24,23 @@
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
         /* Tables & Stats */
-        .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; background: white; }
         table { width: 100%; border-collapse: collapse; min-width: 1300px; }
         th { background: #f8fafc; color: var(--primary); padding: 15px; text-align: left; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid #edf2f7; }
         td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; vertical-align: top; }
         .stu-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; }
         .info-label { color: #64748b; font-size: 11px; font-weight: bold; display: block; margin-top: 3px; }
 
-        /* Charts */
-        .charts-container { display: flex; gap: 20px; flex-wrap: wrap; }
-        .chart-box { flex: 1; min-width: 300px; background: white; padding: 20px; border-radius: 12px; border: 1px solid #eee; }
+        /* Buttons & Forms */
+        input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; font-family: 'Kalpurush'; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--primary); }
+        .btn-edit { background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-right: 5px; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-del:disabled { opacity: 0.3; cursor: not-allowed; }
 
         /* Login UI */
         #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; }
-        .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; }
-        input, select { width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; font-family: 'Kalpurush'; box-sizing: border-box; }
-
-        .btn-edit { background: #f59e0b; color: white; border: none; padding: 7px 15px; border-radius: 6px; cursor: pointer; margin-right: 5px; font-weight: bold; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 7px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-del:disabled { opacity: 0.3; cursor: not-allowed; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
 
         @media (max-width: 768px) { #sidebar { position: fixed; height: 100vh; left: -260px; display: flex; } #sidebar.open { left: 0; } #menu-toggle { display: block; } }
         .hidden { display: none !important; }
@@ -54,47 +52,48 @@
 
 <div id="login-container">
     <div class="login-box">
-        <h2 style="color:var(--primary)">স্কুল ম্যানেজমেন্ট</h2>
-        <input type="email" id="loginEmail" placeholder="ইমেইল">
+        <h2 style="color:var(--primary); margin-bottom: 10px;">শিক্ষা পোর্টাল লগইন</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">আপনার ইউজার আইডি ও পাসওয়ার্ড দিন</p>
+        <input type="email" id="loginEmail" placeholder="ইমেইল অ্যাড্রেস">
         <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড">
-        <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">লগইন</button>
+        <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; font-size: 16px;">লগইন করুন</button>
     </div>
 </div>
 
 <aside id="sidebar">
     <div class="sidebar-header">
-        <h3>ড্যাশবোর্ড</h3>
-        <span id="userBadge" class="role-tag">লোডিং...</span>
+        <h3>ম্যানেজমেন্ট</h3>
+        <span id="userBadge" class="role-tag">যাচাই হচ্ছে...</span>
     </div>
     <div class="nav-item active" data-sec="dashboard-sec">📊 পরিসংখ্যান</div>
-    <div class="nav-item" data-sec="entry-sec">📝 ভর্তি ও সংশোধন</div>
-    <div class="nav-item" data-sec="list-sec">📋 শিক্ষার্থী তালিকা</div>
-    <div id="adminPanel" style="display: none; border-top: 1px solid #334155; margin-top: 20px;">
-        <div class="nav-item" id="addDemoBtn" style="color:#10b981">✨ ডেমো ডাটা (Admin)</div>
+    <div class="nav-item" data-sec="entry-sec">📝 নতুন এন্ট্রি ও সংশোধন</div>
+    <div class="nav-item" data-sec="list-sec">📋 শিক্ষার্থী ডাটাবেস</div>
+    <div id="adminControls" style="display: none; border-top: 1px solid #334155; margin-top: 20px; padding-top: 10px;">
+        <div class="nav-item" id="addDemoBtn" style="color:#10b981">✨ ডেমো ডাটা যোগ (Admin)</div>
     </div>
     <div class="nav-item" id="logoutBtn" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</div>
 </aside>
 
 <main id="main-content">
     <section id="dashboard-sec">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
-            <div class="card" style="text-align: center;">মোট শিক্ষার্থী<h2 id="totalCount">0</h2></div>
-            <div class="card" style="text-align: center;">ছাত্র<h2 id="boyCount" style="color:#3b82f6">0</h2></div>
-            <div class="card" style="text-align: center;">ছাত্রী<h2 id="girlCount" style="color:#ec4899">0</h2></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px;">
+            <div class="card" style="text-align: center; border-bottom: 4px solid var(--primary);">মোট শিক্ষার্থী<h2 id="totalCount">0</h2></div>
+            <div class="card" style="text-align: center; border-bottom: 4px solid #3b82f6;">ছাত্র<h2 id="boyCount" style="color:#3b82f6">0</h2></div>
+            <div class="card" style="text-align: center; border-bottom: 4px solid #ec4899;">ছাত্রী<h2 id="girlCount" style="color:#ec4899">0</h2></div>
         </div>
-        <div class="charts-container">
-            <div class="chart-box"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
-            <div class="chart-box"><h3>বয়স ভিত্তিক</h3><canvas id="ageChart"></canvas></div>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div class="card" style="flex: 1; min-width: 300px;"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
+            <div class="card" style="flex: 1; min-width: 300px;"><h3>বয়স ভিত্তিক সংখ্যা</h3><canvas id="ageChart"></canvas></div>
         </div>
     </section>
 
     <section id="entry-sec" class="hidden">
         <div class="card">
-            <h2 id="formTitle">নতুন শিক্ষার্থী ভর্তি</h2>
+            <h2 id="formTitle">শিক্ষার্থী তথ্য ফরম</h2>
             <form id="studentForm">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
-                    <div><label>নাম</label><input type="text" id="name" required></div>
-                    <div><label>রোল</label><input type="number" id="roll" required></div>
+                    <div><label>শিক্ষার্থীর নাম</label><input type="text" id="name" required></div>
+                    <div><label>রোল নম্বর</label><input type="number" id="roll" required></div>
                     <div><label>শ্রেণি</label>
                         <select id="className">
                             <option value="প্রাক">প্রাক-প্রাথমিক</option><option value="১ম">১ম</option>
@@ -103,20 +102,20 @@
                         </select>
                     </div>
                     <div><label>লিঙ্গ</label><select id="gender"><option value="ছাত্র">ছাত্র</option><option value="ছাত্রী">ছাত্রী</option></select></div>
-                    <div><label>জন্ম তারিখ</label><input type="date" id="dob" required max="2026-03-26"></div>
-                    <div><label>পিতার মোবাইল</label><input type="tel" id="fMobile"></div>
-                    <div><label>ছবি</label><input type="file" id="photoInput" accept="image/*"></div>
+                    <div><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
+                    <div><label>পিতার মোবাইল নম্বর</label><input type="tel" id="fMobile"></div>
+                    <div><label>ছবি আপলোড</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
-                <button type="submit" id="saveBtn" style="margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; width:100%">সংরক্ষণ করুন</button>
+                <button type="submit" id="saveBtn" style="margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; width:100%; font-size: 16px;">ডাটাবেসে সেভ করুন</button>
             </form>
         </div>
     </section>
 
     <section id="list-sec" class="hidden">
         <div class="card">
-            <h2 style="color:var(--primary)">শিক্ষার্থী ডাটাবেস</h2>
+            <h2 style="color:var(--primary)">শিক্ষার্থী তালিকা (শ্রেণিভিত্তিক)</h2>
             <div class="table-wrap">
-                <table id="mainTable">
+                <table>
                     <thead>
                         <tr>
                             <th>ছবি</th>
@@ -154,34 +153,47 @@
     const ADMIN_UID = "MwpHepH5wSPqDF4B3hXKjek4vtq2";
     let isAdmin = false, allStudents = [], editId = null, charts = {};
 
-    // Auth Handling
-    loginBtn.onclick = () => signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value).catch(e => Swal.fire('Error', 'ভুল তথ্য', 'error'));
-    logoutBtn.onclick = () => signOut(auth).then(() => location.reload());
+    // Login Fix: Form submission trigger
+    document.getElementById('loginBtn').addEventListener('click', () => {
+        const email = loginEmail.value.trim();
+        const pass = loginPassword.value.trim();
+        if(!email || !pass) return Swal.fire('Error', 'ইমেইল ও পাসওয়ার্ড দিন', 'warning');
+        
+        signInWithEmailAndPassword(auth, email, pass)
+            .then(() => console.log("Login Success"))
+            .catch(e => Swal.fire('Error', 'লগইন ব্যর্থ: ' + e.message, 'error'));
+    });
+
+    document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
 
     onAuthStateChanged(auth, user => {
         if(user) {
             isAdmin = (user.uid === ADMIN_UID);
-            userBadge.innerText = isAdmin ? "অ্যাডমিন এক্সেস" : "শিক্ষক (ইউজার)";
-            adminPanel.style.display = isAdmin ? "block" : "none";
-            login_container.classList.add('hidden');
-            sidebar.style.display = 'flex';
-            main_content.style.display = 'block';
+            document.getElementById('userBadge').innerText = isAdmin ? "অ্যাডমিন" : "শিক্ষক";
+            document.getElementById('adminControls').style.display = isAdmin ? "block" : "none";
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('sidebar').style.display = 'flex';
+            document.getElementById('main-content').style.display = 'block';
             syncData();
         }
     });
 
     // Navigation
-    document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.onclick = () => {
-            const id = btn.dataset.sec; if(!id) return;
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.onclick = function() {
+            const secId = this.getAttribute('data-sec');
+            if(!secId) return;
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(secId).classList.remove('hidden');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            btn.classList.add('active');
-        }
+            this.classList.add('active');
+        };
     });
 
-    // Real-time Sync & Class-wise Sorting
+    // Sidebar Mobile Toggle
+    document.getElementById('menu-toggle').onclick = () => document.getElementById('sidebar').classList.toggle('open');
+
+    // Sync & Sort Class Wise
     function syncData() {
         onSnapshot(collection(db, "students"), snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -194,33 +206,43 @@
     function updateUI() {
         const listBody = document.getElementById('listBody');
         listBody.innerHTML = '';
-        let s = { ছাত্র: 0, ছাত্রী: 0 }, aGroup = { "৫-৭": 0, "৮-১০": 0, "১১+": 0 };
+        let s = { ছাত্র: 0, ছাত্রী: 0 }, aG = { "৫-৭": 0, "৮-১০": 0, "১১+": 0 };
 
         allStudents.forEach(stu => {
             s[stu.gender]++;
             const age = Math.floor((new Date() - new Date(stu.dob)) / 31557600000);
-            if(age <= 7) aGroup["৫-৭"]++; else if(age <= 10) aGroup["৮-১০"]++; else aGroup["১১+"]++;
+            if(age <= 7) aG["৫-৭"]++; else if(age <= 10) aG["৮-১০"]++; else aG["১১+"]++;
 
-            listBody.innerHTML += `
-                <tr>
-                    <td><img src="${stu.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="stu-img"></td>
-                    <td><b>${stu.name}</b><br><span class="info-label">রোল: ${stu.roll}</span></td>
-                    <td>${stu.className}</td>
-                    <td>${stu.fMobile || '-'}</td>
-                    <td><button class="btn-edit" onclick="window.editStu('${stu.id}')">এডিট</button>
-                        <button class="btn-del" ${!isAdmin ? 'disabled' : ''} onclick="window.delStu('${stu.id}')">ডিলিট</button></td>
-                </tr>`;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><img src="${stu.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="stu-img"></td>
+                <td><b>${stu.name}</b><br><span class="info-label">রোল: ${stu.roll}</span></td>
+                <td>${stu.className}</td>
+                <td>${stu.fMobile || '-'}</td>
+                <td>
+                    <button class="btn-edit">এডিট</button>
+                    <button class="btn-del" ${!isAdmin ? 'disabled title="অ্যাডমিন ছাড়া ডিলিট করা নিষেধ"' : ''}>ডিলিট</button>
+                </td>`;
+            
+            tr.querySelector('.btn-edit').onclick = () => startEdit(stu);
+            if(isAdmin) tr.querySelector('.btn-del').onclick = () => deleteStu(stu.id);
+            listBody.appendChild(tr);
         });
         totalCount.innerText = allStudents.length; boyCount.innerText = s.ছাত্র; girlCount.innerText = s.ছাত্রী;
-        renderCharts(s, aGroup);
+        renderCharts(s, aG);
     }
 
-    // Form Handling
+    function renderCharts(s, a) {
+        if(charts.g) charts.g.destroy(); if(charts.a) charts.a.destroy();
+        charts.g = new Chart(document.getElementById('genderChart'), { type: 'doughnut', data: { labels: ['ছাত্র','ছাত্রী'], datasets:[{data:[s.ছাত্র, s.ছাত্রী], backgroundColor:['#3b82f6','#ec4899']}] }});
+        charts.a = new Chart(document.getElementById('ageChart'), { type: 'bar', data: { labels: Object.keys(a), datasets:[{label:'শিক্ষার্থী', data:Object.values(a), backgroundColor:'#006a4e'}] }});
+    }
+
+    // CRUD Ops
     studentForm.onsubmit = async (e) => {
         e.preventDefault();
         const r = parseInt(roll.value), c = className.value;
-        if(allStudents.some(x => x.id !== editId && x.roll === r && x.className === c)) 
-            return Swal.fire('সতর্কতা', 'এই ক্লাসে এই রোলটি আছে!', 'warning');
+        if(allStudents.some(x => x.id !== editId && x.roll === r && x.className === c)) return Swal.fire('সতর্কতা', 'এই রোল নম্বরটি এই শ্রেণিতে আগে থেকেই আছে!', 'warning');
 
         let img = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
         if(photoInput.files[0]) {
@@ -233,34 +255,26 @@
         try {
             if(editId) { await updateDoc(doc(db, "students", editId), data); editId = null; }
             else { await addDoc(collection(db, "students"), data); }
-            Swal.fire('সফল!', 'তথ্য সংরক্ষিত', 'success');
+            Swal.fire('সফল!', 'তথ্য ডাটাবেসে সেভ হয়েছে', 'success');
             studentForm.reset(); document.querySelector('[data-sec="list-sec"]').click();
         } catch(err) { Swal.fire('Error', err.message, 'error'); }
     };
 
-    window.editStu = (id) => {
-        const stu = allStudents.find(x => x.id === id); editId = id;
-        name.value = stu.name; roll.value = stu.roll; className.value = stu.className;
-        gender.value = stu.gender; dob.value = stu.dob; fMobile.value = stu.fMobile;
+    function startEdit(stu) {
+        editId = stu.id; name.value = stu.name; roll.value = stu.roll; className.value = stu.className;
+        gender.value = stu.gender; dob.value = stu.dob; fMobile.value = stu.fMobile || "";
         document.querySelector('[data-sec="entry-sec"]').click();
         formTitle.innerText = "সংশোধন: " + stu.name;
-    };
+    }
 
-    window.delStu = async (id) => {
-        if(!isAdmin) return;
-        const res = await Swal.fire({ title: 'নিশ্চিত?', icon: 'warning', showCancelButton: true });
+    async function deleteStu(id) {
+        const res = await Swal.fire({ title: 'নিশ্চিত?', text: "এটি মুছে ফেললে আর ফিরে পাবেন না!", icon: 'warning', showCancelButton: true });
         if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
-    };
-
-    function renderCharts(s, a) {
-        if(charts.g) charts.g.destroy(); if(charts.a) charts.a.destroy();
-        charts.g = new Chart(genderChart, { type: 'doughnut', data: { labels: ['ছাত্র','ছাত্রী'], datasets: [{ data: [s.ছাত্র, s.ছাত্রী], backgroundColor: ['#3b82f6','#ec4899'] }] }});
-        charts.a = new Chart(ageChart, { type: 'bar', data: { labels: Object.keys(a), datasets: [{ label: 'শিক্ষার্থী', data: Object.values(a), backgroundColor: '#006a4e' }] }});
     }
 
     addDemoBtn.onclick = async () => {
-        await addDoc(collection(db, "students"), { name: "আরিফ", roll: 1, className: "৫ম", gender: "ছাত্র", dob: "2015-01-01", fMobile: "017000000" });
-        Swal.fire('সফল', 'ডেমো ডাটা যুক্ত হয়েছে', 'success');
+        await addDoc(collection(db, "students"), { name: "টেস্ট ছাত্র", roll: 1, className: "৫ম", gender: "ছাত্র", dob: "2015-05-10", fMobile: "0170000000" });
+        Swal.fire('সফল', '১টি ডেমো ডাটা যুক্ত হয়েছে।', 'success');
     };
 </script>
 </body>
