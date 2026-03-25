@@ -312,6 +312,26 @@
         const res = await Swal.fire({ title: 'নিশ্চিত তো?', text: "ডিলিট করলে তথ্য আর ফিরে পাওয়া যাবে না!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
         if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
     }
+
+
+    // এই ফাংশনটি শুধু একবার রান করবেন টেস্ট করার জন্য
+async function addDemoData() {
+    const demoStudents = [
+        { name: "আরিফ রহমান", roll: 1, className: "৫ম", gender: "ছাত্র", dob: "2012-05-10", fName: "মোঃ রহমান", fMobile: "01711000000", mName: "রাহেলা বেগম", photo: "" },
+        { name: "সুমাইয়া আক্তার", roll: 2, className: "৫ম", gender: "ছাত্রী", dob: "2013-02-15", fName: "আব্দুল করিম", fMobile: "01811000000", mName: "ফাতেমা খাতুন", photo: "" },
+        { name: "হাসান মাহমুদ", roll: 1, className: "১ম", gender: "ছাত্র", dob: "2018-11-20", fName: "জহির উদ্দিন", fMobile: "01911000000", mName: "নাজমা বেগম", photo: "" },
+        { name: "আয়েশা সিদ্দিকা", roll: 5, className: "৩য়", gender: "ছাত্রী", dob: "2015-08-12", fName: "কামাল হোসেন", fMobile: "01511000000", mName: "শিরিন আক্তার", photo: "" },
+        { name: "তামিম ইকবাল", roll: 3, className: "প্রাক", gender: "ছাত্র", dob: "2020-01-05", fName: "শফিক আহমেদ", fMobile: "01311000000", mName: "পারভীন বেগম", photo: "" }
+    ];
+
+    for (let s of demoStudents) {
+        await addDoc(collection(db, "students"), s);
+    }
+    Swal.fire('অভিনন্দন!', '৫টি ডেমো ডেটা সফলভাবে যোগ হয়েছে।', 'success');
+}
+
+// এটি কল করতে ব্রাউজার কনসোলে লিখুন: addDemoData() 
+// অথবা টেম্পোরারি একটি বাটনে সেট করুন।
 </script>
 </body>
 </html>
