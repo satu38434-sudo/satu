@@ -6,7 +6,7 @@
     <title>School Admin - ২১৭নং শেখ ফারিয়া জান্নাত শান্তনা</title>
     <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
     <style>
-        :root { --primary: #006a4e; --bg: #f8f9fa; --border: #dee2e6; --danger: #dc3545; --warning: #ffc107; }
+        :root { --primary: #006a4e; --bg: #f8f9fa; --border: #dee2e6; --danger: #dc3545; --warning: #ffc107; --secondary: #004d39; }
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; padding: 0; font-size: 14px; }
         
         #login-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
@@ -31,10 +31,47 @@
         .stu-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; background: #eee; }
         .btn-action { padding: 4px 8px; border: none; cursor: pointer; border-radius: 3px; margin: 2px; }
 
-        @media print { .no-print { display: none !important; } #dashboard { display: block !important; padding: 0; } .container { box-shadow: none; border: none; } }
+        /* ID Card Overlay */
+        #id-card-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; }
+        .id-card-wrap { background:white; padding:20px; border-radius:8px; text-align:center; }
+        .id-card { width: 250px; height: 400px; border: 2px solid var(--primary); border-radius: 12px; overflow: hidden; position: relative; background: #fff; margin: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .card-header { background: var(--primary); color: white; padding: 10px 5px; font-size: 11px; font-weight: bold; }
+        .card-body { padding: 15px; }
+        .card-img { width: 100px; height: 100px; border: 3px solid var(--primary); border-radius: 8px; object-fit: cover; margin-bottom: 10px; }
+        .card-name { font-size: 18px; color: var(--primary); font-weight: bold; margin: 5px 0; }
+        .card-info { font-size: 14px; margin: 3px 0; color: #333; }
+        .card-footer { position: absolute; bottom: 0; width: 100%; background: var(--primary); color: white; padding: 5px 0; font-size: 10px; }
+
+        @media print { 
+            .no-print { display: none !important; } 
+            #dashboard { display: block !important; } 
+            #id-card-overlay { position: static; background: none; display: flex !important; }
+            .id-card-wrap button { display: none; }
+        }
     </style>
 </head>
 <body>
+
+<div id="id-card-overlay" class="no-print">
+    <div class="id-card-wrap">
+        <div id="printableCard" class="id-card">
+            <div class="card-header">
+                ২১৭নং শেখ ফারিয়া জান্নাত শান্তনা<br>সরকারি প্রাথমিক বিদ‌্যালয়
+            </div>
+            <div class="card-body">
+                <img id="cardPhoto" src="" class="card-img">
+                <div id="cardName" class="card-name"></div>
+                <div class="card-info">রোল: <span id="cardRoll"></span></div>
+                <div class="card-info">শ্রেণি: <span id="cardClass"></span></div>
+                <div class="card-info" style="margin-top:10px;">রক্তের গ্রুপ: <span id="cardBlood">---</span></div>
+            </div>
+            <div class="card-footer">ডিজিটাল স্টুডেন্ট আইডি কার্ড</div>
+        </div>
+        <br>
+        <button onclick="window.print()" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:4px; cursor:pointer;">প্রিন্ট করুন</button>
+        <button onclick="document.getElementById('id-card-overlay').style.display='none'" style="padding:10px 20px; background:var(--danger); color:white; border:none; border-radius:4px; cursor:pointer; margin-left:10px;">বন্ধ করুন</button>
+    </div>
+</div>
 
 <div id="login-container">
     <div class="login-box">
@@ -262,6 +299,7 @@
         tbody.innerHTML = '';
         dataList.forEach(s => {
             const editBtn = `<button class="btn-action" style="background:var(--warning); color:black" onclick="editStu('${s.id}')">এডিট</button>`;
+            const idBtn = `<button class="btn-action" style="background:var(--primary); color:white" onclick="generateID('${s.id}')">আইডি কার্ড</button>`;
             const deleteBtn = isAdmin ? `<button class="btn-action" style="background:var(--danger);color:white" onclick="deleteStu('${s.id}')">ডিলিট</button>` : '';
 
             tbody.insertAdjacentHTML('beforeend', `
@@ -272,6 +310,7 @@
                     <td>পিতা: ${s.fatherName} (${s.fatherNid}) [${s.fatherDob || '-'}]<br>মাতা: ${s.motherName} (${s.motherNid}) [${s.motherDob || '-'}]</td>
                     <td>${s.mobile}</td>
                     <td class="no-print">
+                        ${idBtn}
                         ${editBtn}
                         ${deleteBtn}
                     </td>
@@ -279,6 +318,18 @@
             `);
         });
     }
+
+    // --- ID CARD GENERATOR ---
+    window.generateID = (id) => {
+        const s = allStudents.find(item => item.id === id);
+        if(!s) return;
+        
+        document.getElementById('cardPhoto').src = s.photo;
+        document.getElementById('cardName').innerText = s.name;
+        document.getElementById('cardRoll').innerText = s.roll;
+        document.getElementById('cardClass').innerText = s.className;
+        document.getElementById('id-card-overlay').style.display = 'flex';
+    };
 
     window.editStu = (id) => {
         const s = allStudents.find(item => item.id === id);
