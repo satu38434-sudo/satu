@@ -38,13 +38,19 @@
         }
         .nav-link.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); }
 
-        /* --- TOP BAR --- */
+        /* --- TOP BAR (Updated for Centering) --- */
         #top-bar {
             position: fixed; top: 0; left: 0; right: 0; height: 75px;
             background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
-            display: flex; align-items: center; padding: 0 25px; z-index: 1000; border-bottom: 1px solid #e2e8f0;
+            display: flex; align-items: center; justify-content: space-between; 
+            padding: 0 25px; z-index: 1000; border-bottom: 1px solid #e2e8f0;
         }
-        #menu-trigger { background: var(--dark); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-family: 'Kalpurush'; }
+        .school-title {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            font-weight: bold; color: var(--primary); font-size: 1.2rem;
+            text-align: center; pointer-events: none; width: max-content;
+        }
+        #menu-trigger { background: var(--dark); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-family: 'Kalpurush'; z-index: 1001; }
 
         /* --- CONTENT --- */
         #app-container { flex: 1; overflow-y: auto; padding: 100px 30px 50px; display: none; }
@@ -70,6 +76,12 @@
         .btn-primary { width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }
 
         .hidden { display: none !important; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .school-title { font-size: 14px; width: 60%; line-height: 1.2; }
+            #top-bar { padding: 0 15px; }
+        }
     </style>
 </head>
 <body>
@@ -87,8 +99,8 @@
 
 <nav id="top-bar">
     <button id="menu-trigger">☰ মেনু</button>
-    <div style="margin-left: auto; font-weight: bold; color: var(--primary);">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ্যালয়</div>
-</nav>
+    <div class="school-title">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ্যালয়</div>
+    <div style="width: 60px;"></div> </nav>
 
 <div id="login-screen">
     <div class="login-box">
@@ -109,7 +121,7 @@
         </div>
         <div class="form-row">
             <div class="card"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
-            <div class="card"><h3>বয়স ভিত্তিক বিন্যাস</h3><canvas id="ageChart"></canvas></div>
+            <div class="card"><h3>বয়স ভিত্তিক বিন্যাস</h3><canvas id="ageChart"></canvas></div>
         </div>
     </section>
 
@@ -359,9 +371,9 @@
             editId = null;
             document.getElementById('studentForm').reset();
             document.getElementById('imgSrc').style.display = 'none';
-            Swal.fire('সফল', 'তথ্য সংরক্ষিত হয়েছে', 'success');
+            Swal.fire('সফল', 'তথ্য সংরক্ষিত হয়েছে', 'success');
             document.querySelector('[data-sec="list-sec"]').click();
-        } catch { Swal.fire('Error', 'ব্যর্থ হয়েছে', 'error'); }
+        } catch { Swal.fire('Error', 'ব্যর্থ হয়েছে', 'error'); }
     };
 </script>
 </body>
