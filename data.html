@@ -132,7 +132,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
@@ -176,7 +176,7 @@
 
     document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
-    // --- UI Navigation ---
+    // --- Navigation Logic ---
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(btn => {
         btn.onclick = () => {
@@ -194,11 +194,17 @@
         document.getElementById('sidebar').classList.toggle('active');
     };
 
-    // --- Data Management ---
+    // --- Data Management (With Logical Sorting) ---
     function syncData() {
-        onSnapshot(collection(db, "students"), snap => {
+        // Logical sorting: First by Class name, then by Roll number
+        const q = query(collection(db, "students"), orderBy("className"), orderBy("roll"));
+        
+        onSnapshot(q, snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
             updateUI();
+        }, (error) => {
+            console.error("Sorting error: ", error);
+            // If you see an error here, check the console for a Firebase link to create an Index.
         });
     }
 
