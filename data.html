@@ -68,6 +68,7 @@
                     <div><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
                     <div><label>শ্রেণী</label>
                         <select id="className" required>
+                            <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
                             <option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option>
                             <option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
                         </select>
@@ -75,8 +76,10 @@
                     <div><label>সেশন</label><input type="text" id="session" placeholder="২০২৬"></div>
                     <div><label>পিতার নাম</label><input type="text" id="fatherName" required></div>
                     <div><label>পিতার NID</label><input type="text" id="fatherNid"></div>
+                    <div><label>পিতার জন্ম তারিখ</label><input type="date" id="fatherDob"></div>
                     <div><label>মাতার নাম</label><input type="text" id="motherName" required></div>
                     <div><label>মাতার NID</label><input type="text" id="motherNid"></div>
+                    <div><label>মাতার জন্ম তারিখ</label><input type="date" id="motherDob"></div>
                     <div><label>মোবাইল নম্বর</label><input type="tel" id="mobile" required></div>
                     <div><label>ছবি নির্বাচন (৩০০x৩০০)</label><input type="file" id="photo" accept="image/*"></div>
                 </div>
@@ -212,8 +215,10 @@
                 session: document.getElementById('session').value || '২০২৬',
                 fatherName: document.getElementById('fatherName').value,
                 fatherNid: document.getElementById('fatherNid').value || '-',
+                fatherDob: document.getElementById('fatherDob').value || '-',
                 motherName: document.getElementById('motherName').value,
                 motherNid: document.getElementById('motherNid').value || '-',
+                motherDob: document.getElementById('motherDob').value || '-',
                 mobile: document.getElementById('mobile').value,
                 timestamp: new Date()
             };
@@ -276,7 +281,7 @@
                     <td><img src="${s.photo}" class="stu-img"></td>
                     <td><b>${s.name}</b><br>রোল: ${s.roll}<br>শ্রেণী: ${s.className}</td>
                     <td>নিবন্ধন: ${s.birthReg}<br>তারিখ: ${s.dob}</td>
-                    <td>পিতা: ${s.fatherName} (${s.fatherNid})<br>মাতা: ${s.motherName} (${s.motherNid})</td>
+                    <td>পিতা: ${s.fatherName} (${s.fatherNid}) [${s.fatherDob || '-'}]<br>মাতা: ${s.motherName} (${s.motherNid}) [${s.motherDob || '-'}]</td>
                     <td>${s.mobile}<br>সেশন: ${s.session}</td>
                     <td class="no-print">
                         ${editBtn}
@@ -307,8 +312,10 @@
         document.getElementById('session').value = s.session;
         document.getElementById('fatherName').value = s.fatherName;
         document.getElementById('fatherNid').value = s.fatherNid;
+        document.getElementById('fatherDob').value = s.fatherDob || '';
         document.getElementById('motherName').value = s.motherName;
         document.getElementById('motherNid').value = s.motherNid;
+        document.getElementById('motherDob').value = s.motherDob || '';
         document.getElementById('mobile').value = s.mobile;
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
