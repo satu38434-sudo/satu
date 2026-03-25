@@ -8,12 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        :root { --primary: #006a4e; --sidebar-bg: #1e293b; --bg: #f1f5f9; }
+        :root { --primary: #006a4e; --sidebar-bg: #1e293b; --bg: #f1f5f9; --accent: #fbbf24; }
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
+        /* Sidebar Styles */
         #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; z-index: 1000; transition: 0.3s; }
         #sidebar.active { display: flex; position: fixed; height: 100%; }
-        
         #menu-toggle { display: block; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         
         @media (min-width: 768px) {
@@ -24,8 +24,22 @@
         .sidebar-header { padding: 20px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; text-align: left; width: 100%; border: none; font-size: 16px; color: white; background: transparent; font-family: 'Kalpurush'; }
         .nav-item:hover, .nav-item.active { background: var(--primary); }
-        .role-tag { font-size: 11px; background: #fbbf24; color: #000; padding: 3px 10px; border-radius: 12px; margin-top: 8px; display: inline-block; font-weight: bold; }
+        .role-tag { font-size: 11px; background: var(--accent); color: #000; padding: 3px 10px; border-radius: 12px; margin-top: 8px; display: inline-block; font-weight: bold; }
         
+        /* School Header Style */
+        .school-banner {
+            background: linear-gradient(135deg, #006a4e 0%, #004d39 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-bottom: 5px solid var(--accent);
+        }
+        .school-banner h1 { margin: 0; font-size: clamp(20px, 4vw, 32px); text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .school-banner p { margin: 8px 0 0; opacity: 0.9; font-size: clamp(14px, 2vw, 18px); }
+
         #main-content { flex: 1; overflow-y: auto; display: none; padding: 20px; padding-top: 75px; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 15px; }
@@ -42,7 +56,6 @@
         .stu-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
         .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-right: 5px; }
         .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
-        .btn-del:disabled { background: #ccc; cursor: not-allowed; }
 
         #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; top: 0; left: 0; }
         .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
@@ -74,6 +87,12 @@
 </aside>
 
 <main id="main-content">
+    
+    <div class="school-banner">
+        <h1>২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ্যালয়</h1>
+        <p>স্থাপিত: ২০১৪ | স্কুল আইডি: ৯১৩১৭০৩১৫৮২</p>
+    </div>
+
     <section id="dashboard-sec">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px;">
             <div class="card" style="text-align: center;">মোট শিক্ষার্থী<h2 id="dispTotal">0</h2></div>
@@ -92,7 +111,7 @@
             <form id="studentForm">
                 <div class="form-grid">
                     <div class="form-group"><label>শিক্ষার্থীর নাম</label><input type="text" id="name" required></div>
-                     <div class="form-group"><label>শ্রেণি</label>
+                    <div class="form-group"><label>শ্রেণি</label>
                         <select id="className">
                             <option value="প্রাক">প্রাক-প্রাথমিক</option><option value="১ম">১ম</option>
                             <option value="২য়">২য়</option><option value="৩য়">৩য়</option>
@@ -100,21 +119,14 @@
                         </select>
                     </div>
                     <div class="form-group"><label>রোল নম্বর</label><input type="number" id="roll" required></div>
-                   
                     <div class="form-group"><label>লিঙ্গ</label><select id="gender"><option value="ছাত্র">ছাত্র</option><option value="ছাত্রী">ছাত্রী</option></select></div>
                     <div class="form-group"><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
                     <div class="form-group"><label>জন্ম নিবন্ধন নম্বর</label><input type="text" id="birthReg"></div>
-                    
                     <div class="form-group"><label>পিতার নাম</label><input type="text" id="fName"></div>
                     <div class="form-group"><label>পিতার এনআইডি (NID)</label><input type="text" id="fNid"></div>
-                    <div class="form-group"><label>পিতার জন্ম তারিখ</label><input type="date" id="fDob"></div>
                     <div class="form-group"><label>পিতার মোবাইল</label><input type="tel" id="fMobile"></div>
-                    
                     <div class="form-group"><label>মাতার নাম</label><input type="text" id="mName"></div>
-                    <div class="form-group"><label>মাতার এনআইডি (NID)</label><input type="text" id="mNid"></div>
-                    <div class="form-group"><label>মাতার জন্ম তারিখ</label><input type="date" id="mDob"></div>
                     <div class="form-group"><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
-                    
                     <div class="form-group"><label>ছবি আপলোড</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
                 <button type="submit" id="submitBtn" style="margin-top:25px; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; width:100%">সেভ করুন</button>
@@ -132,8 +144,8 @@
                             <th>ছবি</th>
                             <th>শিক্ষার্থীর তথ্য</th>
                             <th>জন্ম ও নিবন্ধন</th>
-                            <th>পিতার তথ্য (NID/DOB)</th>
-                            <th>মাতার তথ্য (NID/DOB)</th>
+                            <th>পিতার তথ্য</th>
+                            <th>মাতার তথ্য</th>
                             <th>অ্যাকশন</th>
                         </tr>
                     </thead>
@@ -149,6 +161,7 @@
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
         authDomain: "my-school-data-5f899.firebaseapp.com",
@@ -165,7 +178,7 @@
     const ADMIN_UID = "MwpHepH5wSPqDF4B3hXKjek4vtq2";
     let isAdmin = false, allStudents = [], editId = null, charts = {};
 
-    // --- Authentication ---
+    // Authentication Logic
     document.getElementById('loginBtn').onclick = async () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPassword').value;
@@ -189,22 +202,17 @@
         }
     });
 
-    // Fixed Logout Logic
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-        try {
-            await signOut(auth);
-            Swal.fire('লগআউট', 'সাফল্যের সাথে লগআউট করা হয়েছে', 'success');
-        } catch (error) {
-            console.error(error);
-        }
-    });
+    document.getElementById('logoutBtn').onclick = async () => {
+        await signOut(auth);
+        Swal.fire('লগআউট', 'সফলভাবে লগআউট করা হয়েছে', 'success');
+    };
 
-    // --- Navigation ---
+    // Navigation Logic
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(btn => {
         btn.onclick = () => {
             const secId = btn.dataset.sec;
-            if(!secId) return; // Ignores buttons like logout that have no section
+            if(!secId) return;
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(secId).classList.remove('hidden');
             navItems.forEach(n => n.classList.remove('active'));
@@ -217,13 +225,13 @@
         document.getElementById('sidebar').classList.toggle('active');
     };
 
-    // --- Data Management ---
+    // Data Management
     function syncData() {
         const q = query(collection(db, "students"), orderBy("className"), orderBy("roll"));
         onSnapshot(q, snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
             updateUI();
-        }, (err) => { console.error("Snapshot error: ", err); });
+        });
     }
 
     function updateUI() {
@@ -242,8 +250,8 @@
                     <td><img src="${stu.photo || 'https://via.placeholder.com/60'}" class="stu-img"></td>
                     <td><b>${stu.name}</b><br>রোল: ${stu.roll} | শ্রেণি: ${stu.className}</td>
                     <td>জন্ম: ${stu.dob}<br>${stu.birthReg || '-'}</td>
-                    <td>${stu.fName || '-'}<br>NID: ${stu.fNid || '-'}<br>DOB: ${stu.fDob || '-'}<br>Mob: ${stu.fMobile || '-'}</td>
-                    <td>${stu.mName || '-'}<br>NID: ${stu.mNid || '-'}<br>DOB: ${stu.mDob || '-'}<br>Mob: ${stu.mMobile || '-'}</td>
+                    <td>${stu.fName || '-'}<br>Mob: ${stu.fMobile || '-'}</td>
+                    <td>${stu.mName || '-'}<br>Mob: ${stu.mMobile || '-'}</td>
                     <td>
                         <button class="btn-edit" onclick="startEdit('${stu.id}')">এডিট</button>
                         <button class="btn-del" ${!isAdmin ? 'disabled' : ''} onclick="deleteStu('${stu.id}')">ডিলিট</button>
@@ -257,13 +265,12 @@
     }
 
     function renderCharts(s, a) {
-        if(charts.g) charts.g.destroy(); 
+        if(charts.g) charts.g.destroy(); 
         if(charts.a) charts.a.destroy();
         charts.g = new Chart(document.getElementById('genderChart'), { type: 'doughnut', data: { labels: ['ছাত্র','ছাত্রী'], datasets: [{ data: [s.ছাত্র, s.ছাত্রী], backgroundColor: ['#3b82f6','#ec4899'] }] }});
         charts.a = new Chart(document.getElementById('ageChart'), { type: 'bar', data: { labels: Object.keys(a), datasets: [{ label: 'সংখ্যা', data: Object.values(a), backgroundColor: '#006a4e' }] }});
     }
 
-    // --- Global Actions (attached to window for module access) ---
     window.startEdit = (id) => {
         const s = allStudents.find(x => x.id === id);
         if(!s) return;
@@ -277,33 +284,20 @@
         document.getElementById('birthReg').value = s.birthReg || '';
         document.getElementById('fName').value = s.fName || '';
         document.getElementById('fNid').value = s.fNid || '';
-        document.getElementById('fDob').value = s.fDob || '';
         document.getElementById('fMobile').value = s.fMobile || '';
         document.getElementById('mName').value = s.mName || '';
-        document.getElementById('mNid').value = s.mNid || '';
-        document.getElementById('mDob').value = s.mDob || '';
         document.getElementById('mMobile').value = s.mMobile || '';
-        
         document.querySelector('[data-sec="entry-sec"]').click();
     };
 
     window.deleteStu = async (id) => {
-        const result = await Swal.fire({
-            title: 'আপনি কি নিশ্চিত?',
-            text: "এই ডাটাটি স্থায়ীভাবে মুছে যাবে!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            confirmButtonText: 'হ্যাঁ, ডিলিট করুন',
-            cancelButtonText: 'না'
-        });
-        if(result.isConfirmed) await deleteDoc(doc(db, "students", id));
+        const res = await Swal.fire({ title: 'নিশ্চিত?', text: "ডিলিট করতে চান?", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
+        if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
     };
 
     document.getElementById('studentForm').onsubmit = async (e) => {
         e.preventDefault();
         let photoData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
-        
         const file = document.getElementById('photoInput').files[0];
         if(file) {
             const reader = new FileReader();
@@ -320,30 +314,21 @@
             birthReg: document.getElementById('birthReg').value,
             fName: document.getElementById('fName').value,
             fNid: document.getElementById('fNid').value,
-            fDob: document.getElementById('fDob').value,
             fMobile: document.getElementById('fMobile').value,
             mName: document.getElementById('mName').value,
-            mNid: document.getElementById('mNid').value,
-            mDob: document.getElementById('mDob').value,
             mMobile: document.getElementById('mMobile').value,
             photo: photoData
         };
 
         try {
-            if(editId) {
-                await updateDoc(doc(db, "students", editId), payload);
-            } else {
-                await addDoc(collection(db, "students"), payload);
-            }
+            if(editId) await updateDoc(doc(db, "students", editId), payload);
+            else await addDoc(collection(db, "students"), payload);
             
             editId = null;
-            document.getElementById('formTitle').innerText = "শিক্ষার্থী তথ‌্য ফরম";
             document.getElementById('studentForm').reset();
             Swal.fire('সফল!', 'ডাটা সংরক্ষিত হয়েছে', 'success');
             document.querySelector('[data-sec="list-sec"]').click();
-        } catch (err) {
-            Swal.fire('Error', 'সেভ করতে সমস্যা হয়েছে', 'error');
-        }
+        } catch (err) { Swal.fire('Error', 'ভুল হয়েছে!', 'error'); }
     };
 </script>
 </body>
