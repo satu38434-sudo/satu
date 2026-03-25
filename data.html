@@ -10,25 +10,40 @@
     <style>
         :root { --primary: #006a4e; --sidebar-bg: #1e293b; --bg: #f1f5f9; }
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; z-index: 1000; position: relative; }
-        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        
+        #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; z-index: 1000; transition: 0.3s; }
+        #sidebar.active { display: flex; position: fixed; height: 100%; }
+        
+        #menu-toggle { display: block; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        
+        @media (min-width: 768px) {
+            #sidebar { display: flex; position: relative; }
+            #menu-toggle { display: none; }
+        }
+
         .sidebar-header { padding: 20px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: var(--primary); }
         .role-tag { font-size: 11px; background: #fbbf24; color: #000; padding: 3px 10px; border-radius: 12px; margin-top: 8px; display: inline-block; font-weight: bold; }
+        
         #main-content { flex: 1; overflow-y: auto; display: none; padding: 20px; padding-top: 75px; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 15px; }
         .form-group label { font-weight: bold; color: #475569; display: block; margin-bottom: 5px; font-size: 14px; }
+        
         input, select { width: 100%; padding: 11px; border: 1.5px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-family: 'Kalpurush'; outline: none; }
         input:focus { border-color: var(--primary); }
+        
         .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; background: white; }
-        table { width: 100%; border-collapse: collapse; min-width: 1400px; }
-        th { background: #f8fafc; color: var(--primary); padding: 15px; text-align: left; position: sticky; top: 0; border-bottom: 2px solid #edf2f7; z-index: 5; }
-        td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13px; vertical-align: top; }
-        .stu-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; }
-        .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { background: #f8fafc; color: var(--primary); padding: 15px; text-align: left; border-bottom: 2px solid #edf2f7; }
+        td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+        
+        .stu-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+        .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; margin-right: 5px; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+        .btn-del:disabled { background: #ccc; cursor: not-allowed; }
+
         #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; top: 0; left: 0; }
         .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .hidden { display: none !important; }
@@ -67,7 +82,7 @@
         </div>
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
             <div class="card" style="flex: 1; min-width: 300px;"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
-            <div class="card" style="flex: 1; min-width: 300px;"><h3>বয়স ভিত্তিক সংখ্যা (৫-১৫ বছর)</h3><canvas id="ageChart"></canvas></div>
+            <div class="card" style="flex: 1; min-width: 300px;"><h3>বয়স ভিত্তিক সংখ্যা</h3><canvas id="ageChart"></canvas></div>
         </div>
     </section>
 
@@ -89,14 +104,12 @@
                     <div class="form-group"><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
                     <div class="form-group"><label>জন্ম নিবন্ধন নম্বর</label><input type="text" id="birthReg"></div>
                     <div class="form-group"><label>পিতার নাম</label><input type="text" id="fName"></div>
-                    <div class="form-group"><label>পিতার NID</label><input type="text" id="fNid"></div>
                     <div class="form-group"><label>পিতার মোবাইল</label><input type="tel" id="fMobile"></div>
                     <div class="form-group"><label>মাতার নাম</label><input type="text" id="mName"></div>
-                    <div class="form-group"><label>মাতার NID</label><input type="text" id="mNid"></div>
                     <div class="form-group"><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
                     <div class="form-group"><label>ছবি আপলোড</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
-                <button type="submit" style="margin-top:25px; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; width:100%">সেভ করুন</button>
+                <button type="submit" id="submitBtn" style="margin-top:25px; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; width:100%">সেভ করুন</button>
             </form>
         </div>
     </section>
@@ -137,16 +150,14 @@
     const ADMIN_UID = "MwpHepH5wSPqDF4B3hXKjek4vtq2";
     let isAdmin = false, allStudents = [], editId = null, charts = {};
 
-    // লগইন ফাংশন (উন্নত লজিক)
+    // --- Authentication ---
     document.getElementById('loginBtn').addEventListener('click', async () => {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPassword').value;
-        if(!email || !pass) return Swal.fire('Error', 'ইমেইল ও পাসওয়ার্ড দিন', 'warning');
-        
         try {
             await signInWithEmailAndPassword(auth, email, pass);
         } catch (error) {
-            Swal.fire('লগইন ব্যর্থ', 'ভুল ইমেইল বা পাসওয়ার্ড!', 'error');
+            Swal.fire('Error', 'ভুল ইমেইল বা পাসওয়ার্ড!', 'error');
         }
     });
 
@@ -155,29 +166,35 @@
             isAdmin = (user.uid === ADMIN_UID);
             document.getElementById('userBadge').innerText = isAdmin ? "অ্যাডমিন" : "শিক্ষক";
             document.getElementById('login-container').classList.add('hidden');
-            document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('main-content').style.display = 'block';
             syncData();
         } else {
             document.getElementById('login-container').classList.remove('hidden');
-            document.getElementById('sidebar').style.display = 'none';
             document.getElementById('main-content').style.display = 'none';
         }
     });
 
     document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
-    // Sidebar Navigation
-    document.querySelectorAll('.nav-item').forEach(btn => {
+    // --- UI Navigation ---
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(btn => {
         btn.onclick = () => {
-            const id = btn.dataset.sec; if(!id) return;
+            const secId = btn.dataset.sec;
+            if(!secId) return;
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(secId).classList.remove('hidden');
+            navItems.forEach(n => n.classList.remove('active'));
             btn.classList.add('active');
+            document.getElementById('sidebar').classList.remove('active');
         }
     });
 
+    document.getElementById('menu-toggle').onclick = () => {
+        document.getElementById('sidebar').classList.toggle('active');
+    };
+
+    // --- Data Management ---
     function syncData() {
         onSnapshot(collection(db, "students"), snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -199,10 +216,10 @@
             listBody.innerHTML += `
                 <tr>
                     <td><img src="${stu.photo || 'https://via.placeholder.com/60'}" class="stu-img"></td>
-                    <td><b>${stu.name}</b><br>রোল: ${stu.roll}<br>শ্রেণি: ${stu.className}</td>
-                    <td>জন্ম: ${stu.dob}<br>নিবন্ধন: ${stu.birthReg || '-'}</td>
-                    <td>${stu.fName || '-'}<br>Mob: ${stu.fMobile || '-'}</td>
-                    <td>${stu.mName || '-'}<br>Mob: ${stu.mMobile || '-'}</td>
+                    <td><b>${stu.name}</b><br>রোল: ${stu.roll} | শ্রেণি: ${stu.className}</td>
+                    <td>জন্ম: ${stu.dob}<br>${stu.birthReg || '-'}</td>
+                    <td>${stu.fName || '-'}<br>${stu.fMobile || '-'}</td>
+                    <td>${stu.mName || '-'}<br>${stu.mMobile || '-'}</td>
                     <td>
                         <button class="btn-edit" onclick="startEdit('${stu.id}')">এডিট</button>
                         <button class="btn-del" ${!isAdmin ? 'disabled' : ''} onclick="deleteStu('${stu.id}')">ডিলিট</button>
@@ -216,31 +233,54 @@
     }
 
     function renderCharts(s, a) {
-        if(charts.g) charts.g.destroy(); if(charts.a) charts.a.destroy();
+        if(charts.g) charts.g.destroy(); 
+        if(charts.a) charts.a.destroy();
         charts.g = new Chart(document.getElementById('genderChart'), { type: 'doughnut', data: { labels: ['ছাত্র','ছাত্রী'], datasets: [{ data: [s.ছাত্র, s.ছাত্রী], backgroundColor: ['#3b82f6','#ec4899'] }] }});
-        charts.a = new Chart(document.getElementById('ageChart'), { type: 'bar', data: { labels: Object.keys(a), datasets: [{ label: 'সংখ্যা', data: Object.values(a), backgroundColor: '#006a4e' }] }, options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }});
+        charts.a = new Chart(document.getElementById('ageChart'), { type: 'bar', data: { labels: Object.keys(a), datasets: [{ label: 'সংখ্যা', data: Object.values(a), backgroundColor: '#006a4e' }] }});
     }
 
+    // --- Global Actions (attached to window) ---
     window.startEdit = (id) => {
-        const s = allStudents.find(x => x.id === id); if(!s) return;
+        const s = allStudents.find(x => x.id === id);
+        if(!s) return;
         editId = id;
+        document.getElementById('formTitle').innerText = "তথ্য সংশোধন করুন";
         document.getElementById('name').value = s.name;
         document.getElementById('roll').value = s.roll;
         document.getElementById('className').value = s.className;
+        document.getElementById('gender').value = s.gender;
         document.getElementById('dob').value = s.dob;
+        document.getElementById('birthReg').value = s.birthReg || '';
+        document.getElementById('fName').value = s.fName || '';
+        document.getElementById('fMobile').value = s.fMobile || '';
+        document.getElementById('mName').value = s.mName || '';
+        document.getElementById('mMobile').value = s.mMobile || '';
+        
         document.querySelector('[data-sec="entry-sec"]').click();
     };
 
     window.deleteStu = async (id) => {
-        if(confirm('মুছে ফেলবেন?')) await deleteDoc(doc(db, "students", id));
+        const result = await Swal.fire({
+            title: 'আপনি কি নিশ্চিত?',
+            text: "এই ডাটাটি স্থায়ীভাবে মুছে যাবে!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            confirmButtonText: 'হ্যাঁ, ডিলিট করুন',
+            cancelButtonText: 'না'
+        });
+        if(result.isConfirmed) await deleteDoc(doc(db, "students", id));
     };
 
     document.getElementById('studentForm').onsubmit = async (e) => {
         e.preventDefault();
         let photoData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
-        if(document.getElementById('photoInput').files[0]) {
-            const reader = new FileReader(); reader.readAsDataURL(document.getElementById('photoInput').files[0]);
-            photoData = await new Promise(res => reader.onload = e => res(e.target.result));
+        
+        const file = document.getElementById('photoInput').files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            photoData = await new Promise(res => reader.onload = ev => res(ev.target.result));
         }
 
         const payload = {
@@ -249,6 +289,7 @@
             className: document.getElementById('className').value,
             gender: document.getElementById('gender').value,
             dob: document.getElementById('dob').value,
+            birthReg: document.getElementById('birthReg').value,
             fName: document.getElementById('fName').value,
             fMobile: document.getElementById('fMobile').value,
             mName: document.getElementById('mName').value,
@@ -256,12 +297,21 @@
             photo: photoData
         };
 
-        if(editId) await updateDoc(doc(db, "students", editId), payload);
-        else await addDoc(collection(db, "students"), payload);
-        
-        editId = null;
-        document.getElementById('studentForm').reset();
-        Swal.fire('সফল!', 'ডাটা সংরক্ষিত হয়েছে', 'success');
+        try {
+            if(editId) {
+                await updateDoc(doc(db, "students", editId), payload);
+            } else {
+                await addDoc(collection(db, "students"), payload);
+            }
+            
+            editId = null;
+            document.getElementById('formTitle').innerText = "শিক্ষার্থী ভর্তি ফরম";
+            document.getElementById('studentForm').reset();
+            Swal.fire('সফল!', 'ডাটা সংরক্ষিত হয়েছে', 'success');
+            document.querySelector('[data-sec="list-sec"]').click();
+        } catch (err) {
+            Swal.fire('Error', 'সেভ করতে সমস্যা হয়েছে', 'error');
+        }
     };
 </script>
 </body>
