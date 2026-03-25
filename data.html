@@ -33,7 +33,6 @@
         .stu-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; }
         .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .btn-del:disabled { opacity: 0.3; cursor: not-allowed; }
 
         #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; }
         .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; }
@@ -84,7 +83,7 @@
 
     <section id="entry-sec" class="hidden">
         <div class="card">
-            <h2 id="formTitle">শিক্ষার্থী ভর্তি ফরম</h2>
+            <h2 id="formTitle">শিক্ষার্থী ভর্তি ও সংশোধন ফরম</h2>
             <form id="studentForm">
                 <div class="form-grid">
                     <div class="form-group"><label>শিক্ষার্থীর নাম</label><input type="text" id="name" required></div>
@@ -99,9 +98,14 @@
                     <div class="form-group"><label>লিঙ্গ</label><select id="gender"><option value="ছাত্র">ছাত্র</option><option value="ছাত্রী">ছাত্রী</option></select></div>
                     <div class="form-group"><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
                     <div class="form-group"><label>জন্ম নিবন্ধন নম্বর</label><input type="text" id="birthReg"></div>
+                    
                     <div class="form-group"><label>পিতার নাম</label><input type="text" id="fName"></div>
+                    <div class="form-group"><label>পিতার NID</label><input type="text" id="fNid"></div>
                     <div class="form-group"><label>পিতার মোবাইল</label><input type="tel" id="fMobile"></div>
                     <div class="form-group"><label>মাতার নাম</label><input type="text" id="mName"></div>
+                    <div class="form-group"><label>মাতার NID</label><input type="text" id="mNid"></div>
+                    <div class="form-group"><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
+                    
                     <div class="form-group"><label>ছবি আপলোড</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
                 <button type="submit" style="margin-top:25px; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; width:100%">ডাটাবেসে সেভ করুন</button>
@@ -111,7 +115,7 @@
 
     <section id="list-sec" class="hidden">
         <div class="card">
-            <h2 style="color:var(--primary)">শিক্ষার্থী তালিকা</h2>
+            <h2 style="color:var(--primary)">শিক্ষার্থী ডাটাবেস</h2>
             <div class="table-wrap">
                 <table>
                     <thead>
@@ -152,33 +156,34 @@
     const ADMIN_UID = "MwpHepH5wSPqDF4B3hXKjek4vtq2";
     let isAdmin = false, allStudents = [], editId = null, charts = {};
 
-    // গ্লোবাল ফাংশন এ্যাসাইনমেন্ট (Error Prevention)
+    // গ্লোবাল ফাংশন
     window.startEdit = (id) => {
         const s = allStudents.find(x => x.id === id); if(!s) return;
         editId = id;
-        document.getElementById('name').value = s.name;
-        document.getElementById('roll').value = s.roll;
-        document.getElementById('className').value = s.className;
-        document.getElementById('gender').value = s.gender;
-        document.getElementById('dob').value = s.dob;
+        document.getElementById('name').value = s.name || "";
+        document.getElementById('roll').value = s.roll || "";
+        document.getElementById('className').value = s.className || "প্রাক";
+        document.getElementById('gender').value = s.gender || "ছাত্র";
+        document.getElementById('dob').value = s.dob || "";
         document.getElementById('birthReg').value = s.birthReg || "";
         document.getElementById('fName').value = s.fName || "";
+        document.getElementById('fNid').value = s.fNid || "";
         document.getElementById('fMobile').value = s.fMobile || "";
         document.getElementById('mName').value = s.mName || "";
+        document.getElementById('mNid').value = s.mNid || "";
+        document.getElementById('mMobile').value = s.mMobile || "";
         document.querySelector('[data-sec="entry-sec"]').click();
         document.getElementById('formTitle').innerText = "তথ্য সংশোধন: " + s.name;
     };
 
     window.deleteStu = async (id) => {
         if(!isAdmin) return Swal.fire('Error', 'শুধুমাত্র অ্যাডমিন ডিলিট করতে পারেন', 'error');
-        const res = await Swal.fire({ title: 'মুছে ফেলবেন?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
+        const res = await Swal.fire({ title: 'মুছে ফেলবেন?', icon: 'warning', showCancelButton: true });
         if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
     };
 
-    // Auth logic
-    document.getElementById('loginBtn').onclick = () => {
-        signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value).catch(() => Swal.fire('Error', 'লগইন তথ্য ভুল!', 'error'));
-    };
+    // Auth
+    document.getElementById('loginBtn').onclick = () => signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value).catch(() => Swal.fire('Error', 'ভুল তথ্য', 'error'));
     document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
 
     onAuthStateChanged(auth, user => {
@@ -201,7 +206,6 @@
             document.getElementById(id).classList.remove('hidden');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             btn.classList.add('active');
-            if(window.innerWidth < 768) sidebar.classList.remove('open');
         }
     });
 
@@ -220,13 +224,11 @@
         const listBody = document.getElementById('listBody');
         listBody.innerHTML = '';
         let sCount = { ছাত্র: 0, ছাত্রী: 0 };
-        let ageData = {};
-        for(let i=5; i<=15; i++) ageData[i + " বছর"] = 0;
+        let ageData = {}; for(let i=5; i<=15; i++) ageData[i + " বছর"] = 0;
 
         allStudents.forEach(stu => {
             sCount[stu.gender]++;
-            const birth = new Date(stu.dob);
-            const age = new Date().getFullYear() - birth.getFullYear();
+            const age = new Date().getFullYear() - new Date(stu.dob).getFullYear();
             if (age >= 5 && age <= 15) ageData[age + " বছর"]++;
 
             listBody.innerHTML += `
@@ -234,8 +236,8 @@
                     <td><img src="${stu.photo || 'https://via.placeholder.com/60'}" class="stu-img"></td>
                     <td><b>${stu.name}</b><br>রোল: ${stu.roll}<br>শ্রেণি: ${stu.className}</td>
                     <td>জন্ম: ${stu.dob}<br>নিবন্ধন: ${stu.birthReg || '-'}</td>
-                    <td>${stu.fName || '-'}<br>Mob: ${stu.fMobile || '-'}</td>
-                    <td>${stu.mName || '-'}</td>
+                    <td>${stu.fName || '-'}<br>Mob: ${stu.fMobile || '-'}<br>NID: ${stu.fNid || '-'}</td>
+                    <td>${stu.mName || '-'}<br>Mob: ${stu.mMobile || '-'}<br>NID: ${stu.mNid || '-'}</td>
                     <td>
                         <button class="btn-edit" onclick="startEdit('${stu.id}')">এডিট</button>
                         <button class="btn-del" ${!isAdmin ? 'disabled' : ''} onclick="deleteStu('${stu.id}')">ডিলিট</button>
@@ -243,55 +245,49 @@
                 </tr>`;
         });
         totalCount.innerText = allStudents.length;
-        boyCount.innerText = sCount.ছাত্র;
-        girlCount.innerText = sCount.ছাত্রী;
         renderCharts(sCount, ageData);
     }
 
     function renderCharts(s, a) {
         if(charts.g) charts.g.destroy(); if(charts.a) charts.a.destroy();
         charts.g = new Chart(genderChart, { type: 'doughnut', data: { labels: ['ছাত্র','ছাত্রী'], datasets: [{ data: [s.ছাত্র, s.ছাত্রী], backgroundColor: ['#3b82f6','#ec4899'] }] }});
-        charts.a = new Chart(ageChart, { type: 'bar', data: { labels: Object.keys(a), datasets: [{ label: 'শিক্ষার্থীর সংখ্যা', data: Object.values(a), backgroundColor: '#006a4e' }] }, options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }});
+        charts.a = new Chart(ageChart, { type: 'bar', data: { labels: Object.keys(a), datasets: [{ label: 'সংখ্যা', data: Object.values(a), backgroundColor: '#006a4e' }] }, options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }});
     }
-
-    // Image Compressor logic
-    const compressImg = (file) => new Promise(res => {
-        const reader = new FileReader(); reader.readAsDataURL(file);
-        reader.onload = (e) => {
-            const img = new Image(); img.src = e.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = 150; canvas.height = 150;
-                ctx.drawImage(img, 0, 0, 150, 150);
-                res(canvas.toDataURL('image/jpeg', 0.7));
-            }
-        }
-    });
 
     studentForm.onsubmit = async (e) => {
         e.preventDefault();
         const r = parseInt(document.getElementById('roll').value), c = document.getElementById('className').value;
         if(allStudents.some(x => x.id !== editId && x.roll === r && x.className === c)) 
-            return Swal.fire('সতর্কতা', 'এই রোলটি ইতিমধ্যে এই শ্রেণিতে আছে!', 'warning');
+            return Swal.fire('সতর্কতা', 'রোল বিদ্যমান!', 'warning');
 
         let photoData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
-        if(photoInput.files[0]) photoData = await compressImg(photoInput.files[0]);
+        if(photoInput.files[0]) {
+            const reader = new FileReader(); reader.readAsDataURL(photoInput.files[0]);
+            photoData = await new Promise(res => reader.onload = e => res(e.target.result));
+        }
 
         const payload = {
-            name: document.getElementById('name').value, roll: r, className: c,
-            gender: document.getElementById('gender').value, dob: document.getElementById('dob').value,
-            birthReg: document.getElementById('birthReg').value, fName: document.getElementById('fName').value,
-            fMobile: document.getElementById('fMobile').value, mName: document.getElementById('mName').value,
+            name: document.getElementById('name').value, 
+            roll: r, 
+            className: c,
+            gender: document.getElementById('gender').value, 
+            dob: document.getElementById('dob').value,
+            birthReg: document.getElementById('birthReg').value, 
+            fName: document.getElementById('fName').value,
+            fNid: document.getElementById('fNid').value,
+            fMobile: document.getElementById('fMobile').value, 
+            mName: document.getElementById('mName').value,
+            mNid: document.getElementById('mNid').value,
+            mMobile: document.getElementById('mMobile').value,
             photo: photoData
         };
 
         try {
             if(editId) { await updateDoc(doc(db, "students", editId), payload); editId = null; }
             else { await addDoc(collection(db, "students"), payload); }
-            Swal.fire('সফল!', 'তথ্য সংরক্ষিত হয়েছে', 'success');
+            Swal.fire('সফল!', 'সেভ হয়েছে', 'success');
             studentForm.reset(); document.querySelector('[data-sec="list-sec"]').click();
-            document.getElementById('formTitle').innerText = "শিক্ষার্থী ভর্তি ফরম";
+            document.getElementById('formTitle').innerText = "শিক্ষার্থী ভর্তি ও সংশোধন ফরম";
         } catch(err) { Swal.fire('Error', err.message, 'error'); }
     };
 </script>
