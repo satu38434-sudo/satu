@@ -59,7 +59,7 @@
         </header>
 
         <section class="form-section no-print">
-            <h3 style="margin-top: 0;">নতুন শিক্ষার্থী এন্ট্রি</h3>
+            <h3 id="formTitle" style="margin-top: 0;">নতুন শিক্ষার্থী এন্ট্রি</h3>
             <form id="studentForm">
                 <div class="grid-inputs">
                     <div><label>শিক্ষার্থীর নাম</label><input type="text" id="name" required></div>
@@ -81,6 +81,7 @@
                     <div><label>ছবি নির্বাচন (৩০০x৩০০)</label><input type="file" id="photo" accept="image/*"></div>
                 </div>
                 <button type="submit" id="saveBtn" style="margin-top: 20px; background: var(--primary); color: white; padding: 12px 30px; cursor: pointer; border: none; font-weight: bold; border-radius: 4px;">ডেটা সেভ করুন</button>
+                <button type="button" id="cancelEdit" style="display:none; margin-top: 20px; background: #666; color: white; padding: 12px 30px; cursor: pointer; border: none; font-weight: bold; border-radius: 4px; margin-left: 10px;">বাতিল করুন</button>
             </form>
         </section>
 
@@ -90,7 +91,7 @@
                 <button onclick="window.print()" class="no-print" style="background: #333; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px;">প্রিন্ট রিপোর্ট</button>
             </div>
             
-            <input type="text" id="searchInput" class="search-box no-print" placeholder="নাম, রোল, মোবাইল বা NID দিয়ে খুঁজুন...">
+            <input type="text" id="searchInput" class="search-box no-print" placeholder="নাম, রোল, মোবাইল বা NID দিয়ে খুঁজুন...">
 
             <div style="overflow-x: auto;">
                 <table>
@@ -109,7 +110,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDoc, doc, query, orderBy, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDoc, doc, query, orderBy, onSnapshot, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
@@ -126,6 +127,7 @@
 
     let isAdmin = false;
     let allStudents = [];
+    let editModeId = null;
 
     // --- AUTH LOGIC ---
     const loginBtn = document.getElementById('loginBtn');
@@ -154,7 +156,7 @@
             try {
                 const adminDoc = await getDoc(doc(db, "app_settings", "admin_config"));
                 isAdmin = (adminDoc.exists() && adminDoc.data().master_uid === user.uid);
-            } catch (e) { console.warn("Admin check failed - check rules"); }
+            } catch (e) { console.warn("Admin check failed"); }
 
             document.getElementById('login-container').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
@@ -181,22 +183,22 @@
                     canvas.width = 300; canvas.height = 300;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, 300, 300);
-                    resolve(canvas.toDataURL('image/jpeg', 0.6)); // Low quality for free tier
+                    resolve(canvas.toDataURL('image/jpeg', 0.6));
                 };
             };
         });
     };
 
-    // --- SAVE DATA ---
+    // --- SAVE / UPDATE DATA ---
     document.getElementById('studentForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const saveBtn = document.getElementById('saveBtn');
         const fileInput = document.getElementById('photo');
-        saveBtn.disabled = true; saveBtn.innerText = "সেভ হচ্ছে...";
-
-        let photoData = "https://via.placeholder.com/300?text=No+Photo";
+        saveBtn.disabled = true; 
+        saveBtn.innerText = editModeId ? "আপডেট হচ্ছে..." : "সেভ হচ্ছে...";
 
         try {
+            let photoData = null;
             if (fileInput.files[0]) {
                 photoData = await processImage(fileInput.files[0]);
             }
@@ -213,17 +215,28 @@
                 motherName: document.getElementById('motherName').value,
                 motherNid: document.getElementById('motherNid').value || '-',
                 mobile: document.getElementById('mobile').value,
-                photo: photoData,
                 timestamp: new Date()
             };
 
-            await addDoc(collection(db, "students"), data);
-            e.target.reset();
-            alert("সফলভাবে সেভ হয়েছে!");
+            if (photoData) {
+                data.photo = photoData;
+            }
+
+            if (editModeId) {
+                await updateDoc(doc(db, "students", editModeId), data);
+                alert("সফলভাবে আপডেট হয়েছে!");
+                resetForm();
+            } else {
+                if(!photoData) data.photo = "https://via.placeholder.com/300?text=No+Photo";
+                await addDoc(collection(db, "students"), data);
+                alert("সফলভাবে সেভ হয়েছে!");
+                e.target.reset();
+            }
         } catch (err) {
             alert("ত্রুটি: " + err.message);
         } finally {
-            saveBtn.disabled = false; saveBtn.innerText = "ডেটা সেভ করুন";
+            saveBtn.disabled = false;
+            saveBtn.innerText = editModeId ? "আপডেট করুন" : "ডেটা সেভ করুন";
         }
     });
 
@@ -255,6 +268,9 @@
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
         dataList.forEach(s => {
+            const editBtn = `<button class="btn-action" style="background:var(--warning); color:black" onclick="editStu('${s.id}')">এডিট</button>`;
+            const deleteBtn = isAdmin ? `<button class="btn-action" style="background:var(--danger);color:white" onclick="deleteStu('${s.id}')">ডিলিট</button>` : '';
+
             tbody.insertAdjacentHTML('beforeend', `
                 <tr>
                     <td><img src="${s.photo}" class="stu-img"></td>
@@ -263,12 +279,40 @@
                     <td>পিতা: ${s.fatherName} (${s.fatherNid})<br>মাতা: ${s.motherName} (${s.motherNid})</td>
                     <td>${s.mobile}<br>সেশন: ${s.session}</td>
                     <td class="no-print">
-                        ${isAdmin ? `<button class="btn-action" style="background:var(--danger);color:white" onclick="deleteStu('${s.id}')">ডিলিট</button>` : '---'}
+                        ${editBtn}
+                        ${deleteBtn}
                     </td>
                 </tr>
             `);
         });
     }
+
+    // --- GLOBAL ACTIONS ---
+    window.editStu = (id) => {
+        const s = allStudents.find(item => item.id === id);
+        if(!s) return;
+
+        editModeId = id;
+        document.getElementById('formTitle').innerText = "শিক্ষার্থী তথ্য আপডেট";
+        document.getElementById('saveBtn').innerText = "আপডেট করুন";
+        document.getElementById('saveBtn').style.background = "var(--warning)";
+        document.getElementById('saveBtn').style.color = "black";
+        document.getElementById('cancelEdit').style.display = "inline-block";
+
+        document.getElementById('name').value = s.name;
+        document.getElementById('roll').value = s.roll;
+        document.getElementById('birthReg').value = s.birthReg;
+        document.getElementById('dob').value = s.dob;
+        document.getElementById('className').value = s.className;
+        document.getElementById('session').value = s.session;
+        document.getElementById('fatherName').value = s.fatherName;
+        document.getElementById('fatherNid').value = s.fatherNid;
+        document.getElementById('motherName').value = s.motherName;
+        document.getElementById('motherNid').value = s.motherNid;
+        document.getElementById('mobile').value = s.mobile;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     window.deleteStu = async (id) => {
         if(confirm("আপনি কি নিশ্চিতভাবে এই ডাটা ডিলিট করতে চান?")) {
@@ -277,6 +321,18 @@
             } catch(e) { alert("ডিলিট করার অনুমতি নেই!"); }
         }
     };
+
+    document.getElementById('cancelEdit').addEventListener('click', resetForm);
+
+    function resetForm() {
+        editModeId = null;
+        document.getElementById('studentForm').reset();
+        document.getElementById('formTitle').innerText = "নতুন শিক্ষার্থী এন্ট্রি";
+        document.getElementById('saveBtn').innerText = "ডেটা সেভ করুন";
+        document.getElementById('saveBtn').style.background = "var(--primary)";
+        document.getElementById('saveBtn').style.color = "white";
+        document.getElementById('cancelEdit').style.display = "none";
+    }
 </script>
 </body>
 </html>
