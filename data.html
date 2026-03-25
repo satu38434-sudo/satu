@@ -3,31 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Admin - ২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</title>
+    <title>School Admin - ২১৭নং শেখ ফারিয়া জান্নাত শান্তনা</title>
     <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
     <style>
         :root { --primary: #006a4e; --bg: #f8f9fa; --border: #dee2e6; --danger: #dc3545; --warning: #ffc107; }
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; padding: 0; font-size: 14px; }
         
-        /* Login UI */
         #login-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
         .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 320px; text-align: center; border-top: 5px solid var(--primary); }
         .login-box input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
-        /* Dashboard UI */
         #dashboard { display: none; padding: 15px; }
         .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         
         header { text-align: center; border-bottom: 1px solid var(--border); margin-bottom: 20px; padding-bottom: 10px; position: relative; }
         .logout-btn { position: absolute; right: 0; top: 0; background: var(--danger); color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
 
-        /* Form Styling */
         .form-section { background: #fdfdfd; border: 1px solid var(--border); padding: 20px; margin-bottom: 25px; border-radius: 8px; }
         .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; color: #444; }
         input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Kalpurush'; width: 100%; box-sizing: border-box; }
         
-        /* Table & Search */
         .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid var(--primary); border-radius: 5px; font-family: 'Kalpurush'; font-size: 16px; box-sizing: border-box; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
@@ -42,7 +38,7 @@
 
 <div id="login-container">
     <div class="login-box">
-        <h2 style="color: var(--primary);">লগইন</h2>
+        <h2 style="color: var(--primary);">অ্যাডমিন লগইন</h2>
         <input type="email" id="loginEmail" placeholder="ইমেইল">
         <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড">
         <button id="loginBtn" style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 4px; font-weight: bold;">লগইন করুন</button>
@@ -73,7 +69,6 @@
                             <option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
                         </select>
                     </div>
-                    <div><label>সেশন</label><input type="text" id="session" placeholder="২০২৬"></div>
                     <div><label>পিতার নাম</label><input type="text" id="fatherName" required></div>
                     <div><label>পিতার NID</label><input type="text" id="fatherNid"></div>
                     <div><label>পিতার জন্ম তারিখ</label><input type="date" id="fatherDob"></div>
@@ -132,7 +127,6 @@
     let allStudents = [];
     let editModeId = null;
 
-    // --- AUTH LOGIC ---
     const loginBtn = document.getElementById('loginBtn');
     loginBtn.addEventListener('click', async () => {
         const email = document.getElementById('loginEmail').value;
@@ -173,7 +167,6 @@
         }
     });
 
-    // --- PHOTO COMPRESSION ---
     const processImage = (file) => {
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -192,7 +185,6 @@
         });
     };
 
-    // --- SAVE / UPDATE DATA ---
     document.getElementById('studentForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const saveBtn = document.getElementById('saveBtn');
@@ -212,7 +204,6 @@
                 birthReg: document.getElementById('birthReg').value,
                 dob: document.getElementById('dob').value,
                 className: document.getElementById('className').value,
-                session: document.getElementById('session').value || '২০২৬',
                 fatherName: document.getElementById('fatherName').value,
                 fatherNid: document.getElementById('fatherNid').value || '-',
                 fatherDob: document.getElementById('fatherDob').value || '-',
@@ -223,9 +214,7 @@
                 timestamp: new Date()
             };
 
-            if (photoData) {
-                data.photo = photoData;
-            }
+            if (photoData) data.photo = photoData;
 
             if (editModeId) {
                 await updateDoc(doc(db, "students", editModeId), data);
@@ -245,7 +234,6 @@
         }
     });
 
-    // --- SYNC & SEARCH ---
     function syncData() {
         const q = query(collection(db, "students"), orderBy("roll", "asc"));
         onSnapshot(q, (snap) => {
@@ -279,10 +267,10 @@
             tbody.insertAdjacentHTML('beforeend', `
                 <tr>
                     <td><img src="${s.photo}" class="stu-img"></td>
-                    <td><b>${s.name}</b><br>রোল: ${s.roll}<br>শ্রেণী: ${s.className}</td>
+                    <td><b>${s.name}</b><br>রোল: ${s.roll}<br>শ্রেণি: ${s.className}</td>
                     <td>নিবন্ধন: ${s.birthReg}<br>তারিখ: ${s.dob}</td>
                     <td>পিতা: ${s.fatherName} (${s.fatherNid}) [${s.fatherDob || '-'}]<br>মাতা: ${s.motherName} (${s.motherNid}) [${s.motherDob || '-'}]</td>
-                    <td>${s.mobile}<br>সেশন: ${s.session}</td>
+                    <td>${s.mobile}</td>
                     <td class="no-print">
                         ${editBtn}
                         ${deleteBtn}
@@ -292,7 +280,6 @@
         });
     }
 
-    // --- GLOBAL ACTIONS ---
     window.editStu = (id) => {
         const s = allStudents.find(item => item.id === id);
         if(!s) return;
@@ -309,7 +296,6 @@
         document.getElementById('birthReg').value = s.birthReg;
         document.getElementById('dob').value = s.dob;
         document.getElementById('className').value = s.className;
-        document.getElementById('session').value = s.session;
         document.getElementById('fatherName').value = s.fatherName;
         document.getElementById('fatherNid').value = s.fatherNid;
         document.getElementById('fatherDob').value = s.fatherDob || '';
