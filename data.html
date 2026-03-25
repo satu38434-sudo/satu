@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Admin - ২১৭নং শেখ ফারিয়া জান্নাত শান্তনা</title>
+    <link href="https://fonts.maateen.me/kalpurush/font.css" rel="stylesheet">
+    <style>
+        :root { --primary: #006a4e; --bg: #f8f9fa; --border: #dee2e6; --danger: #dc3545; --warning: #ffc107; }
+        body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; padding: 0; font-size: 14px; }
+        
+        #login-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 320px; text-align: center; border-top: 5px solid var(--primary); }
+        .login-box input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+
+        #dashboard { display: none; padding: 15px; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 1px solid var(--border); margin-bottom: 20px; padding-bottom: 10px; position: relative; }
+        .logout-btn { position: absolute; right: 0; top: 0; background: var(--danger); color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
+
+        .form-section { background: #fdfdfd; border: 1px solid var(--border); padding: 20px; margin-bottom: 25px; border-radius: 8px; }
+        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #444; }
+        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Kalpurush'; width: 100%; box-sizing: border-box; }
+        
+        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid var(--primary); border-radius: 5px; font-family: 'Kalpurush'; font-size: 16px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f4f4f4; }
+        .stu-img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; background: #eee; }
+        .btn-action { padding: 4px 8px; border: none; cursor: pointer; border-radius: 3px; margin: 2px; }
+
+        @media print { .no-print { display: none !important; } #dashboard { display: block !important; padding: 0; } .container { box-shadow: none; border: none; } }
+    </style>
+</head>
+<body>
+
+<div id="login-container">
+    <div class="login-box">
+        <h2 style="color: var(--primary);">অ্যাডমিন লগইন</h2>
+        <input type="email" id="loginEmail" placeholder="ইমেইল">
+        <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড">
+        <button id="loginBtn" style="width: 100%; background: var(--primary); color: white; border: none; padding: 12px; cursor: pointer; border-radius: 4px; font-weight: bold;">লগইন করুন</button>
+        <p id="loginError" style="color: red; font-size: 13px; margin-top: 10px; display: none;">ইমেইল বা পাসওয়ার্ড ভুল!</p>
+    </div>
+</div>
+
+<div id="dashboard">
+    <div class="container">
+        <header>
+            <button class="logout-btn no-print" id="logoutBtn">লগআউট</button>
+            <h2 style="color: var(--primary); margin: 0;">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ‌্যালয়</h2>
+            <p>ডিজিটাল শিক্ষার্থী ম্যানেজমেন্ট ডাটাবেস</p>
+        </header>
+
+        <section class="form-section no-print">
+            <h3 id="formTitle" style="margin-top: 0;">নতুন শিক্ষার্থী এন্ট্রি</h3>
+            <form id="studentForm">
+                <div class="grid-inputs">
+                    <div><label>শিক্ষার্থীর নাম</label><input type="text" id="name" required></div>
+                    <div><label>রোল</label><input type="number" id="roll" required></div>
+                    <div><label>জন্ম নিবন্ধন নম্বর</label><input type="text" id="birthReg" required></div>
+                    <div><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
+                    <div><label>শ্রেণি</label>
+                        <select id="className" required>
+                            <option value="প্রাক-প্রাথমিক">প্রাক-প্রাথমিক</option>
+                            <option value="১ম">১ম</option><option value="২য়">২য়</option><option value="৩য়">৩য়</option>
+                            <option value="৪র্থ">৪র্থ</option><option value="৫ম">৫ম</option>
+                        </select>
+                    </div>
+                    <div><label>পিতার নাম</label><input type="text" id="fatherName" required></div>
+                    <div><label>পিতার NID</label><input type="text" id="fatherNid"></div>
+                    <div><label>পিতার জন্ম তারিখ</label><input type="date" id="fatherDob"></div>
+                    <div><label>মাতার নাম</label><input type="text" id="motherName" required></div>
+                    <div><label>মাতার NID</label><input type="text" id="motherNid"></div>
+                    <div><label>মাতার জন্ম তারিখ</label><input type="date" id="motherDob"></div>
+                    <div><label>মোবাইল নম্বর</label><input type="tel" id="mobile" required></div>
+                    <div><label>ছবি নির্বাচন (৩০০x৩০০)</label><input type="file" id="photo" accept="image/*"></div>
+                </div>
+                <button type="submit" id="saveBtn" style="margin-top: 20px; background: var(--primary); color: white; padding: 12px 30px; cursor: pointer; border: none; font-weight: bold; border-radius: 4px;">ডেটা সেভ করুন</button>
+                <button type="button" id="cancelEdit" style="display:none; margin-top: 20px; background: #666; color: white; padding: 12px 30px; cursor: pointer; border: none; font-weight: bold; border-radius: 4px; margin-left: 10px;">বাতিল করুন</button>
+            </form>
+        </section>
+
+        <section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0;">শিক্ষার্থী তালিকা</h3>
+                <button onclick="window.print()" class="no-print" style="background: #333; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px;">প্রিন্ট রিপোর্ট</button>
+            </div>
+            
+            <input type="text" id="searchInput" class="search-box no-print" placeholder="নাম, রোল, মোবাইল বা NID দিয়ে খুঁজুন...">
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ছবি</th><th>রোল/নাম</th><th>জন্ম তথ্য</th><th>পিতা-মাতার তথ্য ও NID</th><th>যোগাযোগ</th><th class="no-print">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDoc, doc, query, orderBy, onSnapshot, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
+        authDomain: "my-school-data-5f899.firebaseapp.com",
+        projectId: "my-school-data-5f899",
+        storageBucket: "my-school-data-5f899.firebasestorage.app",
+        messagingSenderId: "566276841077",
+        appId: "1:566276841077:web:b42f3d65edb922cd03223c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let isAdmin = false;
+    let allStudents = [];
+    let editModeId = null;
+
+    const loginBtn = document.getElementById('loginBtn');
+    loginBtn.addEventListener('click', async () => {
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        if(!email || !pass) return alert("সব ঘর পূরণ করুন");
+        
+        loginBtn.innerText = "চেক হচ্ছে...";
+        loginBtn.disabled = true;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+        } catch (err) {
+            console.error(err);
+            document.getElementById('loginError').style.display = 'block';
+            loginBtn.innerText = "লগইন করুন";
+            loginBtn.disabled = false;
+        }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            try {
+                const adminDoc = await getDoc(doc(db, "app_settings", "admin_config"));
+                isAdmin = (adminDoc.exists() && adminDoc.data().master_uid === user.uid);
+            } catch (e) { console.warn("Admin check failed"); }
+
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            syncData();
+        } else {
+            isAdmin = false;
+            document.getElementById('login-container').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            loginBtn.innerText = "লগইন করুন";
+            loginBtn.disabled = false;
+        }
+    });
+
+    const processImage = (file) => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 300; canvas.height = 300;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, 300, 300);
+                    resolve(canvas.toDataURL('image/jpeg', 0.6));
+                };
+            };
+        });
+    };
+
+    document.getElementById('studentForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const saveBtn = document.getElementById('saveBtn');
+        const fileInput = document.getElementById('photo');
+        saveBtn.disabled = true; 
+        saveBtn.innerText = editModeId ? "আপডেট হচ্ছে..." : "সেভ হচ্ছে...";
+
+        try {
+            let photoData = null;
+            if (fileInput.files[0]) {
+                photoData = await processImage(fileInput.files[0]);
+            }
+
+            const data = {
+                name: document.getElementById('name').value,
+                roll: parseInt(document.getElementById('roll').value),
+                birthReg: document.getElementById('birthReg').value,
+                dob: document.getElementById('dob').value,
+                className: document.getElementById('className').value,
+                fatherName: document.getElementById('fatherName').value,
+                fatherNid: document.getElementById('fatherNid').value || '-',
+                fatherDob: document.getElementById('fatherDob').value || '-',
+                motherName: document.getElementById('motherName').value,
+                motherNid: document.getElementById('motherNid').value || '-',
+                motherDob: document.getElementById('motherDob').value || '-',
+                mobile: document.getElementById('mobile').value,
+                timestamp: new Date()
+            };
+
+            if (photoData) data.photo = photoData;
+
+            if (editModeId) {
+                await updateDoc(doc(db, "students", editModeId), data);
+                alert("সফলভাবে আপডেট হয়েছে!");
+                resetForm();
+            } else {
+                if(!photoData) data.photo = "https://via.placeholder.com/300?text=No+Photo";
+                await addDoc(collection(db, "students"), data);
+                alert("সফলভাবে সেভ হয়েছে!");
+                e.target.reset();
+            }
+        } catch (err) {
+            alert("ত্রুটি: " + err.message);
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerText = editModeId ? "আপডেট করুন" : "ডেটা সেভ করুন";
+        }
+    });
+
+    function syncData() {
+        const q = query(collection(db, "students"), orderBy("roll", "asc"));
+        onSnapshot(q, (snap) => {
+            allStudents = [];
+            snap.forEach(docSnap => {
+                allStudents.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            renderTable(allStudents);
+        });
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = allStudents.filter(s => 
+            s.name.toLowerCase().includes(term) || 
+            s.roll.toString().includes(term) || 
+            s.mobile.includes(term) ||
+            s.fatherNid.includes(term) ||
+            s.birthReg.includes(term)
+        );
+        renderTable(filtered);
+    });
+
+    function renderTable(dataList) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        dataList.forEach(s => {
+            const editBtn = `<button class="btn-action" style="background:var(--warning); color:black" onclick="editStu('${s.id}')">এডিট</button>`;
+            const deleteBtn = isAdmin ? `<button class="btn-action" style="background:var(--danger);color:white" onclick="deleteStu('${s.id}')">ডিলিট</button>` : '';
+
+            tbody.insertAdjacentHTML('beforeend', `
+                <tr>
+                    <td><img src="${s.photo}" class="stu-img"></td>
+                    <td><b>${s.name}</b><br>রোল: ${s.roll}<br>শ্রেণি: ${s.className}</td>
+                    <td>নিবন্ধন: ${s.birthReg}<br>তারিখ: ${s.dob}</td>
+                    <td>পিতা: ${s.fatherName} (${s.fatherNid}) [${s.fatherDob || '-'}]<br>মাতা: ${s.motherName} (${s.motherNid}) [${s.motherDob || '-'}]</td>
+                    <td>${s.mobile}</td>
+                    <td class="no-print">
+                        ${editBtn}
+                        ${deleteBtn}
+                    </td>
+                </tr>
+            `);
+        });
+    }
+
+    window.editStu = (id) => {
+        const s = allStudents.find(item => item.id === id);
+        if(!s) return;
+
+        editModeId = id;
+        document.getElementById('formTitle').innerText = "শিক্ষার্থী তথ্য আপডেট";
+        document.getElementById('saveBtn').innerText = "আপডেট করুন";
+        document.getElementById('saveBtn').style.background = "var(--warning)";
+        document.getElementById('saveBtn').style.color = "black";
+        document.getElementById('cancelEdit').style.display = "inline-block";
+
+        document.getElementById('name').value = s.name;
+        document.getElementById('roll').value = s.roll;
+        document.getElementById('birthReg').value = s.birthReg;
+        document.getElementById('dob').value = s.dob;
+        document.getElementById('className').value = s.className;
+        document.getElementById('fatherName').value = s.fatherName;
+        document.getElementById('fatherNid').value = s.fatherNid;
+        document.getElementById('fatherDob').value = s.fatherDob || '';
+        document.getElementById('motherName').value = s.motherName;
+        document.getElementById('motherNid').value = s.motherNid;
+        document.getElementById('motherDob').value = s.motherDob || '';
+        document.getElementById('mobile').value = s.mobile;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.deleteStu = async (id) => {
+        if(confirm("আপনি কি নিশ্চিতভাবে এই ডাটা ডিলিট করতে চান?")) {
+            try {
+                await deleteDoc(doc(db, "students", id));
+            } catch(e) { alert("ডিলিট করার অনুমতি নেই!"); }
+        }
+    };
+
+    document.getElementById('cancelEdit').addEventListener('click', resetForm);
+
+    function resetForm() {
+        editModeId = null;
+        document.getElementById('studentForm').reset();
+        document.getElementById('formTitle').innerText = "নতুন শিক্ষার্থী এন্ট্রি";
+        document.getElementById('saveBtn').innerText = "ডেটা সেভ করুন";
+        document.getElementById('saveBtn').style.background = "var(--primary)";
+        document.getElementById('saveBtn').style.color = "white";
+        document.getElementById('cancelEdit').style.display = "none";
+    }
+</script>
+</body>
+</html>
