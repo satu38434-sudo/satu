@@ -35,7 +35,7 @@
         input:focus { border-color: var(--primary); }
         
         .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; background: white; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1200px; }
         th { background: #f8fafc; color: var(--primary); padding: 15px; text-align: left; border-bottom: 2px solid #edf2f7; }
         td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
         
@@ -70,7 +70,7 @@
     <div class="nav-item active" data-sec="dashboard-sec">📊 পরিসংখ্যান</div>
     <div class="nav-item" data-sec="entry-sec">📝 ভর্তি ও সংশোধন ফরম</div>
     <div class="nav-item" data-sec="list-sec">📋 শিক্ষার্থী ডাটাবেস</div>
-    <div class="nav-item" id="logoutBtn" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</div>
+    <div id="logoutBtn" class="nav-item" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</div>
 </aside>
 
 <main id="main-content">
@@ -103,10 +103,17 @@
                     <div class="form-group"><label>লিঙ্গ</label><select id="gender"><option value="ছাত্র">ছাত্র</option><option value="ছাত্রী">ছাত্রী</option></select></div>
                     <div class="form-group"><label>জন্ম তারিখ</label><input type="date" id="dob" required></div>
                     <div class="form-group"><label>জন্ম নিবন্ধন নম্বর</label><input type="text" id="birthReg"></div>
+                    
                     <div class="form-group"><label>পিতার নাম</label><input type="text" id="fName"></div>
+                    <div class="form-group"><label>পিতার এনআইডি (NID)</label><input type="text" id="fNid"></div>
+                    <div class="form-group"><label>পিতার জন্ম তারিখ</label><input type="date" id="fDob"></div>
                     <div class="form-group"><label>পিতার মোবাইল</label><input type="tel" id="fMobile"></div>
+                    
                     <div class="form-group"><label>মাতার নাম</label><input type="text" id="mName"></div>
+                    <div class="form-group"><label>মাতার এনআইডি (NID)</label><input type="text" id="mNid"></div>
+                    <div class="form-group"><label>মাতার জন্ম তারিখ</label><input type="date" id="mDob"></div>
                     <div class="form-group"><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
+                    
                     <div class="form-group"><label>ছবি আপলোড</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
                 <button type="submit" id="submitBtn" style="margin-top:25px; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; width:100%">সেভ করুন</button>
@@ -120,7 +127,14 @@
             <div class="table-wrap">
                 <table>
                     <thead>
-                        <tr><th>ছবি</th><th>শিক্ষার্থীর তথ্য</th><th>জন্ম ও নিবন্ধন</th><th>পিতার তথ্য</th><th>মাতার তথ্য</th><th>অ্যাকশন</th></tr>
+                        <tr>
+                            <th>ছবি</th>
+                            <th>শিক্ষার্থীর তথ্য</th>
+                            <th>জন্ম ও নিবন্ধন</th>
+                            <th>পিতার তথ্য (NID/DOB)</th>
+                            <th>মাতার তথ্য (NID/DOB)</th>
+                            <th>অ্যাকশন</th>
+                        </tr>
                     </thead>
                     <tbody id="listBody"></tbody>
                 </table>
@@ -176,7 +190,7 @@
 
     document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
-    // --- Navigation Logic ---
+    // --- Navigation ---
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(btn => {
         btn.onclick = () => {
@@ -194,18 +208,13 @@
         document.getElementById('sidebar').classList.toggle('active');
     };
 
-    // --- Data Management (With Logical Sorting) ---
+    // --- Data Management ---
     function syncData() {
-        // Logical sorting: First by Class name, then by Roll number
         const q = query(collection(db, "students"), orderBy("className"), orderBy("roll"));
-        
         onSnapshot(q, snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
             updateUI();
-        }, (error) => {
-            console.error("Sorting error: ", error);
-            // If you see an error here, check the console for a Firebase link to create an Index.
-        });
+        }, (err) => { console.error("Snapshot error: ", err); });
     }
 
     function updateUI() {
@@ -224,8 +233,8 @@
                     <td><img src="${stu.photo || 'https://via.placeholder.com/60'}" class="stu-img"></td>
                     <td><b>${stu.name}</b><br>রোল: ${stu.roll} | শ্রেণি: ${stu.className}</td>
                     <td>জন্ম: ${stu.dob}<br>${stu.birthReg || '-'}</td>
-                    <td>${stu.fName || '-'}<br>${stu.fMobile || '-'}</td>
-                    <td>${stu.mName || '-'}<br>${stu.mMobile || '-'}</td>
+                    <td>${stu.fName || '-'}<br>NID: ${stu.fNid || '-'}<br>DOB: ${stu.fDob || '-'}<br>Mob: ${stu.fMobile || '-'}</td>
+                    <td>${stu.mName || '-'}<br>NID: ${stu.mNid || '-'}<br>DOB: ${stu.mDob || '-'}<br>Mob: ${stu.mMobile || '-'}</td>
                     <td>
                         <button class="btn-edit" onclick="startEdit('${stu.id}')">এডিট</button>
                         <button class="btn-del" ${!isAdmin ? 'disabled' : ''} onclick="deleteStu('${stu.id}')">ডিলিট</button>
@@ -245,7 +254,7 @@
         charts.a = new Chart(document.getElementById('ageChart'), { type: 'bar', data: { labels: Object.keys(a), datasets: [{ label: 'সংখ্যা', data: Object.values(a), backgroundColor: '#006a4e' }] }});
     }
 
-    // --- Global Actions (attached to window) ---
+    // --- Global Actions ---
     window.startEdit = (id) => {
         const s = allStudents.find(x => x.id === id);
         if(!s) return;
@@ -258,8 +267,12 @@
         document.getElementById('dob').value = s.dob;
         document.getElementById('birthReg').value = s.birthReg || '';
         document.getElementById('fName').value = s.fName || '';
+        document.getElementById('fNid').value = s.fNid || '';
+        document.getElementById('fDob').value = s.fDob || '';
         document.getElementById('fMobile').value = s.fMobile || '';
         document.getElementById('mName').value = s.mName || '';
+        document.getElementById('mNid').value = s.mNid || '';
+        document.getElementById('mDob').value = s.mDob || '';
         document.getElementById('mMobile').value = s.mMobile || '';
         
         document.querySelector('[data-sec="entry-sec"]').click();
@@ -268,7 +281,7 @@
     window.deleteStu = async (id) => {
         const result = await Swal.fire({
             title: 'আপনি কি নিশ্চিত?',
-            text: "এই ডাটাটি স্থায়ীভাবে মুছে যাবে!",
+            text: "এই ডাটাটি স্থায়ীভাবে মুছে যাবে!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
@@ -297,8 +310,12 @@
             dob: document.getElementById('dob').value,
             birthReg: document.getElementById('birthReg').value,
             fName: document.getElementById('fName').value,
+            fNid: document.getElementById('fNid').value,
+            fDob: document.getElementById('fDob').value,
             fMobile: document.getElementById('fMobile').value,
             mName: document.getElementById('mName').value,
+            mNid: document.getElementById('mNid').value,
+            mDob: document.getElementById('mDob').value,
             mMobile: document.getElementById('mMobile').value,
             photo: photoData
         };
@@ -316,7 +333,7 @@
             Swal.fire('সফল!', 'ডাটা সংরক্ষিত হয়েছে', 'success');
             document.querySelector('[data-sec="list-sec"]').click();
         } catch (err) {
-            Swal.fire('Error', 'সেভ করতে সমস্যা হয়েছে', 'error');
+            Swal.fire('Error', 'সেভ করতে সমস্যা হয়েছে', 'error');
         }
     };
 </script>
