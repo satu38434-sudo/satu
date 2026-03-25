@@ -10,22 +10,18 @@
     <style>
         :root { --primary: #006a4e; --sidebar-bg: #1e293b; --bg: #f1f5f9; }
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-
         #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; z-index: 1000; position: relative; }
         #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         .sidebar-header { padding: 20px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: var(--primary); }
         .role-tag { font-size: 11px; background: #fbbf24; color: #000; padding: 3px 10px; border-radius: 12px; margin-top: 8px; display: inline-block; font-weight: bold; }
-
         #main-content { flex: 1; overflow-y: auto; display: none; padding: 20px; padding-top: 75px; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 15px; }
         .form-group label { font-weight: bold; color: #475569; display: block; margin-bottom: 5px; font-size: 14px; }
         input, select { width: 100%; padding: 11px; border: 1.5px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-family: 'Kalpurush'; outline: none; }
         input:focus { border-color: var(--primary); }
-
         .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; background: white; }
         table { width: 100%; border-collapse: collapse; min-width: 1400px; }
         th { background: #f8fafc; color: var(--primary); padding: 15px; text-align: left; position: sticky; top: 0; border-bottom: 2px solid #edf2f7; z-index: 5; }
@@ -33,10 +29,8 @@
         .stu-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; }
         .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-del { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
         #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; }
         .login-box { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 360px; text-align: center; }
-
         @media (max-width: 768px) { #sidebar { position: fixed; height: 100vh; left: -260px; display: flex; } #sidebar.open { left: 0; } #menu-toggle { display: block; } }
         .hidden { display: none !important; }
     </style>
@@ -47,7 +41,7 @@
 
 <div id="login-container">
     <div class="login-box">
-        <h2 style="color:var(--primary)">স্কুল প্যানেল লগইন</h2>
+        <h2 style="color:var(--primary)">স্কুল ম্যানেজমেন্ট</h2>
         <input type="email" id="loginEmail" placeholder="ইমেইল">
         <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড">
         <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">প্রবেশ করুন</button>
@@ -56,8 +50,8 @@
 
 <aside id="sidebar">
     <div class="sidebar-header">
-        <h3>ড্যাশবোর্ড</h3>
-        <span id="userBadge" class="role-tag">যাচাই হচ্ছে...</span>
+        <h3>প্যানেল মেনু</h3>
+        <span id="userBadge" class="role-tag">যাচাই...</span>
     </div>
     <div class="nav-item active" data-sec="dashboard-sec">📊 পরিসংখ্যান</div>
     <div class="nav-item" data-sec="entry-sec">📝 ভর্তি ও সংশোধন ফরম</div>
@@ -71,9 +65,9 @@
 <main id="main-content">
     <section id="dashboard-sec">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px;">
-            <div class="card" style="text-align: center;">মোট শিক্ষার্থী<h2 id="totalCount">0</h2></div>
-            <div class="card" style="text-align: center;">ছাত্র<h2 id="boyCount" style="color:#3b82f6">0</h2></div>
-            <div class="card" style="text-align: center;">ছাত্রী<h2 id="girlCount" style="color:#ec4899">0</h2></div>
+            <div class="card" style="text-align: center;">মোট শিক্ষার্থী<h2 id="dispTotal">0</h2></div>
+            <div class="card" style="text-align: center;">ছাত্র<h2 id="dispBoy" style="color:#3b82f6">0</h2></div>
+            <div class="card" style="text-align: center;">ছাত্রী<h2 id="dispGirl" style="color:#ec4899">0</h2></div>
         </div>
         <div style="display: flex; gap: 20px; flex-wrap: wrap;">
             <div class="card" style="flex: 1; min-width: 300px;"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
@@ -106,7 +100,7 @@
                     <div class="form-group"><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
                     <div class="form-group"><label>ছবি আপলোড</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
-                <button type="submit" style="margin-top:25px; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; width:100%">ডাটাবেসে সেভ করুন</button>
+                <button type="submit" id="submitBtn" style="margin-top:25px; padding:16px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; width:100%">ডাটাবেসে সেভ করুন</button>
             </form>
         </div>
     </section>
@@ -154,7 +148,6 @@
     const ADMIN_UID = "MwpHepH5wSPqDF4B3hXKjek4vtq2";
     let isAdmin = false, allStudents = [], editId = null, charts = {};
 
-    // গ্লোবাল ফাংশন এ্যাসাইনমেন্ট
     window.startEdit = (id) => {
         const s = allStudents.find(x => x.id === id); if(!s) return;
         editId = id;
@@ -180,10 +173,7 @@
         if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
     };
 
-    // Auth লজিক
-    document.getElementById('loginBtn').onclick = () => {
-        signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value).catch(() => Swal.fire('Error', 'ভুল তথ্য', 'error'));
-    };
+    document.getElementById('loginBtn').onclick = () => signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value).catch(() => Swal.fire('Error', 'ভুল তথ্য', 'error'));
     document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
 
     onAuthStateChanged(auth, user => {
@@ -198,7 +188,6 @@
         }
     });
 
-    // নেভিগেশন
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.onclick = () => {
             const id = btn.dataset.sec; if(!id) return;
@@ -212,7 +201,6 @@
 
     menu_toggle.onclick = () => sidebar.classList.toggle('open');
 
-    // ডাটা সিঙ্ক
     function syncData() {
         onSnapshot(collection(db, "students"), snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -225,11 +213,11 @@
     function updateUI() {
         const listBody = document.getElementById('listBody');
         listBody.innerHTML = '';
-        let sCount = { ছাত্র: 0, ছাত্রী: 0 };
+        let counts = { ছাত্র: 0, ছাত্রী: 0 };
         let ageData = {}; for(let i=5; i<=15; i++) ageData[i + " বছর"] = 0;
 
         allStudents.forEach(stu => {
-            sCount[stu.gender]++;
+            counts[stu.gender]++;
             const age = new Date().getFullYear() - new Date(stu.dob).getFullYear();
             if (age >= 5 && age <= 15) ageData[age + " বছর"]++;
 
@@ -247,11 +235,10 @@
                 </tr>`;
         });
         
-        // ড্যাশবোর্ড আপডেট (ফিক্সড)
-        document.getElementById('totalCount').innerText = allStudents.length;
-        document.getElementById('boyCount').innerText = sCount.ছাত্র;
-        document.getElementById('girlCount').innerText = sCount.ছাত্রী;
-        renderCharts(sCount, ageData);
+        document.getElementById('dispTotal').innerText = allStudents.length;
+        document.getElementById('dispBoy').innerText = counts.ছাত্র;
+        document.getElementById('dispGirl').innerText = counts.ছাত্রী;
+        renderCharts(counts, ageData);
     }
 
     function renderCharts(s, a) {
@@ -260,33 +247,28 @@
         charts.a = new Chart(ageChart, { type: 'bar', data: { labels: Object.keys(a), datasets: [{ label: 'সংখ্যা', data: Object.values(a), backgroundColor: '#006a4e' }] }, options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }});
     }
 
-    // ফরম সাবমিট
     studentForm.onsubmit = async (e) => {
         e.preventDefault();
         const r = parseInt(document.getElementById('roll').value), c = document.getElementById('className').value;
         if(allStudents.some(x => x.id !== editId && x.roll === r && x.className === c)) 
             return Swal.fire('সতর্কতা', 'রোল বিদ্যমান!', 'warning');
 
-        let photoData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
+        // Image লজিক ফিক্স: এডিট মুডে নতুন ছবি না দিলে পুরানোটাই থাকবে
+        let photoData = "";
+        if(editId) photoData = allStudents.find(x => x.id === editId).photo || "";
+        
         if(photoInput.files[0]) {
             const reader = new FileReader(); reader.readAsDataURL(photoInput.files[0]);
             photoData = await new Promise(res => reader.onload = e => res(e.target.result));
         }
 
         const payload = {
-            name: document.getElementById('name').value, 
-            roll: r, 
-            className: c,
-            gender: document.getElementById('gender').value, 
-            dob: document.getElementById('dob').value,
-            birthReg: document.getElementById('birthReg').value, 
-            fName: document.getElementById('fName').value,
-            fNid: document.getElementById('fNid').value,
-            fMobile: document.getElementById('fMobile').value, 
-            mName: document.getElementById('mName').value,
-            mNid: document.getElementById('mNid').value,
-            mMobile: document.getElementById('mMobile').value,
-            photo: photoData
+            name: document.getElementById('name').value, roll: r, className: c,
+            gender: document.getElementById('gender').value, dob: document.getElementById('dob').value,
+            birthReg: document.getElementById('birthReg').value, fName: document.getElementById('fName').value,
+            fNid: document.getElementById('fNid').value, fMobile: document.getElementById('fMobile').value, 
+            mName: document.getElementById('mName').value, mNid: document.getElementById('mNid').value,
+            mMobile: document.getElementById('mMobile').value, photo: photoData
         };
 
         try {
