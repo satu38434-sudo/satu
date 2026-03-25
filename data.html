@@ -12,8 +12,9 @@
         body { font-family: 'Kalpurush', sans-serif; background-color: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
         /* Navigation & Sidebar */
-        #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; z-index: 1000; }
-        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; }
+        #sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: none; flex-direction: column; z-index: 1000; position: relative; }
+        #menu-toggle { display: none; position: fixed; top: 15px; left: 15px; background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; z-index: 1100; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .sidebar-header { padding: 20px; text-align: center; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-item { padding: 15px 25px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; }
         .nav-item:hover, .nav-item.active { background: var(--primary); }
 
@@ -21,21 +22,27 @@
         #main-content { flex: 1; overflow-y: auto; display: none; padding: 20px; padding-top: 75px; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
 
-        /* Table - Professional View */
+        /* Stats & Charts */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 15px; border-radius: 10px; text-align: center; border-bottom: 4px solid var(--primary); }
+        .charts-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .chart-box { flex: 1; min-width: 300px; background: white; padding: 20px; border-radius: 12px; }
+
+        /* Professional Table */
         .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; min-width: 1250px; background: white; }
-        th { background: #f8fafc; color: var(--primary); padding: 15px; text-align: left; font-weight: bold; position: sticky; top: 0; }
+        table { width: 100%; border-collapse: collapse; min-width: 1300px; background: white; }
+        th { background: #f8fafc; color: var(--primary); padding: 15px; text-align: left; font-weight: bold; position: sticky; top: 0; border-bottom: 2px solid #eee; }
         td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; vertical-align: top; line-height: 1.5; }
-        .stu-img { width: 60px; height: 60px; border-radius: 6px; object-fit: cover; border: 1px solid #eee; }
-        .info-label { color: #64748b; font-size: 11px; font-weight: bold; display: block; }
+        .stu-img { width: 65px; height: 65px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd; }
+        .info-label { color: #64748b; font-size: 11px; font-weight: bold; display: block; margin-top: 2px; }
 
-        /* Inputs */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-family: 'Kalpurush'; box-sizing: border-box; }
-        
-        .btn-edit { background: #f59e0b; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; margin-bottom: 5px; width: 80px; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; width: 80px; }
+        /* Forms & Buttons */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        input, select { width: 100%; padding: 11px; border: 1px solid #d1d5db; border-radius: 7px; font-family: 'Kalpurush'; box-sizing: border-box; }
+        .btn-edit { background: #f59e0b; color: white; border: none; padding: 6px 14px; border-radius: 5px; cursor: pointer; margin-bottom: 5px; width: 85px; font-weight: bold; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 6px 14px; border-radius: 5px; cursor: pointer; width: 85px; font-weight: bold; }
 
+        /* Login UI */
         #login-container { width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--primary); position: fixed; z-index: 2000; }
         .login-box { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 350px; text-align: center; }
 
@@ -54,33 +61,43 @@
 <div id="login-container">
     <div class="login-box">
         <h2 style="color:var(--primary)">অ্যাডমিন পোর্টাল</h2>
-        <input type="email" id="loginEmail" placeholder="ইমেইল" style="margin-bottom:15px">
+        <input type="email" id="loginEmail" placeholder="অ্যাডমিন ইমেইল" style="margin-bottom:15px">
         <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" style="margin-bottom:20px">
-        <button id="loginBtn" style="width:100%; padding:12px; background:var(--primary); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">লগইন করুন</button>
+        <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">লগইন করুন</button>
     </div>
 </div>
 
 <aside id="sidebar">
-    <div class="sidebar-header"><h4>স্কুল ম্যানেজমেন্ট</h4></div>
+    <div class="sidebar-header"><h3>স্কুল ম্যানেজমেন্ট</h3></div>
     <div class="nav-item active" data-sec="dashboard-sec">📊 ড্যাশবোর্ড</div>
     <div class="nav-item" data-sec="entry-sec">📝 নতুন এন্ট্রি</div>
     <div class="nav-item" data-sec="list-sec">📋 শিক্ষার্থী তালিকা</div>
+    <div class="nav-item" id="addDemoBtn" style="color:#10b981; font-weight:bold;">✨ ডেমো ডেটা যোগ</div>
     <div class="nav-item" id="logoutBtn" style="color:#fb7185; margin-top: auto;">🚪 লগআউট</div>
 </aside>
 
 <main id="main-content">
     <section id="dashboard-sec">
-        <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
-            <div>মোট শিক্ষার্থী<h2 id="totalCount">0</h2></div>
-            <div>ছাত্র<h2 id="boyCount" style="color:#3b82f6">0</h2></div>
-            <div>ছাত্রী<h2 id="girlCount" style="color:#ec4899">0</h2></div>
+        <div class="stats-grid">
+            <div class="stat-card">মোট শিক্ষার্থী<h2 id="totalCount">0</h2></div>
+            <div class="stat-card">ছাত্র<h2 id="boyCount" style="color:#3b82f6">0</h2></div>
+            <div class="stat-card">ছাত্রী<h2 id="girlCount" style="color:#ec4899">0</h2></div>
         </div>
-        <div class="card" style="max-width:400px; margin:auto;"><canvas id="genderChart"></canvas></div>
+        <div class="charts-container">
+            <div class="chart-box" style="max-width: 400px; text-align: center;">
+                <h3>লিঙ্গ অনুপাত</h3>
+                <canvas id="genderChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>বয়স ভিত্তিক পরিসংখ্যান</h3>
+                <canvas id="ageChart"></canvas>
+            </div>
+        </div>
     </section>
 
     <section id="entry-sec" class="hidden">
         <div class="card">
-            <h2 id="formTitle">শিক্ষার্থী তথ্য ফরম</h2>
+            <h2 id="formTitle">নতুন শিক্ষার্থী ভর্তি ফরম</h2>
             <form id="studentForm">
                 <div class="form-grid">
                     <div><label>নাম</label><input type="text" id="name" required></div>
@@ -103,24 +120,24 @@
                     <div><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
                     <div><label>ছবি</label><input type="file" id="photoInput" accept="image/*"></div>
                 </div>
-                <button type="submit" id="saveBtn" style="margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; width:100%">সংরক্ষণ করুন</button>
+                <button type="submit" id="saveBtn" style="margin-top:20px; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; width:100%">ডাটা সংরক্ষণ করুন</button>
             </form>
         </div>
     </section>
 
     <section id="list-sec" class="hidden">
         <div class="card">
-            <h2 style="color:var(--primary)">শিক্ষার্থী তালিকা</h2>
+            <h2 style="color: var(--primary);">শিক্ষার্থী তথ্য ডাটাবেস</h2>
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
                             <th>ছবি</th>
                             <th>নাম, শ্রেণি ও রোল</th>
-                            <th>জন্ম নিবন্ধন ও তারিখ</th>
-                            <th>পিতার তথ্য (NID/DOB/Mob)</th>
-                            <th>মাতার তথ্য (NID/DOB/Mob)</th>
-                            <th>অ্যাকশন</th>
+                            <th>নিবন্ধন ও জন্মতারিখ</th>
+                            <th>বাবার তথ্য (NID/DOB/Mob)</th>
+                            <th>মায়ের তথ্য (NID/DOB/Mob)</th>
+                            <th style="text-align:center">অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody id="listBody"></tbody>
@@ -135,6 +152,7 @@
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+    // Firebase Config (Using your provided keys)
     const firebaseConfig = {
         apiKey: "AIzaSyDqGQfraSmrz4Ev56TQxQVaqYPaaFi6yLs",
         authDomain: "my-school-data-5f899.firebaseapp.com",
@@ -148,15 +166,13 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let allStudents = [], editId = null, genderChart = null;
+    let allStudents = [], editId = null, charts = {};
 
-    // Authentication
+    // Auth & Navigation Logic
     document.getElementById('loginBtn').onclick = () => {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPassword').value;
-        signInWithEmailAndPassword(auth, email, pass).catch(err => Swal.fire('Error', 'Invalid Login!', 'error'));
+        const email = loginEmail.value; const pass = loginPassword.value;
+        signInWithEmailAndPassword(auth, email, pass).catch(() => Swal.fire('ভুল!', 'ইমেইল বা পাসওয়ার্ড সঠিক নয়', 'error'));
     };
-
     document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
 
     onAuthStateChanged(auth, user => {
@@ -168,7 +184,6 @@
         }
     });
 
-    // Navigation Logic
     const menuBtn = document.getElementById('menu-toggle');
     const sidebar = document.getElementById('sidebar');
     menuBtn.onclick = () => sidebar.classList.toggle('open');
@@ -185,6 +200,7 @@
         };
     });
 
+    // Real-time Data Sync
     function syncData() {
         onSnapshot(collection(db, "students"), snap => {
             allStudents = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -198,17 +214,25 @@
         const listBody = document.getElementById('listBody');
         listBody.innerHTML = '';
         let stats = { ছাত্র: 0, ছাত্রী: 0 };
+        let ageGroups = { "৫-৬ বছর": 0, "৭-৮ বছর": 0, "৯-১০ বছর": 0, "১১+ বছর": 0 };
 
         allStudents.forEach(s => {
             stats[s.gender]++;
+            // Age Calculation
+            const age = Math.floor((new Date() - new Date(s.dob)) / (31557600000));
+            if (age <= 6) ageGroups["৫-৬ বছর"]++;
+            else if (age <= 8) ageGroups["৭-৮ বছর"]++;
+            else if (age <= 10) ageGroups["৯-১০ বছর"]++;
+            else ageGroups["১১+ বছর"]++;
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><img src="${s.photo || 'https://via.placeholder.com/60'}" class="stu-img"></td>
+                <td><img src="${s.photo || 'https://via.placeholder.com/65'}" class="stu-img"></td>
                 <td><b>${s.name}</b><br><span class="info-label">শ্রেণি: ${s.className} | রোল: ${s.roll}</span></td>
                 <td><span class="info-label">নিবন্ধন:</span> ${s.birthReg || '-'}<br><span class="info-label">জন্ম:</span> ${s.dob}</td>
-                <td><b>${s.fName || '-'}</b><br><span class="info-label">NID: ${s.fNid || '-'}</span><span class="info-label">মোবাইল: ${s.fMobile || '-'}</span></td>
-                <td><b>${s.mName || '-'}</b><br><span class="info-label">NID: ${s.mNid || '-'}</span><span class="info-label">মোবাইল: ${s.mMobile || '-'}</span></td>
-                <td><button class="btn-edit">এডিট</button><br><button class="btn-del">ডিলিট</button></td>`;
+                <td><b>${s.fName || '-'}</b><br><span class="info-label">NID: ${s.fNid || '-'}</span><span class="info-label">Mob: ${s.fMobile || '-'}</span></td>
+                <td><b>${s.mName || '-'}</b><br><span class="info-label">NID: ${s.mNid || '-'}</span><span class="info-label">Mob: ${s.mMobile || '-'}</span></td>
+                <td style="text-align:center"><button class="btn-edit">এডিট</button><br><button class="btn-del">ডিলিট</button></td>`;
             
             tr.querySelector('.btn-edit').onclick = () => startEdit(s);
             tr.querySelector('.btn-del').onclick = () => deleteStu(s.id);
@@ -218,18 +242,20 @@
         document.getElementById('totalCount').innerText = allStudents.length;
         document.getElementById('boyCount').innerText = stats.ছাত্র;
         document.getElementById('girlCount').innerText = stats.ছাত্রী;
-        updateChart(stats);
+        renderCharts(stats, ageGroups);
     }
 
-    function updateChart(stats) {
-        if(genderChart) genderChart.destroy();
-        const ctx = document.getElementById('genderChart').getContext('2d');
-        genderChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: { labels: ['ছাত্র', 'ছাত্রী'], datasets: [{ data: [stats.ছাত্র, stats.ছাত্রী], backgroundColor: ['#3b82f6', '#ec4899'] }] }
+    function renderCharts(gData, aData) {
+        if(charts.g) charts.g.destroy(); if(charts.a) charts.a.destroy();
+        charts.g = new Chart(document.getElementById('genderChart'), {
+            type: 'doughnut', data: { labels: ['ছাত্র', 'ছাত্রী'], datasets: [{ data: [gData.ছাত্র, gData.ছাত্রী], backgroundColor: ['#3b82f6', '#ec4899'] }] }
+        });
+        charts.a = new Chart(document.getElementById('ageChart'), {
+            type: 'bar', data: { labels: Object.keys(aData), datasets: [{ label: 'শিক্ষার্থী সংখ্যা', data: Object.values(aData), backgroundColor: '#006a4e' }] }
         });
     }
 
+    // CRUD & Image Processing
     const processImg = (file) => new Promise(res => {
         const r = new FileReader(); r.readAsDataURL(file);
         r.onload = (e) => {
@@ -244,94 +270,64 @@
     document.getElementById('studentForm').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('saveBtn'); btn.disabled = true;
-
-        const rollVal = parseInt(document.getElementById('roll').value);
-        const classVal = document.getElementById('className').value;
-
-        // Validation: Duplicate Roll Check
-        const isDuplicate = allStudents.some(s => s.id !== editId && s.roll === rollVal && s.className === classVal);
-        if(isDuplicate) {
-            Swal.fire('সতর্কতা', 'এই শ্রেণিতে এই রোল নম্বরটি ইতিমধ্যে ব্যবহার করা হয়েছে!', 'warning');
-            btn.disabled = false; return;
-        }
+        
+        // Duplicate Check
+        const isDuplicate = allStudents.some(s => s.id !== editId && s.roll === parseInt(roll.value) && s.className === className.value);
+        if(isDuplicate) { Swal.fire('সতর্কতা', 'এই শ্রেণিতে এই রোল নম্বরটি ইতিমধ্যে আছে!', 'warning'); btn.disabled=false; return; }
 
         try {
             let imgData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
-            const file = document.getElementById('photoInput').files[0];
+            const file = photoInput.files[0];
             if (file) imgData = await processImg(file);
 
             const payload = {
-                name: document.getElementById('name').value,
-                roll: rollVal,
-                className: classVal,
-                gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob').value,
-                birthReg: document.getElementById('birthReg').value || "",
-                fName: document.getElementById('fName').value || "",
-                fNid: document.getElementById('fNid').value || "",
-                fDob: document.getElementById('fDob').value || "",
-                fMobile: document.getElementById('fMobile').value || "",
-                mName: document.getElementById('mName').value || "",
-                mNid: document.getElementById('mNid').value || "",
-                mDob: document.getElementById('mDob').value || "",
-                mMobile: document.getElementById('mMobile').value || "",
-                photo: imgData
+                name: document.getElementById('name').value, roll: parseInt(roll.value), className: className.value,
+                gender: gender.value, dob: dob.value, birthReg: birthReg.value || "",
+                fName: fName.value, fNid: fNid.value, fDob: fDob.value, fMobile: fMobile.value,
+                mName: mName.value, mNid: mNid.value, mDob: mDob.value, mMobile: mMobile.value, photo: imgData
             };
 
             if(editId) { await updateDoc(doc(db, "students", editId), payload); editId = null; }
             else { await addDoc(collection(db, "students"), payload); }
 
             Swal.fire('সফল!', 'তথ্য সংরক্ষিত হয়েছে', 'success');
-            e.target.reset();
-            document.querySelector('[data-sec="list-sec"]').click();
+            e.target.reset(); document.querySelector('[data-sec="list-sec"]').click();
         } catch (err) { Swal.fire('Error', err.message, 'error'); }
         btn.disabled = false;
     };
 
     function startEdit(s) {
-        editId = s.id;
-        document.getElementById('formTitle').innerText = "তথ্য সংশোধন - " + s.name;
-        document.getElementById('name').value = s.name;
-        document.getElementById('roll').value = s.roll;
-        document.getElementById('className').value = s.className;
-        document.getElementById('gender').value = s.gender;
-        document.getElementById('dob').value = s.dob;
-        document.getElementById('birthReg').value = s.birthReg || "";
-        document.getElementById('fName').value = s.fName || "";
-        document.getElementById('fNid').value = s.fNid || "";
-        document.getElementById('fDob').value = s.fDob || "";
-        document.getElementById('fMobile').value = s.fMobile || "";
-        document.getElementById('mName').value = s.mName || "";
-        document.getElementById('mNid').value = s.mNid || "";
-        document.getElementById('mDob').value = s.mDob || "";
-        document.getElementById('mMobile').value = s.mMobile || "";
+        editId = s.id; document.getElementById('formTitle').innerText = "সংশোধন: " + s.name;
+        document.getElementById('name').value = s.name; document.getElementById('roll').value = s.roll;
+        document.getElementById('className').value = s.className; document.getElementById('gender').value = s.gender;
+        document.getElementById('dob').value = s.dob; document.getElementById('birthReg').value = s.birthReg || "";
+        document.getElementById('fName').value = s.fName || ""; document.getElementById('fNid').value = s.fNid || "";
+        document.getElementById('fDob').value = s.fDob || ""; document.getElementById('fMobile').value = s.fMobile || "";
+        document.getElementById('mName').value = s.mName || ""; document.getElementById('mNid').value = s.mNid || "";
+        document.getElementById('mDob').value = s.mDob || ""; document.getElementById('mMobile').value = s.mMobile || "";
         document.querySelector('[data-sec="entry-sec"]').click();
     }
 
     async function deleteStu(id) {
-        const res = await Swal.fire({ title: 'নিশ্চিত তো?', text: "ডিলিট করলে তথ্য আর ফিরে পাওয়া যাবে না!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
+        const res = await Swal.fire({ title: 'নিশ্চিত?', text: "এটি চিরতরে মুছে যাবে!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' });
         if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
     }
 
-
-    // এই ফাংশনটি শুধু একবার রান করবেন টেস্ট করার জন্য
-async function addDemoData() {
-    const demoStudents = [
-        { name: "আরিফ রহমান", roll: 1, className: "৫ম", gender: "ছাত্র", dob: "2012-05-10", fName: "মোঃ রহমান", fMobile: "01711000000", mName: "রাহেলা বেগম", photo: "" },
-        { name: "সুমাইয়া আক্তার", roll: 2, className: "৫ম", gender: "ছাত্রী", dob: "2013-02-15", fName: "আব্দুল করিম", fMobile: "01811000000", mName: "ফাতেমা খাতুন", photo: "" },
-        { name: "হাসান মাহমুদ", roll: 1, className: "১ম", gender: "ছাত্র", dob: "2018-11-20", fName: "জহির উদ্দিন", fMobile: "01911000000", mName: "নাজমা বেগম", photo: "" },
-        { name: "আয়েশা সিদ্দিকা", roll: 5, className: "৩য়", gender: "ছাত্রী", dob: "2015-08-12", fName: "কামাল হোসেন", fMobile: "01511000000", mName: "শিরিন আক্তার", photo: "" },
-        { name: "তামিম ইকবাল", roll: 3, className: "প্রাক", gender: "ছাত্র", dob: "2020-01-05", fName: "শফিক আহমেদ", fMobile: "01311000000", mName: "পারভীন বেগম", photo: "" }
-    ];
-
-    for (let s of demoStudents) {
-        await addDoc(collection(db, "students"), s);
-    }
-    Swal.fire('অভিনন্দন!', '৫টি ডেমো ডেটা সফলভাবে যোগ হয়েছে।', 'success');
-}
-
-// এটি কল করতে ব্রাউজার কনসোলে লিখুন: addDemoData() 
-// অথবা টেম্পোরারি একটি বাটনে সেট করুন।
+    // Demo Data Button
+    document.getElementById('addDemoBtn').onclick = async () => {
+        const res = await Swal.fire({ title: 'ডেমো ডেটা?', text: "৫টি স্যাম্পল ডাটা যোগ হবে।", icon: 'question', showCancelButton: true });
+        if (res.isConfirmed) {
+            const demo = [
+                { name: "আরিফ রহমান", roll: 1, className: "৫ম", gender: "ছাত্র", dob: "2014-05-10", fName: "মোঃ রহমান", fMobile: "01711000000", mName: "রাহেলা বেগম", photo: "" },
+                { name: "সুমাইয়া আক্তার", roll: 2, className: "৫ম", gender: "ছাত্রী", dob: "2015-02-15", fName: "আব্দুল করিম", fMobile: "01811000000", mName: "ফাতেমা খাতুন", photo: "" },
+                { name: "হাসান মাহমুদ", roll: 1, className: "১ম", gender: "ছাত্র", dob: "2019-11-20", fName: "জহির উদ্দিন", fMobile: "01911000000", mName: "নাজমা বেগম", photo: "" },
+                { name: "আয়েশা সিদ্দিকা", roll: 5, className: "৩য়", gender: "ছাত্রী", dob: "2017-08-12", fName: "কামাল হোসেন", fMobile: "01511000000", mName: "শিরিন আক্তার", photo: "" },
+                { name: "তামিম ইকবাল", roll: 3, className: "প্রাক", gender: "ছাত্র", dob: "2021-01-05", fName: "শফিক আহমেদ", fMobile: "01311000000", mName: "পারভীন বেগম", photo: "" }
+            ];
+            for (let s of demo) { await addDoc(collection(db, "students"), s); }
+            Swal.fire('সফল', 'ডেটা যোগ হয়েছে', 'success');
+        }
+    };
 </script>
 </body>
 </html>
