@@ -36,7 +36,7 @@
         .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #f1f5f9; }
         
         .table-box { overflow-x: auto; border-radius: 15px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1300px; background: white; }
+        table { width: 100%; border-collapse: collapse; min-width: 1400px; background: white; }
         th { background: #f8fafc; color: #64748b; padding: 15px; text-align: left; font-size: 14px; border-bottom: 2px solid #f1f5f9; }
         td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
         .stu-pic { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; border: 1px solid #e2e8f0; }
@@ -115,17 +115,18 @@
                     <div><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
                 </div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-top:10px">
-                    <div><label>শিক্ষার্থীর জন্ম তারিখ</label><input type="date" id="dob"></div>
+                    <div><label>জন্ম নিবন্ধন নম্বর</label><input type="text" id="birthReg"></div>
                     <div><label>পিতার জন্ম তারিখ</label><input type="date" id="fDob"></div>
                     <div><label>মাতার জন্ম তারিখ</label><input type="date" id="mDob"></div>
                 </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:10px">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px; margin-top:10px">
+                    <div><label>শিক্ষার্থীর জন্ম তারিখ</label><input type="date" id="dob"></div>
                     <div><label>লিঙ্গ</label><select id="gender"><option>ছাত্র</option><option>ছাত্রী</option></select></div>
                     <div><label>রক্তের গ্রুপ</label><select id="blood"><option>অজানা</option><option>A+</option><option>B+</option><option>O+</option><option>AB+</option></select></div>
                 </div>
                 <div style="margin-top:20px">
                     <label>ছবি</label><input type="file" id="photoInput" accept="image/*">
-                    <img id="imgSrc" style="width:100px; display:none; margin-top:10px; border-radius:10px">
+                    <img id="imgSrc" style="width:100px; height:100px; object-fit:cover; display:none; border-radius:10px; margin-top:10px">
                 </div>
                 <button type="submit" class="btn-primary" style="margin-top:25px">সেভ করুন</button>
             </form>
@@ -140,7 +141,7 @@
                     <thead>
                         <tr>
                             <th>ছবি</th>
-                            <th>নাম ও রোল</th>
+                            <th>নাম, রোল ও জন্ম নিবন্ধন</th>
                             <th>শ্রেণি</th>
                             <th>পিতার তথ্য (NID ও মোবাইল)</th>
                             <th>মাতার তথ্য (NID ও মোবাইল)</th>
@@ -171,7 +172,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    let isAdmin = false, allStudents = [], charts = {};
+    let isAdmin = false, allStudents = [], charts = {}, editId = null;
 
     onAuthStateChanged(auth, user => {
         if(user) {
@@ -204,6 +205,7 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             link.classList.add('active');
             document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebar-overlay').classList.remove('active');
         };
     });
 
@@ -228,7 +230,11 @@
 
             body.innerHTML += `<tr>
                 <td><img src="${s.photo || 'https://via.placeholder.com/50'}" class="stu-pic"></td>
-                <td class="info-cell"><b>${s.name}</b><br><small>রোল: ${s.roll}</small></td>
+                <td class="info-cell">
+                    <b>${s.name}</b><br>
+                    <small>রোল: ${s.roll}</small><br>
+                    <span style="color:#059669; font-size:12px">নিবন্ধন: ${s.birthReg || '-'}</span>
+                </td>
                 <td>${s.className}</td>
                 <td class="info-cell">
                     <span class="label-text">নাম:</span> ${s.fName || '-'}<br>
@@ -266,10 +272,9 @@
         });
     }
 
-    // --- Edit & Delete Functions (আগের মতই নির্ভুল) ---
     window.editStu = (id) => {
         const s = allStudents.find(x => x.id === id);
-        window.editId = id;
+        editId = id;
         document.getElementById('name').value = s.name;
         document.getElementById('roll').value = s.roll;
         document.getElementById('className').value = s.className;
@@ -279,6 +284,7 @@
         document.getElementById('mName').value = s.mName || '';
         document.getElementById('mNid').value = s.mNid || '';
         document.getElementById('mMobile').value = s.mMobile || '';
+        document.getElementById('birthReg').value = s.birthReg || '';
         document.getElementById('dob').value = s.dob || '';
         document.getElementById('fDob').value = s.fDob || '';
         document.getElementById('mDob').value = s.mDob || '';
@@ -306,7 +312,7 @@
         e.preventDefault();
         Swal.fire({title:'সেভ হচ্ছে...'});
         
-        let photoData = window.editId ? (allStudents.find(x => x.id === window.editId).photo || "") : "";
+        let photoData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
         const file = document.getElementById('photoInput').files[0];
         if(file) {
             const reader = new FileReader();
@@ -324,6 +330,7 @@
             mName: document.getElementById('mName').value,
             mNid: document.getElementById('mNid').value,
             mMobile: document.getElementById('mMobile').value,
+            birthReg: document.getElementById('birthReg').value,
             dob: document.getElementById('dob').value,
             fDob: document.getElementById('fDob').value,
             mDob: document.getElementById('mDob').value,
@@ -333,9 +340,9 @@
         };
 
         try {
-            if(window.editId) await updateDoc(doc(db, "students", window.editId), data);
+            if(editId) await updateDoc(doc(db, "students", editId), data);
             else await addDoc(collection(db, "students"), data);
-            window.editId = null;
+            editId = null;
             document.getElementById('studentForm').reset();
             document.getElementById('imgSrc').style.display = 'none';
             Swal.fire('সফল', 'তথ্য সংরক্ষিত হয়েছে', 'success');
