@@ -158,11 +158,13 @@
                 <div class="form-row">
                     <div><label>পিতার নাম</label><input type="text" id="fName"></div>
                     <div><label>পিতার NID</label><input type="text" id="fNid"></div>
+                    <div><label>পিতার জন্ম তারিখ</label><input type="date" id="fDob"></div>
                     <div><label>পিতার মোবাইল</label><input type="tel" id="fMobile"></div>
                 </div>
                 <div class="form-row">
                     <div><label>মাতার নাম</label><input type="text" id="mName"></div>
-                    <div><label>মাতার NID</label><input type="text" id="mNid"></div>
+                   <div><label>মাতার NID</label><input type="text" id="mNid"></div>
+                    <div><label>মাতার জন্ম তারিখ</label><input type="date" id="mDob"></div>
                     <div><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
                 </div>
 
@@ -316,9 +318,11 @@
         document.getElementById('birthReg').value = s.birthReg || '';
         document.getElementById('fName').value = s.fName || '';
         document.getElementById('fNid').value = s.fNid || '';
+        document.getElementById('fDob').value = s.fDob || '';
         document.getElementById('fMobile').value = s.fMobile || '';
         document.getElementById('mName').value = s.mName || '';
         document.getElementById('mNid').value = s.mNid || '';
+        document.getElementById('mDob').value = s.mDob || '';
         document.getElementById('mMobile').value = s.mMobile || '';
         document.querySelector('[data-sec="entry-sec"]').click();
     };
@@ -358,6 +362,7 @@
             birthReg: document.getElementById('birthReg').value,
             fName: document.getElementById('fName').value,
             fNid: document.getElementById('fNid').value,
+             fDob: document.getElementById('fDob').value, 
             fMobile: document.getElementById('fMobile').value,
             mName: document.getElementById('mName').value,
             mNid: document.getElementById('mNid').value,
