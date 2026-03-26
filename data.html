@@ -168,7 +168,7 @@
                     
                 </div>
                 </div>
-                <button type="submit" id="saveBtn" style="width:50%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-top:25px; font-weight:bold; font-size:18px">তথ্য সংরক্ষণ করুন</button>
+                <center><button type="submit" id="saveBtn" style="width:50%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-top:25px; font-weight:bold; font-size:18px">তথ্য সংরক্ষণ করুন</button></center>
             </form>
         </div>
 
@@ -184,7 +184,7 @@
                             <th>জন্ম নিবন্ধন</th>
                             <th>পিতার নাম</th>
                             <th>মোবাইল</th>
-                            <th style="text-align:right">অ্যাকশন</th>
+                            <th style="text-align:right">ক্রিয়া</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -220,7 +220,7 @@
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
         try { await signInWithEmailAndPassword(auth, email, pass); } 
-        catch (err) { Swal.fire('ভুল', 'সঠিক ইমেইল বা পাসওয়ার্ড দিন', 'error'); }
+        catch (err) { Swal.fire('ভুল!', 'সঠিক ইমেইল বা পাসওয়ার্ড দিন', 'error'); }
     };
     window.handleLogout = () => signOut(auth);
 
@@ -347,7 +347,7 @@
         document.getElementById('mNid').value = s.mNid || '';
         document.getElementById('mMobile').value = s.mMobile || '';
         document.getElementById('mDob').value = s.mDob || '';
-        document.getElementById('saveBtn').innerText = "তথ্য আপডেট করুন";
+        document.getElementById('saveBtn').innerText = "তথ্য হালনাগাদ করুন";
         openTab('entry');
     };
 
@@ -389,8 +389,8 @@
         try {
             if(editId) { await updateDoc(doc(db, "students", editId), data); editId = null; } 
             else { await addDoc(collection(db, "students"), data); }
-            e.target.reset(); Swal.fire('সফল', 'ডাটাবেস আপডেট হয়েছে', 'success'); openTab('list');
-        } catch (err) { Swal.fire('এরর', 'সেভ করা যায়নি!', 'error'); }
+            e.target.reset(); Swal.fire('সফল', 'ডাটাবেস হালনাগাদ হয়েছে', 'success'); openTab('list');
+        } catch (err) { Swal.fire('এরর', 'সংরক্ষণ করা যায়নি!', 'error'); }
     };
 </script>
 </body>
