@@ -307,6 +307,43 @@
         if(res.isConfirmed) await deleteDoc(doc(db, "students", id));
     };
 
+    // ছবি রিসাইজ করার ফাংশন
+    function resizeImage(file, maxWidth, maxHeight) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    // রিসাইজ করার লজিক
+                    if (width > maxHeight || height > maxHeight) {
+                        const aspectRatio = width / height;
+                        if (width > height) {
+                            width = maxWidth;
+                            height = maxWidth / aspectRatio;
+                        } else {
+                            height = maxHeight;
+                            width = maxHeight * aspectRatio;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.8)); // রিসাইজ করা ছবি (JPEG ফরম্যাট, ৮০% কোয়ালিটি)
+                };
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
+        });
+    }
+
     document.getElementById('stuForm').onsubmit = async (e) => {
         e.preventDefault();
         Swal.fire({title: 'সেভ হচ্ছে...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
@@ -314,9 +351,7 @@
         let picBase64 = editId ? allData.find(x => x.id === editId).photo : "";
         const file = document.getElementById('picInp').files[0];
         if(file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            picBase64 = await new Promise(r => reader.onload = () => r(reader.result));
+            picBase64 = await resizeImage(file, 200, 200); // ছবিটি ২০০x২০০ পিক্সেল সাইজে রিসাইজ হবে
         }
 
         const data = {
