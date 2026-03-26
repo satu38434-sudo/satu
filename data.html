@@ -229,7 +229,7 @@
         document.querySelectorAll('.card').forEach(c => { if(c.id !== 'login-sec') c.classList.add('hidden') });
         if(event) event.currentTarget.classList.add('active');
         document.getElementById(tab + '-sec').classList.remove('hidden');
-        if(tab === 'entry' && !editId) { document.getElementById('stuForm').reset(); document.getElementById('saveBtn').innerText = "তথ্য সেভ করুন"; }
+        if(tab === 'entry' && !editId) { document.getElementById('stuForm').reset(); document.getElementById('saveBtn').innerText = "তথ্য সংরক্ষণ করুন"; }
     };
 
     onAuthStateChanged(auth, user => {
