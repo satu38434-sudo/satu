@@ -25,7 +25,7 @@
     .form-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* অটোমেটিক কলাম তৈরি হবে */
-        gap: 15px; /* ইনপুটের মাঝের ফাঁকা অংশ */
+        gap: 15px;
     }
 
     input, select {
@@ -33,7 +33,7 @@
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
-        box-sizing: border-box; /* প্যাডিং ঠিক রাখার জন্য */
+        box-sizing: border-box; 
         font-size: 14px;
     }
 
@@ -48,21 +48,21 @@
         .container { max-width: 1400px; margin: 0 auto; }
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* টেবিলকে পিসির মতো দেখানোর জন্য গুরুত্বপূর্ণ সিএসএস */
+
         .table-box { 
             width: 100%; 
-            overflow-x: auto; /* মোবাইলে ডানে-বামে সরানোর জন্য */
+            overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             border-radius: 10px;
         }
         table { 
             width: 100%; 
             border-collapse: collapse; 
-            min-width: 1100px; /* টেবিলের মিনিমাম চওড়া ফিক্সড করা হয়েছে যাতে কলামগুলো ছোট না হয়ে যায় */
+            min-width: 1100px; 
             background: white;
         }
         th { background: #f8fafc; padding: 15px; text-align: left; border-bottom: 2px solid #eee; color: #64748b; white-space: nowrap; }
-        td { padding: 12px; border-bottom: 1px solid #eee; white-space: nowrap; } /* ডাটা যেন ভেঙে নিচে না যায় */
+        td { padding: 12px; border-bottom: 1px solid #eee; white-space: nowrap; } 
 
         .tab-nav { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 10px; }
         .tab-btn { flex: 1; min-width: 120px; padding: 12px; border: none; border-radius: 10px 10px 0 0; cursor: pointer; font-family: 'Kalpurush'; background: #ddd; display: flex; align-items: center; justify-content: center; gap: 5px; }
@@ -111,7 +111,7 @@
 
         <div class="tab-nav">
             <button class="tab-btn active" onclick="openTab('dash', event)"><span class="material-icons">dashboard</span> ড্যাশবোর্ড</button>
-            <button class="tab-btn" onclick="openTab('entry', event)"><span class="material-icons">person_add</span> নতুন তথ্য যোগ</button>
+            <button class="tab-btn" onclick="openTab('entry', event)"><span class="material-icons">person_add</span> নতুন তথ্য যোগ করুন</button>
             <button class="tab-btn" onclick="openTab('list', event)"><span class="material-icons">list_alt</span> শিক্ষার্থী তালিকা</button>
         </div>
 
@@ -160,7 +160,7 @@
                     <input type="text" id="fName" placeholder="পিতার নাম">
                     <input type="number" id="fNid" placeholder="পিতার NID">
                      <input type="date" id="fDob" title="পিতার জন্ম তারিখ">
-                    <input type="tel" id="fMobile" placeholder="পিতার মোবাইল"> <br>
+                    <input type="tel" id="fMobile" placeholder="পিতার মোবাইল">
                     <input type="text" id="mName" placeholder="মাতার নাম">
                     <input type="number" id="mNid" placeholder="মাতার NID">
                     <input type="date" id="mDob" title="মাতার জন্ম তারিখ">
