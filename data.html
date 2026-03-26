@@ -54,7 +54,7 @@
     <h2 style="text-align:center; color:var(--dark)">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ্যালয়</h2>
 
     <div id="login-sec" class="card" style="max-width:400px; margin: 80px auto; text-align:center">
-        <h3>অ্যাডমিন লগইন</h3>
+        <h3>লগইন</h3>
         <input type="email" id="loginEmail" placeholder="আপনার ইমেইল">
         <input type="password" id="loginPass" placeholder="পাসওয়ার্ড">
         <button onclick="handleLogin()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; font-size:16px">লগইন করুন</button>
@@ -84,6 +84,10 @@
         </div>
 
         <div id="entry-sec" class="card hidden">
+                            <div style="margin-top:15px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #ccc">
+                    <label>শিক্ষার্থীর ছবি: </label>
+                    <input type="file" id="picInp" accept="image/*">
+                </div>
             <form id="stuForm">
                 <h3>শিক্ষার্থীর ব্যক্তিগত তথ্য</h3>
                 <div class="form-grid">
@@ -99,17 +103,16 @@
                 <div class="form-grid">
                     <input type="text" id="fName" placeholder="পিতার নাম">
                     <input type="text" id="fNid" placeholder="পিতার NID">
+                     <input type="date" id="fDob" title="পিতার জন্ম তারিখ">
                     <input type="tel" id="fMobile" placeholder="পিতার মোবাইল">
-                    <input type="date" id="fDob" title="পিতার জন্ম তারিখ">
+                   </p>
                     <input type="text" id="mName" placeholder="মাতার নাম">
                     <input type="text" id="mNid" placeholder="মাতার NID">
-                    <input type="tel" id="mMobile" placeholder="মাতার মোবাইল">
                     <input type="date" id="mDob" title="মাতার জন্ম তারিখ">
+                    <input type="tel" id="mMobile" placeholder="মাতার মোবাইল">
+                    
                 </div>
-                <div style="margin-top:15px; background:#f8fafc; padding:15px; border-radius:10px; border:1px dashed #ccc">
-                    <label>শিক্ষার্থীর ছবি: </label>
-                    <input type="file" id="picInp" accept="image/*">
-                </div>
+
                 <button type="submit" id="saveBtn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-top:25px; font-weight:bold; font-size:18px">তথ্য সেভ করুন</button>
             </form>
         </div>
@@ -258,16 +261,16 @@
                     <div style="margin-top:10px; padding:10px; border:1px solid #eee; border-radius:8px">
                         <b style="color:var(--dark)">অভিভাবকের তথ্য:</b><br>
                         <b>পিতার নাম:</b> ${s.fName || '-'}<br>
-                        <b>পিতার জন্ম তারিখ:</b> ${s.fDob || '-'}<br>
                         <b>পিতার NID:</b> ${s.fNid || '-'}<br>
+                        <b>পিতার জন্ম তারিখ:</b> ${s.fDob || '-'}<br>
                         <b>মাতার নাম:</b> ${s.mName || '-'}<br>
-                        <b>মাতার জন্ম তারিখ:</b> ${s.mDob || '-'}<br>
                         <b>মাতার NID:</b> ${s.mNid || '-'}<br>
+                        <b>মাতার জন্ম তারিখ:</b> ${s.mDob || '-'}<br>
                         <b>মোবাইল:</b> ${s.fMobile || '-'}
                     </div>
                 </div>`,
             confirmButtonColor: '#10b981',
-            confirmButtonText: 'ঠিক আছে'
+            confirmButtonText: 'ঠিক আছে দেখেছি'
         });
     };
 
