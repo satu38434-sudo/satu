@@ -184,8 +184,15 @@
             <div class="table-box">
                 <table>
                     <thead>
-                        <tr><th>ছবি</th><th>নাম ও রোল</th><th>শ্রেণি</th><th>রক্তের গ্রুপ</th><th>যোগাযোগ</th><th>অ্যাকশন</th></tr>
-                    </thead>
+    <tr>
+        <th>ছবি</th>
+        <th>নাম ও রোল</th>
+        <th>শ্রেণি</th>
+        <th>রক্তের গ্রুপ</th>
+        <th>পিতা-মাতার জন্ম তারিখ</th> <th>যোগাযোগ</th>
+        <th>অ্যাকশন</th>
+    </tr>
+</thead>
                     <tbody id="listBody"></tbody>
                 </table>
             </div>
@@ -274,17 +281,24 @@
                 if(ageDist[age + " বছর"] !== undefined) ageDist[age + " বছর"]++;
             }
 
-            body.innerHTML += `<tr>
-                <td><img src="${s.photo || 'https://via.placeholder.com/50'}" class="stu-pic"></td>
-                <td><b>${s.name}</b><br><small>রোল: ${s.roll}</small></td>
-                <td>${s.className}</td>
-                <td><span style="color:red; font-weight:bold">${s.blood || '-'}</span></td>
-                <td>${s.fMobile || s.mMobile || '-'}</td>
-                <td>
-                    <button onclick="editStu('${s.id}')" style="border:none; background:#e0f2fe; color:#0369a1; padding:5px 10px; border-radius:5px; cursor:pointer">এডিট</button>
-                    ${isAdmin ? `<button onclick="delStu('${s.id}')" style="border:none; background:#fee2e2; color:#b91c1c; padding:5px 10px; border-radius:5px; cursor:pointer">মুছুন</button>` : ''}
-                </td>
-            </tr>`;
+            // updateUI ফাংশনের লুপের ভেতরে এটি আপডেট করুন
+body.innerHTML += `<tr>
+    <td><img src="${s.photo || 'https://via.placeholder.com/50'}" class="stu-pic"></td>
+    <td><b>${s.name}</b><br><small>রোল: ${s.roll}</small></td>
+    <td>${s.className}</td>
+    <td><span style="color:red; font-weight:bold">${s.blood || '-'}</span></td>
+    
+    <td>
+        <small>পিতা: ${s.fDob || 'নেই'}</small><br>
+        <small>মাতা: ${s.mDob || 'নেই'}</small>
+    </td>
+
+    <td>${s.fMobile || s.mMobile || '-'}</td>
+    <td>
+        <button onclick="editStu('${s.id}')" style="border:none; background:#e0f2fe; color:#0369a1; padding:5px 10px; border-radius:5px; cursor:pointer">এডিট</button>
+        ${isAdmin ? `<button onclick="delStu('${s.id}')" style="border:none; background:#fee2e2; color:#b91c1c; padding:5px 10px; border-radius:5px; cursor:pointer">মুছুন</button>` : ''}
+    </td>
+</tr>`;
         });
         document.getElementById('dispTotal').innerText = allStudents.length;
         document.getElementById('dispBoy').innerText = counts.ছাত্র;
@@ -341,7 +355,9 @@
     };
 
     document.getElementById('studentForm').onsubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault()
+            document.getElementById('fDob').value = '';
+document.getElementById('mDob').value = '';;
         Swal.fire({title:'সংরক্ষণ হচ্ছে...'});
         
         let photoData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
