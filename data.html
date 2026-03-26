@@ -104,8 +104,7 @@
                     <input type="text" id="fName" placeholder="পিতার নাম">
                     <input type="text" id="fNid" placeholder="পিতার NID">
                      <input type="date" id="fDob" title="পিতার জন্ম তারিখ">
-                    <input type="tel" id="fMobile" placeholder="পিতার মোবাইল">
-                   </p>
+                    <input type="tel" id="fMobile" placeholder="পিতার মোবাইল"> <br>
                     <input type="text" id="mName" placeholder="মাতার নাম">
                     <input type="text" id="mNid" placeholder="মাতার NID">
                     <input type="date" id="mDob" title="মাতার জন্ম তারিখ">
@@ -254,9 +253,9 @@
                     <center><img src="${s.photo || ''}" style="width:120px; border-radius:10px; margin-bottom:15px; border:2px solid #eee"></center>
                     <div style="background:#f8fafc; padding:10px; border-radius:8px">
                         <b>শ্রেণি:</b> ${s.className} | <b>রোল:</b> ${s.roll}<br>
+                         <b>জন্ম নিবন্ধন:</b> ${s.birthReg || '-'}
                         <b>জন্ম তারিখ:</b> ${s.dob || '-'}<br>
                         <b>রক্তের গ্রুপ:</b> ${s.blood || 'অজানা'}<br>
-                        <b>জন্ম নিবন্ধন:</b> ${s.birthReg || '-'}
                     </div>
                     <div style="margin-top:10px; padding:10px; border:1px solid #eee; border-radius:8px">
                         <b style="color:var(--dark)">অভিভাবকের তথ্য:</b><br>
@@ -270,7 +269,7 @@
                     </div>
                 </div>`,
             confirmButtonColor: '#10b981',
-            confirmButtonText: 'ঠিক আছে দেখেছি'
+            confirmButtonText: 'ঠিক আছে'
         });
     };
 
