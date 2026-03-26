@@ -14,8 +14,8 @@
         .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
         /* ট্যাব বাটন */
-        .tab-nav { display: flex; gap: 5px; margin-bottom: 0; }
-        .tab-btn { padding: 12px 25px; border: none; border-radius: 10px 10px 0 0; cursor: pointer; font-family: 'Kalpurush'; background: #ddd; }
+        .tab-nav { display: flex; gap: 5px; }
+        .tab-btn { padding: 12px 25px; border: none; border-radius: 10px 10px 0 0; cursor: pointer; font-family: 'Kalpurush'; background: #ddd; transition: 0.3s; }
         .tab-btn.active { background: var(--primary); color: white; }
 
         /* টেবিল */
@@ -24,7 +24,7 @@
         th { background: #f8fafc; color: #64748b; padding: 15px; text-align: left; border-bottom: 2px solid #eee; }
         td { padding: 15px; border-bottom: 1px solid #eee; }
 
-        /* ফরম গ্রিড */
+        /* গ্রিড */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; outline: none; font-family: 'Kalpurush'; }
         
@@ -34,7 +34,8 @@
         .btn-del { background: #fff1f2; color: #e11d48; }
         
         .hidden { display: none; }
-        #chart-container { max-width: 350px; margin: 20px auto; }
+        .charts-wrapper { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        canvas { max-height: 300px; }
     </style>
 </head>
 <body>
@@ -44,8 +45,8 @@
 
     <div class="tab-nav">
         <button class="tab-btn active" onclick="openTab('dash')">📊 ড্যাশবোর্ড (গ্রাফ)</button>
-        <button class="tab-btn" onclick="openTab('entry')">➕ নতুন এন্ট্রি</button>
-        <button class="tab-btn" onclick="openTab('list')">📋 তালিকা</button>
+        <button class="tab-btn" onclick="openTab('entry')">➕ নতুন তথ্য যোগ</button>
+        <button class="tab-btn" onclick="openTab('list')">📋 শিক্ষার্থী তালিকা</button>
     </div>
 
     <div id="dash-sec" class="card">
@@ -54,20 +55,22 @@
             <div style="background:#eff6ff; padding:20px; border-radius:12px; color:#3b82f6"><span>ছাত্র</span><h2 id="bCount">0</h2></div>
             <div style="background:#fdf2f8; padding:20px; border-radius:12px; color:#ec4899"><span>ছাত্রী</span><h2 id="gCount">0</h2></div>
         </div>
-        <div id="chart-container">
-            <canvas id="genderChart"></canvas>
+        
+        <div class="charts-wrapper">
+            <div style="text-align:center"><h4>লিঙ্গ অনুপাত</h4><canvas id="genderChart"></canvas></div>
+            <div style="text-align:center"><h4>বয়স ভিত্তিক বিন্যাস</h4><canvas id="ageChart"></canvas></div>
         </div>
     </div>
 
     <div id="entry-sec" class="card hidden">
         <form id="stuForm">
-            <h3>শিক্ষার্থীর তথ্য</h3>
+            <h3>শিক্ষার্থীর ব্যক্তিগত তথ্য</h3>
             <div class="form-grid">
                 <input type="text" id="name" placeholder="নাম" required>
                 <select id="className"><option>প্রাক</option><option>১ম</option><option>২য়</option><option>৩য়</option><option>৪র্থ</option><option>৫ম</option></select>
                 <input type="number" id="roll" placeholder="রোল" required>
                 <input type="text" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর">
-                <input type="date" id="dob" title="জন্ম তারিখ">
+                <input type="date" id="dob" title="শিক্ষার্থীর জন্ম তারিখ">
                 <select id="gender"><option>ছাত্র</option><option>ছাত্রী</option></select>
                 <select id="blood"><option>অজানা</option><option>A+</option><option>B+</option><option>O+</option><option>AB+</option></select>
             </div>
@@ -80,8 +83,10 @@
                 <input type="text" id="mNid" placeholder="মাতার NID">
                 <input type="tel" id="mMobile" placeholder="মাতার মোবাইল">
             </div>
-            <input type="file" id="picInp" accept="image/*">
-            <button type="submit" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-top:15px">সেভ করুন</button>
+            <div style="margin-top:10px">
+                <label>ছবি নির্বাচন করুন: </label><input type="file" id="picInp" accept="image/*">
+            </div>
+            <button type="submit" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-top:20px; font-weight:bold">তথ্য সেভ করুন</button>
         </form>
     </div>
 
@@ -123,7 +128,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const ADMIN_UID = "MwpHepH5wSPqDF4B3hXKjek4vtq2";
-    let allData = [], editId = null, chart = null;
+    let allData = [], editId = null, gChart = null, aChart = null;
 
     window.openTab = (tab) => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -144,9 +149,14 @@
     function updateUI(uid) {
         const body = document.getElementById('tableBody'); body.innerHTML = '';
         let c = { ছাত্র: 0, ছাত্রী: 0 };
+        let ageDist = {}; for(let i=5; i<=15; i++) ageDist[i + " বছর"] = 0;
 
         allData.forEach(s => {
             c[s.gender === 'ছাত্র' ? 'ছাত্র' : 'ছাত্রী']++;
+            if(s.dob) {
+                const age = new Date().getFullYear() - new Date(s.dob).getFullYear();
+                if(ageDist[age + " বছর"] !== undefined) ageDist[age + " বছর"]++;
+            }
             body.innerHTML += `
                 <tr>
                     <td><b>${s.name}</b></td>
@@ -165,14 +175,23 @@
         document.getElementById('tCount').innerText = allData.length;
         document.getElementById('bCount').innerText = c.ছাত্র;
         document.getElementById('gCount').innerText = c.ছাত্রী;
-        renderChart(c);
+        renderCharts(c, ageDist);
     }
 
-    function renderChart(c) {
-        if(chart) chart.destroy();
-        chart = new Chart(document.getElementById('genderChart'), {
+    function renderCharts(c, ageData) {
+        // লিঙ্গ গ্রাফ
+        if(gChart) gChart.destroy();
+        gChart = new Chart(document.getElementById('genderChart'), {
             type: 'doughnut',
             data: { labels: ['ছাত্র', 'ছাত্রী'], datasets: [{ data: [c.ছাত্র, c.ছাত্রী], backgroundColor: ['#3b82f6', '#ec4899'] }] }
+        });
+
+        // বয়স গ্রাফ
+        if(aChart) aChart.destroy();
+        aChart = new Chart(document.getElementById('ageChart'), {
+            type: 'bar',
+            data: { labels: Object.keys(ageData), datasets: [{ label: 'শিক্ষার্থী সংখ্যা', data: Object.values(ageData), backgroundColor: '#10b981' }] },
+            options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
     }
 
@@ -181,11 +200,14 @@
         Swal.fire({
             title: s.name,
             html: `<div style="text-align:left; line-height:1.8">
-                ${s.photo ? `<img src="${s.photo}" style="width:100px; border-radius:10px"><br>` : ''}
+                ${s.photo ? `<img src="${s.photo}" style="width:120px; border-radius:10px; border:1px solid #ddd"><br>` : ''}
+                <b>রোল:</b> ${s.roll} | <b>শ্রেণি:</b> ${s.className}<br>
                 <b>জন্ম নিবন্ধন:</b> ${s.birthReg || '-'}<br>
-                <b>পিতার NID:</b> ${s.fNid || '-'}<br><b>মোবাইল:</b> ${s.fMobile || '-'}<br>
-                <hr><b>মাতার NID:</b> ${s.mNid || '-'}<br><b>মোবাইল:</b> ${s.mMobile || '-'}
-            </div>`
+                <b>পিতার মোবাইল:</b> ${s.fMobile || '-'}<br>
+                <b>মাতার মোবাইল:</b> ${s.mMobile || '-'}<br>
+                <b>রক্তের গ্রুপ:</b> ${s.blood || 'অজানা'}
+            </div>`,
+            confirmButtonColor: '#10b981'
         });
     };
 
@@ -209,11 +231,13 @@
     };
 
     window.deleteData = async (id) => {
-        if((await Swal.fire({title:'মুছে ফেলবেন?', showCancelButton:true})).isConfirmed) await deleteDoc(doc(db, "students", id));
+        if((await Swal.fire({title:'মুছে ফেলবেন?', icon:'warning', showCancelButton:true, confirmButtonColor:'#e11d48'})).isConfirmed) await deleteDoc(doc(db, "students", id));
     };
 
     document.getElementById('stuForm').onsubmit = async (e) => {
         e.preventDefault();
+        Swal.fire({title: 'সেভ হচ্ছে...', didOpen: () => Swal.showLoading()});
+        
         let picBase64 = editId ? allData.find(x => x.id === editId).photo : "";
         const file = document.getElementById('picInp').files[0];
         if(file) {
