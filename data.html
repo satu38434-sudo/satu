@@ -9,6 +9,40 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+
+    .student-form-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* অটোমেটিক কলাম তৈরি হবে */
+        gap: 15px; /* ইনপুটের মাঝের ফাঁকা অংশ */
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* প্যাডিং ঠিক রাখার জন্য */
+        font-size: 14px;
+    }
+
+    input:focus, select:focus {
+        border-color: #4CAF50;
+        outline: none;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    }
+        
         :root { --primary: #10b981; --bg: #f1f5f9; --dark: #065f46; }
         body { font-family: 'Kalpurush', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
         .container { max-width: 1400px; margin: 0 auto; }
@@ -99,16 +133,27 @@
                     <input type="file" id="picInp" accept="image/*">
                 </div>
             <form id="stuForm">
-                <h3>শিক্ষার্থীর ব্যক্তিগত তথ্য</h3>
-                <div class="form-grid">
-                    <input type="text" id="name" placeholder="নাম" required>
-                    <select id="className"><option>প্রাক</option><option>১ম</option><option>২য়</option><option>৩য়</option><option>৪র্থ</option><option>৫ম</option></select>
-                    <input type="number" id="roll" placeholder="রোল" required><br>
-                    <input type="number" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর">
-                    <input type="date" id="dob" title="শিক্ষার্থীর জন্ম তারিখ">
-                    <select id="gender"><option>ছাত্র</option><option>ছাত্রী</option></select>
-                    <select id="blood"><option>অজানা</option><option>A+</option><option>B+</option><option>O+</option><option>AB+</option><option>A-</option><option>B-</option><option>O-</option></select>
-                </div>
+<div class="student-form-container">
+    <h3>শিক্ষার্থীর ব্যক্তিগত তথ্য</h3>
+    <div class="form-grid">
+        <input type="text" id="name" placeholder="নাম" required>
+        <select id="className">
+            <option value="" disabled selected>শ্রেণি নির্বাচন করুন</option>
+            <option>প্রাক</option><option>১ম</option><option>২য়</option><option>৩য়</option><option>৪র্থ</option><option>৫ম</option>
+        </select>
+        <input type="number" id="roll" placeholder="রোল" required>
+        <input type="number" id="birthReg" placeholder="জন্ম নিবন্ধন নম্বর">
+        <input type="date" id="dob" title="শিক্ষার্থীর জন্ম তারিখ">
+        <select id="gender">
+            <option value="" disabled selected>লিঙ্গ</option>
+            <option>ছাত্র</option><option>ছাত্রী</option>
+        </select>
+        <select id="blood">
+            <option value="" disabled selected>রক্তের গ্রুপ</option>
+            <option>অজানা</option><option>A+</option><option>B+</option><option>O+</option><option>AB+</option><option>A-</option><option>B-</option><option>O-</option>
+        </select>
+    </div>
+</div>
                 <h3>পিতা ও মাতার তথ্য</h3>
                 <div class="form-grid">
                     <input type="text" id="fName" placeholder="পিতার নাম">
