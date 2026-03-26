@@ -38,7 +38,7 @@
         }
         .nav-link.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); }
 
-        /* --- TOP BAR (Updated for Centering) --- */
+        /* --- TOP BAR --- */
         #top-bar {
             position: fixed; top: 0; left: 0; right: 0; height: 75px;
             background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
@@ -77,7 +77,6 @@
 
         .hidden { display: none !important; }
 
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
             .school-title { font-size: 14px; width: 60%; line-height: 1.2; }
             #top-bar { padding: 0 15px; }
@@ -100,7 +99,8 @@
 <nav id="top-bar">
     <button id="menu-trigger">☰ মেনু</button>
     <div class="school-title">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ্যালয়</div>
-    <div style="width: 60px;"></div> </nav>
+    <div style="width: 60px;"></div> 
+</nav>
 
 <div id="login-screen">
     <div class="login-box">
@@ -163,7 +163,7 @@
                 </div>
                 <div class="form-row">
                     <div><label>মাতার নাম</label><input type="text" id="mName"></div>
-                   <div><label>মাতার NID</label><input type="text" id="mNid"></div>
+                    <div><label>মাতার NID</label><input type="text" id="mNid"></div>
                     <div><label>মাতার জন্ম তারিখ</label><input type="date" id="mDob"></div>
                     <div><label>মাতার মোবাইল</label><input type="tel" id="mMobile"></div>
                 </div>
@@ -184,15 +184,16 @@
             <div class="table-box">
                 <table>
                     <thead>
-    <tr>
-        <th>ছবি</th>
-        <th>নাম ও রোল</th>
-        <th>শ্রেণি</th>
-        <th>রক্তের গ্রুপ</th>
-        <th>পিতা-মাতার জন্ম তারিখ</th> <th>যোগাযোগ</th>
-        <th>অ্যাকশন</th>
-    </tr>
-</thead>
+                        <tr>
+                            <th>ছবি</th>
+                            <th>নাম ও রোল</th>
+                            <th>শ্রেণি</th>
+                            <th>রক্তের গ্রুপ</th>
+                            <th>পিতা-মাতার জন্ম তারিখ</th>
+                            <th>যোগাযোগ</th>
+                            <th>অ্যাকশন</th>
+                        </tr>
+                    </thead>
                     <tbody id="listBody"></tbody>
                 </table>
             </div>
@@ -221,7 +222,6 @@
     const ADMIN_UID = "MwpHepH5wSPqDF4B3hXKjek4vtq2";
     let isAdmin = false, allStudents = [], editId = null, charts = {};
 
-    // Toggle logic
     const toggleMenu = () => {
         document.getElementById('sidebar').classList.toggle('active');
         document.getElementById('sidebar-overlay').classList.toggle('active');
@@ -229,7 +229,6 @@
     document.getElementById('menu-trigger').onclick = toggleMenu;
     document.getElementById('sidebar-overlay').onclick = toggleMenu;
 
-    // Auth
     onAuthStateChanged(auth, user => {
         if(user) {
             isAdmin = (user.uid === ADMIN_UID);
@@ -251,7 +250,6 @@
         signOut(auth).then(() => window.location.reload());
     };
 
-    // Nav
     document.querySelectorAll('.nav-link[data-sec]').forEach(link => {
         link.onclick = () => {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
@@ -281,24 +279,21 @@
                 if(ageDist[age + " বছর"] !== undefined) ageDist[age + " বছর"]++;
             }
 
-            // updateUI ফাংশনের লুপের ভেতরে এটি আপডেট করুন
-body.innerHTML += `<tr>
-    <td><img src="${s.photo || 'https://via.placeholder.com/50'}" class="stu-pic"></td>
-    <td><b>${s.name}</b><br><small>রোল: ${s.roll}</small></td>
-    <td>${s.className}</td>
-    <td><span style="color:red; font-weight:bold">${s.blood || '-'}</span></td>
-    
-    <td>
-        <small>পিতা: ${s.fDob || 'নেই'}</small><br>
-        <small>মাতা: ${s.mDob || 'নেই'}</small>
-    </td>
-
-    <td>${s.fMobile || s.mMobile || '-'}</td>
-    <td>
-        <button onclick="editStu('${s.id}')" style="border:none; background:#e0f2fe; color:#0369a1; padding:5px 10px; border-radius:5px; cursor:pointer">এডিট</button>
-        ${isAdmin ? `<button onclick="delStu('${s.id}')" style="border:none; background:#fee2e2; color:#b91c1c; padding:5px 10px; border-radius:5px; cursor:pointer">মুছুন</button>` : ''}
-    </td>
-</tr>`;
+            body.innerHTML += `<tr>
+                <td><img src="${s.photo || 'https://via.placeholder.com/50'}" class="stu-pic"></td>
+                <td><b>${s.name}</b><br><small>রোল: ${s.roll}</small></td>
+                <td>${s.className}</td>
+                <td><span style="color:red; font-weight:bold">${s.blood || '-'}</span></td>
+                <td>
+                    <small>পিতা: ${s.fDob || 'নেই'}</small><br>
+                    <small>মাতা: ${s.mDob || 'নেই'}</small>
+                </td>
+                <td>${s.fMobile || s.mMobile || '-'}</td>
+                <td>
+                    <button onclick="editStu('${s.id}')" style="border:none; background:#e0f2fe; color:#0369a1; padding:5px 10px; border-radius:5px; cursor:pointer">এডিট</button>
+                    ${isAdmin ? `<button onclick="delStu('${s.id}')" style="border:none; background:#fee2e2; color:#b91c1c; padding:5px 10px; border-radius:5px; cursor:pointer">মুছুন</button>` : ''}
+                </td>
+            </tr>`;
         });
         document.getElementById('dispTotal').innerText = allStudents.length;
         document.getElementById('dispBoy').innerText = counts.ছাত্র;
@@ -355,10 +350,8 @@ body.innerHTML += `<tr>
     };
 
     document.getElementById('studentForm').onsubmit = async (e) => {
-        e.preventDefault()
-            document.getElementById('fDob').value = '';
-document.getElementById('mDob').value = '';;
-        Swal.fire({title:'সংরক্ষণ হচ্ছে...'});
+        e.preventDefault();
+        Swal.fire({title:'সংরক্ষণ হচ্ছে...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
         
         let photoData = editId ? (allStudents.find(x => x.id === editId).photo || "") : "";
         const file = document.getElementById('photoInput').files[0];
@@ -378,10 +371,11 @@ document.getElementById('mDob').value = '';;
             birthReg: document.getElementById('birthReg').value,
             fName: document.getElementById('fName').value,
             fNid: document.getElementById('fNid').value,
-             fDob: document.getElementById('fDob').value, 
+            fDob: document.getElementById('fDob').value,
             fMobile: document.getElementById('fMobile').value,
             mName: document.getElementById('mName').value,
             mNid: document.getElementById('mNid').value,
+            mDob: document.getElementById('mDob').value,
             mMobile: document.getElementById('mMobile').value,
             photo: photoData
         };
@@ -389,12 +383,16 @@ document.getElementById('mDob').value = '';;
         try {
             if(editId) await updateDoc(doc(db, "students", editId), data);
             else await addDoc(collection(db, "students"), data);
+            
             editId = null;
             document.getElementById('studentForm').reset();
             document.getElementById('imgSrc').style.display = 'none';
             Swal.fire('সফল', 'তথ্য সংরক্ষিত হয়েছে', 'success');
             document.querySelector('[data-sec="list-sec"]').click();
-        } catch { Swal.fire('Error', 'ব্যর্থ হয়েছে', 'error'); }
+        } catch (err) { 
+            console.error(err);
+            Swal.fire('Error', 'ব্যর্থ হয়েছে', 'error'); 
+        }
     };
 </script>
 </body>
