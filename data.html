@@ -9,115 +9,170 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root { 
-            --primary: #059669; --primary-hover: #047857; 
-            --dark: #0f172a; --bg: #f1f5f9; --white: #ffffff;
+            --primary: #10b981; 
+            --primary-hover: #059669; 
+            --dark-sidebar: #0f172a; 
+            --bg: #f8fafc; 
+            --white: #ffffff;
             --sidebar-width: 280px;
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
-        body { font-family: 'Kalpurush', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; color: #334155; }
+        body { font-family: 'Kalpurush', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; color: #1e293b; }
 
-        /* --- SIDEBAR --- */
+        /* --- MODERN SIDEBAR --- */
         #sidebar { 
-            width: var(--sidebar-width); background: var(--dark); color: white; 
-            position: fixed; height: 100vh; top: 0; left: 0; z-index: 3000; 
-            transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; box-shadow: 10px 0 30px rgba(0,0,0,0.2);
+            width: var(--sidebar-width); 
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
+            color: white; 
+            position: fixed; 
+            height: 100vh; 
+            top: 0; left: 0; 
+            z-index: 3000; 
+            transform: translateX(-100%); 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; 
+            flex-direction: column;
         }
         #sidebar.active { transform: translateX(0); }
+        
         #sidebar-overlay {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4);
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5);
             backdrop-filter: blur(4px); z-index: 2500; opacity: 0; visibility: hidden; transition: 0.3s ease;
         }
         #sidebar-overlay.active { opacity: 1; visibility: visible; }
-        .sidebar-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .nav-link { 
-            padding: 16px 25px; margin: 8px 15px; border-radius: 12px; cursor: pointer; 
-            transition: 0.2s; color: #94a3b8; border: none; background: transparent; 
-            font-family: 'Kalpurush'; font-size: 16px; display: flex; align-items: center; gap: 12px;
+
+        .sidebar-header { 
+            padding: 40px 20px; 
+            text-align: center; 
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.03);
         }
-        .nav-link.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); }
+
+        #userBadge {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .nav-menu { flex: 1; padding: 20px 0; display: flex; flex-direction: column; }
+
+        .nav-link { 
+            padding: 14px 25px; 
+            margin: 5px 15px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            color: #94a3b8; 
+            border: none; 
+            background: transparent; 
+            font-family: 'Kalpurush'; 
+            font-size: 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .nav-link:hover { 
+            background: rgba(255, 255, 255, 0.05); 
+            color: white; 
+            transform: translateX(5px);
+        }
+
+        .nav-link.active { 
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%); 
+            color: white; 
+            box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);
+        }
+
+        #btn-logout { 
+            margin: 20px 15px 30px; 
+            color: #fda4af; 
+            background: rgba(244, 63, 94, 0.1);
+        }
+        #btn-logout:hover { background: #e11d48; color: white; }
 
         /* --- TOP BAR --- */
         #top-bar {
-            position: fixed; top: 0; left: 0; right: 0; height: 75px;
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(12px);
+            position: fixed; top: 0; left: 0; right: 0; height: 70px;
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(15px);
             display: flex; align-items: center; justify-content: space-between; 
             padding: 0 25px; z-index: 1000; border-bottom: 1px solid #e2e8f0;
         }
         .school-title {
             position: absolute; left: 50%; transform: translateX(-50%);
-            font-weight: bold; color: var(--primary); font-size: 1.2rem;
-            text-align: center; pointer-events: none; width: max-content;
+            font-weight: bold; color: #065f46; font-size: 1.1rem;
+            text-align: center; width: max-content;
         }
-        #menu-trigger { background: var(--dark); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-family: 'Kalpurush'; z-index: 1001; }
+        #menu-trigger { background: var(--dark-sidebar); color: white; border: none; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-family: 'Kalpurush'; }
 
-        /* --- CONTENT --- */
+        /* --- CONTENT AREA --- */
         #app-container { flex: 1; overflow-y: auto; padding: 100px 30px 50px; display: none; }
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: var(--shadow-lg); border: 1px solid rgba(255,255,255,0.5); margin-bottom: 25px; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: var(--shadow-lg); border: 1px solid #f1f5f9; margin-bottom: 25px; }
         
         .form-section-head { display: flex; align-items: center; gap: 10px; margin: 30px 0 15px; border-left: 4px solid var(--primary); padding-left: 10px; }
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
         
         label { display: block; font-size: 13px; color: #64748b; margin-bottom: 5px; font-weight: 600; }
-        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc; outline: none; font-family: 'Kalpurush'; box-sizing: border-box; }
-        input:focus { border-color: var(--primary); background: white; }
+        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc; outline: none; font-family: 'Kalpurush'; }
+        input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
 
-        /* --- TABLE --- */
         .table-box { overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; min-width: 900px; }
-        td { background: #f8fafc; padding: 15px; border: none; }
-        td:first-child { border-radius: 12px 0 0 12px; }
-        td:last-child { border-radius: 0 12px 12px 0; }
-        .stu-pic { width: 45px; height: 45px; border-radius: 10px; object-fit: cover; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; min-width: 900px; }
+        td { background: white; padding: 15px; border: none; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+        td:first-child { border-left: 1px solid #f1f5f9; border-radius: 15px 0 0 15px; }
+        td:last-child { border-right: 1px solid #f1f5f9; border-radius: 0 15px 15px 0; }
+        .stu-pic { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; border: 2px solid #e2e8f0; }
 
         #login-screen { position: fixed; inset: 0; background: #0f172a; z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 40px; border-radius: 24px; width: 100%; max-width: 350px; text-align: center; }
-        .btn-primary { width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }
+        .login-box { background: white; padding: 40px; border-radius: 24px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .btn-primary { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer; font-weight:bold; font-size: 16px; transition: 0.3s; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
         .hidden { display: none !important; }
-
-        @media (max-width: 768px) {
-            .school-title { font-size: 14px; width: 60%; line-height: 1.2; }
-            #top-bar { padding: 0 15px; }
-        }
+        @media (max-width: 768px) { .school-title { font-size: 13px; width: 55%; } }
     </style>
 </head>
 <body>
 
 <div id="sidebar-overlay"></div>
 <aside id="sidebar">
-    <div class="sidebar-header"><div id="userBadge">লোডিং...</div></div>
-    <nav style="flex:1; margin-top: 20px;">
-        <div class="nav-link active" data-sec="dashboard-sec">📊 ড্যাশবোর্ড</div>
-        <div class="nav-link" data-sec="entry-sec">📝 নতুন শিক্ষার্থী</div>
-        <div class="nav-link" data-sec="list-sec">📋 শিক্ষার্থী তালিকা</div>
+    <div class="sidebar-header">
+        <div id="userBadge">লোডিং...</div>
+        <small style="color: #64748b; display: block; margin-top: 5px;">ম্যানেজমেন্ট প্যানেল</small>
+    </div>
+    <nav class="nav-menu">
+        <div class="nav-link active" data-sec="dashboard-sec"><span>📊</span> ড্যাশবোর্ড</div>
+        <div class="nav-link" data-sec="entry-sec"><span>👤</span> নতুন শিক্ষার্থী</div>
+        <div class="nav-link" data-sec="list-sec"><span>📋</span> শিক্ষার্থী তালিকা</div>
+        <div style="flex: 1;"></div>
+        <div id="btn-logout" class="nav-link"><span>🚪</span> লগআউট করুন</div>
     </nav>
-    <div id="btn-logout" class="nav-link" style="margin-bottom:30px; color:#fb7185;">🚪 লগআউট</div>
 </aside>
 
 <nav id="top-bar">
     <button id="menu-trigger">☰ মেনু</button>
     <div class="school-title">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ্যালয়</div>
-    <div style="width: 60px;"></div> 
+    <div style="width: 50px;"></div> 
 </nav>
 
 <div id="login-screen">
     <div class="login-box">
-        <h2>লগইন</h2>
+        <h2 style="margin-bottom: 25px; color: #1e293b;">শিক্ষক লগইন</h2>
         <input type="email" id="email" placeholder="ইমেইল">
-        <input type="password" id="pass" placeholder="পাসওয়ার্ড" style="margin-top:10px">
-        <button id="btnLogin" class="btn-primary" style="margin-top:20px">প্রবেশ করুন</button>
+        <input type="password" id="pass" placeholder="পাসওয়ার্ড" style="margin-top:15px">
+        <button id="btnLogin" class="btn-primary" style="margin-top:25px">প্রবেশ করুন</button>
     </div>
 </div>
 
 <main id="app-container">
-
     <section id="dashboard-sec">
         <div class="form-row">
-            <div class="card" style="text-align:center"><span>মোট শিক্ষার্থী</span><h2 id="dispTotal">0</h2></div>
-            <div class="card" style="text-align:center; color:#3b82f6"><span>ছাত্র</span><h2 id="dispBoy">0</h2></div>
-            <div class="card" style="text-align:center; color:#ec4899"><span>ছাত্রী</span><h2 id="dispGirl">0</h2></div>
+            <div class="card" style="text-align:center; border-bottom: 4px solid var(--primary)"><span>মোট শিক্ষার্থী</span><h2 id="dispTotal">0</h2></div>
+            <div class="card" style="text-align:center; border-bottom: 4px solid #3b82f6; color:#3b82f6"><span>ছাত্র</span><h2 id="dispBoy">0</h2></div>
+            <div class="card" style="text-align:center; border-bottom: 4px solid #ec4899; color:#ec4899"><span>ছাত্রী</span><h2 id="dispGirl">0</h2></div>
         </div>
         <div class="form-row">
             <div class="card"><h3>লিঙ্গ অনুপাত</h3><canvas id="genderChart"></canvas></div>
@@ -127,7 +182,7 @@
 
     <section id="entry-sec" class="hidden">
         <div class="card">
-            <h2 id="formTitle" style="text-align:center">শিক্ষার্থীর তথ‌্য ফরম</h2>
+            <h2 id="formTitle" style="text-align:center; color: var(--primary)">শিক্ষার্থীর তথ‌্য ফরম</h2>
             <form id="studentForm">
                 <div class="form-section-head"><h3>ব্যক্তিগত তথ‌্য</h3></div>
                 <div class="form-row">
@@ -169,22 +224,22 @@
                 </div>
 
                 <div class="form-section-head"><h3>ছবি</h3></div>
-                <div style="text-align:center; padding:20px; border:2px dashed #ccc; border-radius:15px">
-                    <img id="imgSrc" src="" style="width:100px; height:100px; object-fit:cover; display:none; margin:0 auto 10px; border-radius:10px">
+                <div style="text-align:center; padding:30px; border:2px dashed #e2e8f0; border-radius:15px; background: #f8fafc">
+                    <img id="imgSrc" src="" style="width:120px; height:120px; object-fit:cover; display:none; margin:0 auto 15px; border-radius:15px; border: 3px solid white; box-shadow: var(--shadow-lg)">
                     <input type="file" id="photoInput" accept="image/*">
                 </div>
-                <button type="submit" class="btn-primary" style="margin-top:30px">সেভ করুন</button>
+                <button type="submit" class="btn-primary" style="margin-top:30px">তথ্য সেভ করুন</button>
             </form>
         </div>
     </section>
 
     <section id="list-sec" class="hidden">
         <div class="card">
-            <h2>শিক্ষার্থী ডাটাবেস</h2>
+            <h2 style="margin-bottom: 20px;">শিক্ষার্থী ডাটাবেস</h2>
             <div class="table-box">
                 <table>
                     <thead>
-                        <tr>
+                        <tr style="text-align: left; color: #64748b; font-size: 14px;">
                             <th>ছবি</th>
                             <th>নাম ও রোল</th>
                             <th>শ্রেণি</th>
@@ -281,17 +336,17 @@
 
             body.innerHTML += `<tr>
                 <td><img src="${s.photo || 'https://via.placeholder.com/50'}" class="stu-pic"></td>
-                <td><b>${s.name}</b><br><small>রোল: ${s.roll}</small></td>
-                <td>${s.className}</td>
-                <td><span style="color:red; font-weight:bold">${s.blood || '-'}</span></td>
+                <td><b>${s.name}</b><br><small style="color:#64748b">রোল: ${s.roll}</small></td>
+                <td><span style="background:#f1f5f9; padding:4px 10px; border-radius:6px; font-size:14px">${s.className}</span></td>
+                <td><span style="color:#ef4444; font-weight:bold">${s.blood || '-'}</span></td>
                 <td>
                     <small>পিতা: ${s.fDob || 'নেই'}</small><br>
                     <small>মাতা: ${s.mDob || 'নেই'}</small>
                 </td>
                 <td>${s.fMobile || s.mMobile || '-'}</td>
                 <td>
-                    <button onclick="editStu('${s.id}')" style="border:none; background:#e0f2fe; color:#0369a1; padding:5px 10px; border-radius:5px; cursor:pointer">এডিট</button>
-                    ${isAdmin ? `<button onclick="delStu('${s.id}')" style="border:none; background:#fee2e2; color:#b91c1c; padding:5px 10px; border-radius:5px; cursor:pointer">মুছুন</button>` : ''}
+                    <button onclick="editStu('${s.id}')" style="border:none; background:#ecfdf5; color:#059669; padding:6px 12px; border-radius:8px; cursor:pointer; font-family:'Kalpurush'">এডিট</button>
+                    ${isAdmin ? `<button onclick="delStu('${s.id}')" style="border:none; background:#fff1f2; color:#e11d48; padding:6px 12px; border-radius:8px; cursor:pointer; margin-left:5px; font-family:'Kalpurush'">মুছুন</button>` : ''}
                 </td>
             </tr>`;
         });
@@ -305,13 +360,15 @@
         if(charts.g) charts.g.destroy();
         charts.g = new Chart(document.getElementById('genderChart'), {
             type: 'doughnut',
-            data: { labels: ['ছাত্র', 'ছাত্রী'], datasets: [{ data: [s.ছাত্র, s.ছাত্রী], backgroundColor: ['#3b82f6', '#ec4899'] }] }
+            data: { labels: ['ছাত্র', 'ছাত্রী'], datasets: [{ data: [s.ছাত্র, s.ছাত্রী], backgroundColor: ['#3b82f6', '#ec4899'], borderWidth: 0 }] },
+            options: { plugins: { legend: { position: 'bottom' } } }
         });
 
         if(charts.a) charts.a.destroy();
         charts.a = new Chart(document.getElementById('ageChart'), {
             type: 'bar',
-            data: { labels: Object.keys(ageData), datasets: [{ label: 'শিক্ষার্থী', data: Object.values(ageData), backgroundColor: '#059669' }] }
+            data: { labels: Object.keys(ageData), datasets: [{ label: 'শিক্ষার্থী', data: Object.values(ageData), backgroundColor: '#10b981', borderRadius: 5 }] },
+            options: { scales: { y: { beginAtZero: true } } }
         });
     }
 
@@ -333,11 +390,13 @@
         document.getElementById('mNid').value = s.mNid || '';
         document.getElementById('mDob').value = s.mDob || '';
         document.getElementById('mMobile').value = s.mMobile || '';
+        document.getElementById('imgSrc').src = s.photo || '';
+        document.getElementById('imgSrc').style.display = s.photo ? 'block' : 'none';
         document.querySelector('[data-sec="entry-sec"]').click();
     };
 
     window.delStu = async (id) => {
-        if((await Swal.fire({title:'মুছে ফেলবেন?', showCancelButton:true})).isConfirmed) await deleteDoc(doc(db, "students", id));
+        if((await Swal.fire({title:'আপনি কি নিশ্চিত?', text: "এই তথ্যটি স্থায়ীভাবে মুছে যাবে!", icon: 'warning', showCancelButton:true, confirmButtonColor: '#e11d48', confirmButtonText: 'হ্যাঁ, মুছুন', cancelButtonText: 'না'})).isConfirmed) await deleteDoc(doc(db, "students", id));
     };
 
     document.getElementById('photoInput').onchange = (e) => {
@@ -387,11 +446,11 @@
             editId = null;
             document.getElementById('studentForm').reset();
             document.getElementById('imgSrc').style.display = 'none';
-            Swal.fire('সফল', 'তথ্য সংরক্ষিত হয়েছে', 'success');
+            Swal.fire('সফল!', 'শিক্ষার্থীর তথ্য আপডেট করা হয়েছে।', 'success');
             document.querySelector('[data-sec="list-sec"]').click();
         } catch (err) { 
             console.error(err);
-            Swal.fire('Error', 'ব্যর্থ হয়েছে', 'error'); 
+            Swal.fire('Error', 'তথ্য সংরক্ষণ করা যায়নি।', 'error'); 
         }
     };
 </script>
