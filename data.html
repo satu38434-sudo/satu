@@ -44,7 +44,7 @@
     <h2 style="text-align:center; color:#065f46">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ্যালয়</h2>
 
     <div class="tab-nav">
-        <button class="tab-btn active" onclick="openTab('dash')">📊 ড্যাশবোর্ড (গ্রাফ)</button>
+        <button class="tab-btn active" onclick="openTab('dash')">📊 ড্যাশবোর্ড</button>
         <button class="tab-btn" onclick="openTab('entry')">➕ নতুন তথ্য যোগ</button>
         <button class="tab-btn" onclick="openTab('list')">📋 শিক্ষার্থী তালিকা</button>
     </div>
@@ -63,6 +63,8 @@
     </div>
 
     <div id="entry-sec" class="card hidden">
+         <div style="margin-top:10px">
+                <label>ছবি নির্বাচন করুন: </label><input type="file" id="picInp" accept="image/*">
         <form id="stuForm">
             <h3>শিক্ষার্থীর ব্যক্তিগত তথ্য</h3>
             <div class="form-grid">
@@ -78,13 +80,13 @@
             <div class="form-grid">
                 <input type="text" id="fName" placeholder="পিতার নাম">
                 <input type="text" id="fNid" placeholder="পিতার NID">
+                <input type="date" id="fDob" placeholder="পিতার জন্ম তারিখ">
                 <input type="tel" id="fMobile" placeholder="পিতার মোবাইল">
                 <input type="text" id="mName" placeholder="মাতার নাম">
                 <input type="text" id="mNid" placeholder="মাতার NID">
+                <input type="date" id="mDob" placeholder="মাতার জন্ম তারিখ">
                 <input type="tel" id="mMobile" placeholder="মাতার মোবাইল">
             </div>
-            <div style="margin-top:10px">
-                <label>ছবি নির্বাচন করুন: </label><input type="file" id="picInp" accept="image/*">
             </div>
             <button type="submit" style="width:100%; padding:15px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-top:20px; font-weight:bold">তথ্য সেভ করুন</button>
         </form>
