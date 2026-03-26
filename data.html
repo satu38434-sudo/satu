@@ -153,7 +153,8 @@
             <option>অজানা</option><option>A+</option><option>B+</option><option>O+</option><option>AB+</option><option>A-</option><option>B-</option><option>O-</option>
         </select>
     </div>
-</div>
+    </div>
+              <div class="student-form-container">
                 <h3>পিতা ও মাতার তথ্য</h3>
                 <div class="form-grid">
                     <input type="text" id="fName" placeholder="পিতার নাম">
@@ -166,8 +167,8 @@
                     <input type="tel" id="mMobile" placeholder="মাতার মোবাইল">
                     
                 </div>
-
-                <button type="submit" id="saveBtn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-top:25px; font-weight:bold; font-size:18px">তথ্য সেভ করুন</button>
+                </div>
+                <button type="submit" id="saveBtn" style="width:50%; padding:16px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-top:25px; font-weight:bold; font-size:18px">তথ্য সংরক্ষণ করুন</button>
             </form>
         </div>
 
@@ -372,7 +373,7 @@
 
     document.getElementById('stuForm').onsubmit = async (e) => {
         e.preventDefault();
-        Swal.fire({title: 'সেভ হচ্ছে...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+        Swal.fire({title: 'সংরক্ষণ করা হচ্ছে...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
         let pic = editId ? allData.find(x => x.id === editId).photo : "";
         const file = document.getElementById('picInp').files[0];
         if(file) pic = await resizeImage(file);
