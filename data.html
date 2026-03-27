@@ -9,7 +9,46 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+/* লগইন সেকশনের বিশেষ স্টাইল */
+#login-sec {
+    padding: 40px 30px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    background: #ffffff;
+    transition: transform 0.3s ease;
+}
 
+#login-sec h3 {
+    font-size: 24px;
+    margin-bottom: 25px;
+    color: var(--dark);
+    padding-left: 0; /* ডিফল্ট প্যাডিং সরানোর জন্য */
+}
+
+#login-sec input {
+    margin-bottom: 15px;
+    border: 1.5px solid #e2e8f0;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+#login-sec button {
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    transition: all 0.3s ease;
+}
+
+#login-sec button:hover {
+    background: var(--dark) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+}
+
+#login-sec .school-logo {
+    font-size: 50px;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
     .student-form-container {
         max-width: auto;
         margin: 20px auto;
@@ -97,12 +136,26 @@
 <div class="container">
     <h2 style="text-align:center; color:var(--dark)">২১৭নং শেখ ফারিয়া জান্নাত শান্তনা সরকারি প্রাথমিক বিদ্যালয়</h2>
 
-    <div id="login-sec" class="card" style="max-width:400px; margin: 80px auto; text-align:center">
-        <h3>লগইন</h3><br>
-        <input type="email" id="loginEmail" placeholder="আপনার ইমেইল"><br>
-        <input type="password" id="loginPass" placeholder="পাসওয়ার্ড"><br>
-        <button onclick="handleLogin()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; font-size:16px">লগইন করুন</button>
+   <div id="login-sec" class="card" style="max-width:400px; margin: 80px auto; text-align:center">
+    <span class="material-icons school-logo">school</span>
+    <h3>অ্যাডমিন লগইন</h3>
+    
+    <div style="position: relative; margin-bottom: 15px;">
+        <span class="material-icons" style="position: absolute; left: 10px; top: 11px; color: #94a3b8; font-size: 20px;">email</span>
+        <input type="email" id="loginEmail" placeholder="আপনার ইমেইল" style="padding-left: 40px;">
     </div>
+
+    <div style="position: relative; margin-bottom: 15px;">
+        <span class="material-icons" style="position: absolute; left: 10px; top: 11px; color: #94a3b8; font-size: 20px;">lock</span>
+        <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" style="padding-left: 40px;">
+    </div>
+
+    <button onclick="handleLogin()" style="width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; font-size:16px">লগইন করুন</button>
+    
+    <p style="margin-top: 20px; font-size: 13px; color: #64748b;">
+        শুধুমাত্র অনুমোদিত ব্যবহারকারীদের জন্য
+    </p>
+</div>
 
     <div id="main-content" class="hidden">
         <div style="text-align: right; margin-bottom: 15px;">
