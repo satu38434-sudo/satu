@@ -141,12 +141,12 @@
     
     <div style="position: relative; margin-bottom: 5px;">
         <span class="material-icons" style="position: absolute; left: 10px; top: 11px; color: #94a3b8; font-size: 20px;">email</span>
-        <input type="email" id="loginEmail" placeholder="আপনার ইমেইল" style="padding-left: 40px;">
+        <input type="email" id="loginEmail" autocomplete="off" placeholder="আপনার ইমেইল" style="padding-left: 40px;">
     </div>
 
     <div style="position: relative; margin-bottom: 5px;">
         <span class="material-icons" style="position: absolute; left: 10px; top: 11px; color: #94a3b8; font-size: 20px;">lock</span>
-        <input type="password" id="loginPass" placeholder="পাসওয়ার্ড" style="padding-left: 40px;">
+        <input type="password" id="loginPass" autocomplete="new-password" placeholder="পাসওয়ার্ড" style="padding-left: 40px;">
     </div>
 
     <button onclick="handleLogin()" style="width:50%; padding:14px; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; font-size:16px">লগইন করুন</button>
@@ -314,8 +314,17 @@
         try { await signInWithEmailAndPassword(auth, email, pass); } 
         catch (err) { Swal.fire('ভুল!', 'সঠিক ইমেইল বা পাসওয়ার্ড দিন', 'error'); }
     };
-    window.handleLogout = () => signOut(auth);
-
+   window.handleLogout = () => {
+    signOut(auth).then(() => {
+        // লগআউট হওয়ার পর ইনপুট ফিল্ডগুলো ম্যানুয়ালি খালি করা
+        document.getElementById('loginEmail').value = "";
+        document.getElementById('loginPass').value = "";
+        
+        // সব কার্ড হাইড করে লগইন সেকশন দেখানো
+        document.getElementById('main-content').classList.add('hidden');
+        document.getElementById('login-sec').classList.remove('hidden');
+    });
+};
     window.openTab = (tab, event) => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.card').forEach(c => { if(c.id !== 'login-sec') c.classList.add('hidden') });
