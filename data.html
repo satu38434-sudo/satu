@@ -173,6 +173,25 @@
         </div>
 
         <div id="list-sec" class="card hidden">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
+    <div style="flex: 2; min-width: 200px; position: relative;">
+        <span class="material-icons" style="position: absolute; left: 10px; top: 10px; color: #94a3b8;">search</span>
+        <input type="text" id="searchInput" placeholder="নাম বা রোল দিয়ে খুঁজুন..." 
+               onkeyup="filterList()" style="padding-left: 40px; border: 1px solid #cbd5e1;">
+    </div>
+    
+    <div style="flex: 1; min-width: 150px;">
+        <select id="classFilter" onchange="filterList()" style="border: 1px solid #cbd5e1; background: white;">
+            <option value="">সব শ্রেণি (ফিল্টার)</option>
+            <option>প্রাক</option>
+            <option>১ম</option>
+            <option>২য়</option>
+            <option>৩য়</option>
+            <option>৪র্থ</option>
+            <option>৫ম</option>
+        </select>
+    </div>
+</div>
             <div class="table-box">
                 <table>
                     <thead>
@@ -196,6 +215,27 @@
 </div>
 
 <script type="module">
+    window.filterList = () => {
+    const searchText = document.getElementById('searchInput').value.toLowerCase();
+    const selectedClass = document.getElementById('classFilter').value;
+    const rows = document.querySelectorAll('#tableBody tr');
+
+    rows.forEach(row => {
+        // row.cells[1] এ নাম ও রোল আছে, row.cells[2] এ শ্রেণি আছে
+        const studentInfo = row.cells[1].innerText.toLowerCase(); 
+        const studentClass = row.cells[2].innerText; 
+        
+        const matchesSearch = studentInfo.includes(searchText);
+        const matchesClass = (selectedClass === "") || (studentClass === selectedClass);
+
+        // দুই শর্তই পূরণ হলে রো-টি দেখাবে, নাহলে হাইড করবে
+        if (matchesSearch && matchesClass) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+};
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
