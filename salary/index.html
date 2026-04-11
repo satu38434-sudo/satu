@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Salary Calculator</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-base: #020617;
+            --bg-gradient: radial-gradient(circle at 50% -20%, #064e3b 0%, #020617 80%);
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --border: rgba(251, 191, 36, 0.2);
+            --accent-gold: #fbbf24;
+            --accent-red: #fb7185;
+            --text-bright: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-base) var(--bg-gradient) fixed;
+            color: var(--text-bright);
+            margin: 0; padding: 0; min-height: 100vh;
+        }
+
+        /* --- Masthead (Matching Home Page) --- */
+        .masthead {
+            max-width: 1000px; margin: 0 auto; padding: 25px 15px;
+            border-bottom: 4px double var(--border); text-align: center;
+        }
+        .main-banner { max-width: 350px; width: 80%; height: auto; }
+        .masthead-info-row {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--accent-gold); padding-top: 8px;
+        }
+
+        /* --- Calculator Container --- */
+        .container {
+            max-width: 650px; margin: 30px auto; padding: 30px;
+            background: var(--card-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--border); border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent-gold); text-align: center; margin-bottom: 25px; }
+
+        .calc-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 700; color: var(--text-dim); font-size: 0.65rem; letter-spacing: 1px; text-transform: uppercase;}
+
+        input[type="number"] {
+            width: 100%; padding: 14px; background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border); border-radius: 12px; color: white;
+            font-size: 1rem; font-weight: 600; outline: none; transition: 0.3s;
+        }
+
+        input[type="number"]:focus { border-color: var(--accent-gold); background: rgba(0,0,0,0.7); }
+
+        button#calcBtn {
+            grid-column: span 2; background: var(--accent-gold); color: #000; border: none;
+            padding: 18px; width: 100%; border-radius: 14px; font-weight: 800; 
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px;
+            transition: 0.3s; margin-top: 10px;
+        }
+
+        /* --- Dynamic Breakdown Styling --- */
+        .result-panel {
+            margin-top: 30px; display: none; border-top: 1px solid var(--border); padding-top: 25px;
+        }
+
+        .net-salary-card {
+            background: rgba(251, 191, 36, 0.1); border: 1px solid var(--accent-gold);
+            padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 20px;
+        }
+        .net-salary-card span { font-size: 0.75rem; color: var(--accent-gold); font-weight: 800; letter-spacing: 2px; }
+        .net-salary-card h2 { font-size: 2.5rem; margin: 5px 0; color: #fff; }
+
+        .breakdown-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .item-box { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .item-box span { display: block; font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; }
+        .item-box strong { font-size: 1rem; color: #fff; }
+        .deduct strong { color: var(--accent-red); }
+
+        footer { text-align: center; padding: 40px; color: var(--text-dim); font-size: 0.7rem; letter-spacing: 1px; }
+
+        @media (max-width: 600px) {
+            .calc-grid { grid-template-columns: 1fr; }
+            button#calcBtn { grid-column: span 1; }
+            .container { margin: 15px; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="masthead">
+        <div class="banner-container">
+            <a href="/index"><img src="logo.svg" alt="SMATE" class="main-banner"></a>
+        </div>
+        <div class="masthead-info-row" id="currentDate"> </div>
+    </header>
+
+    <div class="container">
+        <h1>Salary Calculator</h1>
+        
+        <div class="calc-grid">
+            <div class="input-group">
+                <label>Basic Salary (৳)</label>
+                <input type="number" id="currentSalary" placeholder="e.g. 20000">
+            </div>
+            <div class="input-group">
+                <label>House Rent (%)</label>
+                <input type="number" id="houseRent" placeholder="e.g. 40">
+            </div>
+            <div class="input-group">
+                <label>Medical (৳)</label>
+                <input type="number" id="medicalAllowance" value="1500">
+            </div>
+            <div class="input-group">
+                <label>Tiffin (৳)</label>
+                <input type="number" id="tiffinAllowance" placeholder="0">
+            </div>
+            <div class="input-group">
+                <label>Deduction (%)</label>
+                <input type="number" id="deductionPercentage" value="1">
+            </div>
+            <div class="input-group">
+                <label>Revenue Stamp (৳)</label>
+                <input type="number" id="deductionAmount" value="10">
+            </div>
+            <button id="calcBtn" onclick="calculateSalary()">Calculate Net Salary</button>
+        </div>
+
+        <div class="result-panel" id="resultPanel">
+            <div class="net-salary-card">
+                <span>NET MONTHLY PAYABLE</span>
+                <h2 id="netSalary">৳0.00</h2>
+            </div>
+            
+            <div class="breakdown-grid">
+                <div class="item-box"><span>Gross Earnings</span><strong id="grossText">৳0</strong></div>
+                <div class="item-box deduct"><span>Total Deductions</span><strong id="deductText">৳0</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 SATU
+    </footer>
+
+    <script>
+        function calculateSalary() {
+            // Get inputs
+            const basic = parseFloat(document.getElementById("currentSalary").value) || 0;
+            const rentPercent = parseFloat(document.getElementById("houseRent").value) || 0;
+            const medical = parseFloat(document.getElementById("medicalAllowance").value) || 0;
+            const tiffin = parseFloat(document.getElementById("tiffinAllowance").value) || 0;
+            const deductPercent = parseFloat(document.getElementById("deductionPercentage").value) || 0;
+            const stamp = parseFloat(document.getElementById("deductionAmount").value) || 0;
+
+            if (basic <= 0) { alert("Please enter a basic salary amount."); return; }
+
+            // Calculations
+            const rentAmount = (basic * (rentPercent / 100));
+            const gross = basic + rentAmount + medical + tiffin;
+            const pfDeduction = (basic * (deductPercent / 100));
+            const totalDeduction = pfDeduction + stamp;
+            const netPayable = gross - totalDeduction;
+
+            // Update UI
+            document.getElementById("resultPanel").style.display = "block";
+            document.getElementById("netSalary").innerText = "৳" + netPayable.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById("grossText").innerText = "৳" + gross.toLocaleString();
+            document.getElementById("deductText").innerText = "৳" + totalDeduction.toLocaleString();
+            
+            // Scroll down on mobile to see results
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Set Current Date
+        const d = new Date();
+        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+        document.getElementById('currentDate').innerText = "" + d.toLocaleDateString(undefined, options).toUpperCase();
+    </script>
+</body>
+</html>
