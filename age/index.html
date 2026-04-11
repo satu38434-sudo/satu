@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>AGE Calculator | satu.pro.bd</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-base: #020617;
+            --bg-gradient: radial-gradient(circle at 50% -20%, #064e3b 0%, #020617 80%);
+            --card-bg: rgba(15, 23, 42, 0.7);
+            --border: rgba(251, 191, 36, 0.2);
+            --accent-gold: #fbbf24;
+            --text-bright: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-base) var(--bg-gradient) fixed;
+            color: var(--text-bright);
+            margin: 0; padding: 0; min-height: 100vh;
+        }
+
+        /* --- Masthead --- */
+        .masthead {
+            max-width: 1000px; margin: 0 auto; padding: 25px 15px;
+            border-bottom: 4px double var(--border); text-align: center;
+        }
+        .main-banner { max-width: 350px; width: 80%; height: auto; }
+        .masthead-info-row {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--accent-gold); padding-top: 8px;
+        }
+
+        /* --- Calculator UI --- */
+        .container {
+            max-width: 500px; margin: 30px auto; padding: 30px;
+            background: var(--card-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--border); border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 { font-family: 'Playfair Display', serif; font-style: italic; color: var(--accent-gold); text-align: center; margin-bottom: 25px; }
+
+        .input-group { margin-bottom: 25px; text-align: center; }
+        label { display: block; margin-bottom: 12px; font-weight: 700; color: var(--text-dim); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase;}
+
+        /* Android Style Input */
+        .date-input-wrapper {
+            position: relative;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 16px;
+            background: rgba(0,0,0,0.5);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* Customizing the Calendar Icon (Android vibe) */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background-color: var(--accent-gold);
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            filter: invert(0);
+        }
+
+        input[type="date"]:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.1);
+            transform: translateY(-2px);
+        }
+
+        button#calcBtn {
+            background: var(--accent-gold); color: #000; border: none;
+            padding: 18px; width: 100%; border-radius: 16px; font-weight: 800; 
+            cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s; margin-top: 10px;
+        }
+
+        button#calcBtn:active { transform: scale(0.98); }
+
+        /* --- Results Area --- */
+        .main-result { margin-top: 30px; text-align: center; border-top: 1px solid var(--border); padding-top: 25px; }
+        .main-result p { font-size: 0.7rem; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 5px; }
+        .main-result h2 { font-size: 2.2rem; margin: 0; color: var(--accent-gold); font-weight: 800; }
+        
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 25px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.03); padding: 15px 5px; border-radius: 16px; border: 1px solid var(--border);
+        }
+        .stat-card span { display: block; font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; font-weight: 700;}
+        .stat-card strong { font-size: 1rem; color: #fff; }
+
+        #printButton {
+            background: transparent; color: var(--text-dim); border: 1px solid var(--border);
+            padding: 12px 25px; border-radius: 50px; cursor: pointer; margin: 30px auto; display: block; font-size: 0.8rem;
+        }
+
+        @media (max-width: 600px) {
+            .masthead-info-row { font-size: 0.6rem; }
+            .container { margin: 20px 15px; padding: 25px 20px; }
+            h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="masthead">
+        <div class="banner-container">
+            <a href="/index"><img src="logo.svg" alt="satu.pro.bd" class="main-banner"></a>
+        </div>
+        <div class="masthead-info-row" id="currentDate"></div>
+    </header>
+
+    <div class="container">
+        <h1>Age Calculator</h1>
+        <div class="input-group">
+            <label for="dob">Select Date (DD/MM/YYYY)</label>
+            <div class="date-input-wrapper">
+                <input type="date" id="dob">
+            </div>
+        </div>
+        <button id="calcBtn" onclick="calculateAge()">Calculate</button>
+
+        <div id="resultsArea" style="display: none;">
+            <div class="main-result">
+                <p>TOTAL AGE</p>
+                <h2 id="ageBig">0 Years</h2>
+                <span id="ageSub" style="color: var(--text-dim); font-size: 0.9rem; font-weight: 600;">0 Months | 0 Days</span>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><span>Months</span><strong id="totalMonths">0</strong></div>
+                <div class="stat-card"><span>Weeks</span><strong id="totalWeeks">0</strong></div>
+                <div class="stat-card"><span>Days</span><strong id="totalDays">0</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="printButton" onclick="window.print()"><i class="fas fa-print"></i> PRINT REPORT</button>
+
+    <script>
+        function calculateAge() {
+            const dobInput = document.getElementById('dob').value;
+            if (!dobInput) return;
+            
+            const dob = new Date(dobInput);
+            const today = new Date();
+            document.getElementById('resultsArea').style.display = 'block';
+
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
+
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const totalMs = today - dob;
+            const tDays = Math.floor(totalMs / (1000 * 60 * 60 * 24));
+            const tWeeks = Math.floor(tDays / 7);
+            const tMonths = (years * 12) + months;
+
+            document.getElementById('ageBig').innerText = `${years} Years`;
+            document.getElementById('ageSub').innerText = `${months} Months | ${days} Days`;
+            document.getElementById('totalMonths').innerText = tMonths.toLocaleString();
+            document.getElementById('totalWeeks').innerText = tWeeks.toLocaleString();
+            document.getElementById('totalDays').innerText = tDays.toLocaleString();
+        }
+
+        // Set Current Date in Masthead
+        const d = new Date();
+        const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+        document.getElementById('currentDate').innerText = " " + d.toLocaleDateString(undefined, options).toUpperCase();
+    </script>
+</body>
+  </html>
