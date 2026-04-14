@@ -10,15 +10,37 @@
     
     <style>
         :root {
-            --bg-dark: #0a0f1d;
-            --glass: rgba(30, 41, 59, 0.7);
-            --glass-hover: rgba(51, 65, 85, 0.9);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --accent-cyan: #22d3ee;
-            --accent-gold: #fbbf24;
-            --accent-red: #f43f5e;
-            --text-main: #f1f5f9;
-            --text-dim: #94a3b8;
+            /* --- Light Mode (Default) --- */
+            --bg-main: #f1f5f9;
+            --bg-gradient: radial-gradient(circle at top right, #e2e8f0, #f1f5f9);
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-hover: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --accent-cyan: #0891b2;
+            --accent-gold: #b45309;
+            --accent-red: #e11d48;
+            --text-main: #0f172a;
+            --text-dim: #475569;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --ticker-bg: rgba(226, 232, 240, 0.9);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* --- Dark Mode --- */
+                --bg-main: #0a0f1d;
+                --bg-gradient: radial-gradient(circle at top right, #1e293b, #0a0f1d);
+                --glass: rgba(30, 41, 59, 0.7);
+                --glass-hover: rgba(51, 65, 85, 0.9);
+                --glass-border: rgba(255, 255, 255, 0.1);
+                --accent-cyan: #22d3ee;
+                --accent-gold: #fbbf24;
+                --accent-red: #f43f5e;
+                --text-main: #f1f5f9;
+                --text-dim: #94a3b8;
+                --header-bg: rgba(10, 15, 29, 0.85);
+                --ticker-bg: rgba(15, 23, 42, 0.9);
+            }
         }
 
         html, body {
@@ -26,11 +48,14 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            background: radial-gradient(circle at top right, #1e293b, #0a0f1d);
+            background: var(--bg-gradient);
             background-attachment: fixed;
         }
 
-        * { box-sizing: border-box; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        * { 
+            box-sizing: border-box; 
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
 
         body {
             color: var(--text-main);
@@ -46,7 +71,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 12px 15px;
-            background: rgba(10, 15, 29, 0.85);
+            background: var(--header-bg);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--glass-border);
             position: sticky;
@@ -79,7 +104,7 @@
         /* --- Ticker Bar --- */
         .ticker-container {
             display: flex;
-            background: rgba(15, 23, 42, 0.9);
+            background: var(--ticker-bg);
             border-bottom: 2px solid var(--accent-cyan);
             overflow: hidden;
             height: 48px;
@@ -162,8 +187,8 @@
             left: -100%;
             width: 300px;
             height: 100%;
-            background: #0f172a;
-            box-shadow: 20px 0 50px rgba(0,0,0,0.8);
+            background: var(--bg-main);
+            box-shadow: 20px 0 50px rgba(0,0,0,0.3);
             z-index: 2000;
             padding: 20px;
             transition: 0.4s ease;
@@ -195,13 +220,13 @@
 
         .close-btn { color: var(--accent-red); border: none; background: none; cursor: pointer; }
 
-        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 1500; backdrop-filter: blur(4px); }
+        .menu-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; z-index: 1500; backdrop-filter: blur(4px); }
         .menu-overlay.active { display: block; }
 
         .search-container {
             display: none;
             padding: 15px;
-            background: #0f172a;
+            background: var(--header-bg);
             border-bottom: 2px solid var(--accent-cyan);
         }
 
@@ -212,12 +237,23 @@
             padding: 12px;
             border-radius: 10px;
             border: 1px solid var(--glass-border);
-            background: var(--bg-dark);
-            color: white;
+            background: var(--glass);
+            color: var(--text-main);
             font-family: inherit;
         }
 
-        footer { background: rgba(10, 15, 29, 0.95); padding: 30px 20px; border-top: 1px solid var(--glass-border); text-align: center; }
+        footer { background: var(--header-bg); padding: 30px 20px; border-top: 1px solid var(--glass-border); text-align: center; }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 15px;
+            background: var(--glass);
+            border-radius: 10px;
+        }
 
         @keyframes ticker-crawl { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
         @keyframes pulse-animation { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
@@ -233,11 +269,11 @@
             <button class="close-btn" onclick="toggleMenu()"><i data-lucide="x-circle" size="28"></i></button>
         </div>
         <nav style="display:flex; flex-direction:column; gap:12px;">
-            <a href="https://dpe.gopalganj.gov.bd/pages/notices" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;" target="_blank"><i data-lucide="map-pin"></i> DPE Gopalganj</a>
-            <a href="https://dpe.gov.bd/pages/notices" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;" target="_blank"><i data-lucide="bell"></i> DPE Notice</a>
-            <a href="/salary" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;"><i data-lucide="wallet"></i> Salary Calculator</a>
-            <a href="/age" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;"><i data-lucide="calendar"></i> Age Calculator</a>
-            <a href="/data" style="display:flex; align-items:center; gap:10px; color:white; text-decoration:none; padding:15px; background:var(--glass); border-radius:10px;"><i data-lucide="school"></i> Student Management</a>
+            <a href="https://dpe.gopalganj.gov.bd/pages/notices" class="menu-link" target="_blank"><i data-lucide="map-pin"></i> DPE Gopalganj</a>
+            <a href="https://dpe.gov.bd/pages/notices" class="menu-link" target="_blank"><i data-lucide="bell"></i> DPE Notice</a>
+            <a href="/salary" class="menu-link"><i data-lucide="wallet"></i> Salary Calculator</a>
+            <a href="/age" class="menu-link"><i data-lucide="calendar"></i> Age Calculator</a>
+            <a href="/data" class="menu-link"><i data-lucide="school"></i> Student Management</a>
           </nav>
     </div>
 
@@ -275,19 +311,20 @@
 
     <script>
         const feeds = [
-    { name: "প্রথম আলো", url: "https://www.prothomalo.com/feed" },
-    { name: "বিবিসি বাংলা", url: "https://www.bbc.com/bengali/index.xml" },
-    { name: "সময় নিউজ", url: "https://www.somoynews.tv/rss.xml" },
-    { name: "যুগান্তর", url: "https://www.jugantor.com/feed/rss.xml" },
-    { name: "বাংলা ট্রিবিউন", url: "https://www.banglatribune.com/feed" },
-    { name: "বিডিনিউজ২৪", url: "https://bdnews24.com/?widgetName=rssfeed&widgetId=1150&getXmlFeed=true" },
-    { name: "জাগো নিউজ", url: "https://www.jagonews24.com/rss.xml" },
-    { name: "কালের কণ্ঠ", url: "https://www.kalerkantho.com/rss.xml" },
-    { name: "চ্যানেল ২৪", url: "https://www.channel24bd.tv/rss/rss.xml" },
-    { name: "বাংলানিউজ২৪", url: "https://www.banglanews24.com/rss/rss.xml" },
-    { name: "দৈনিক ইনকিলাব", url: "https://www.dailyinqilab.com/rss.xml" },
-    { name: "নয়াদিগন্ত", url: "https://www.dailynayadiganta.com/rss.xml" }
-];
+            { name: "প্রথম আলো", url: "https://www.prothomalo.com/feed" },
+            { name: "বিবিসি বাংলা", url: "https://www.bbc.com/bengali/index.xml" },
+            { name: "সময় নিউজ", url: "https://www.somoynews.tv/rss.xml" },
+            { name: "যুগান্তর", url: "https://www.jugantor.com/feed/rss.xml" },
+            { name: "বাংলা ট্রিবিউন", url: "https://www.banglatribune.com/feed" },
+            { name: "বিডিনিউজ২৪", url: "https://bdnews24.com/?widgetName=rssfeed&widgetId=1150&getXmlFeed=true" },
+            { name: "জাগো নিউজ", url: "https://www.jagonews24.com/rss.xml" },
+            { name: "কালের কণ্ঠ", url: "https://www.kalerkantho.com/rss.xml" },
+            { name: "চ্যানেল ২৪", url: "https://www.channel24bd.tv/rss/rss.xml" },
+            { name: "বাংলানিউজ২৪", url: "https://www.banglanews24.com/rss/rss.xml" },
+            { name: "দৈনিক ইনকিলাব", url: "https://www.dailyinqilab.com/rss.xml" },
+            { name: "নয়াদিগন্ত", url: "https://www.dailynayadiganta.com/rss.xml" }
+        ];
+
         function toggleMenu() {
             document.getElementById('sideMenu').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
