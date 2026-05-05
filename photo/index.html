@@ -3,66 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browser-Side Image Resizer</title>
+    <title>Native Theme Image Resizer</title>
     <style>
+        /* CSS Variables for Theme Support */
         :root {
+            --bg-color: #ffffff;
+            --card-bg: #f3f4f6;
+            --text-color: #1f2937;
+            --border-color: #d1d5db;
             --primary-color: #2563eb;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+        }
+
+        /* Dark Mode Override */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #111827;
+                --card-bg: #1f2937;
+                --text-color: #f9fafb;
+                --border-color: #374151;
+                --input-bg: #374151;
+            }
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            padding: 20px;
             margin: 0;
+            transition: background-color 0.3s ease;
         }
 
         .container {
             background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            border-radius: 16px;
             width: 100%;
-            max-width: 500px;
+            max-width: 450px; /* Mobile friendly width */
+            box-sizing: border-box;
         }
 
-        h2 { margin-top: 0; color: #1e293b; text-align: center; }
+        h2 { text-align: center; margin-bottom: 1.5rem; }
 
         .upload-section {
-            border: 2px dashed #cbd5e1;
-            padding: 20px;
+            border: 2px dashed var(--border-color);
+            padding: 30px 10px;
             text-align: center;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            transition: border-color 0.3s;
+            border-radius: 12px;
+            margin-bottom: 1rem;
         }
 
-        .upload-section:hover { border-color: var(--primary-color); }
+        /* Ensure input doesn't overflow on small screens */
+        input[type="file"] {
+            max-width: 100%;
+        }
 
         .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column; /* Stacked for mobile */
             gap: 15px;
             margin-bottom: 20px;
         }
 
-        .input-group { display: flex; flex-direction: column; }
-
-        label { font-size: 0.875rem; margin-bottom: 5px; color: #64748b; }
-
-        input[type="number"] {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            outline: none;
+        /* Side-by-side inputs on larger screens */
+        @media (min-width: 400px) {
+            .input-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
         }
 
-        .aspect-ratio-box {
-            grid-column: span 2;
+        .input-group { display: flex; flex-direction: column; }
+
+        label { font-size: 0.8rem; margin-bottom: 4px; opacity: 0.8; }
+
+        input[type="number"] {
+            padding: 12px; /* Larger tap target for mobile */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--input-bg);
+            color: var(--text-color);
+            font-size: 16px; /* Prevents iOS auto-zoom on focus */
+        }
+
+        .checkbox-group {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -71,65 +99,66 @@
 
         button {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-weight: 700;
             cursor: pointer;
-            transition: opacity 0.2s;
+            font-size: 1rem;
         }
 
-        button:hover { opacity: 0.9; }
-        button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         #preview-container {
             margin-top: 20px;
-            text-align: center;
-            max-height: 300px;
+            border-radius: 8px;
             overflow: hidden;
-            border-radius: 4px;
+            background: rgba(0,0,0,0.05);
         }
 
-        img { max-width: 100%; height: auto; display: none; margin: 0 auto; }
+        img { width: 100%; height: auto; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Image Resizer</h2>
+    <h2>Resizer</h2>
     
     <div class="upload-section">
         <input type="file" id="imageInput" accept="image/*">
     </div>
 
     <div class="controls">
-        <div class="input-group">
-            <label>Width (px)</label>
-            <input type="number" id="widthInput" placeholder="Width">
+        <div class="input-row">
+            <div class="input-group">
+                <label>Width (px)</label>
+                <input type="number" id="widthInput" placeholder="Width">
+            </div>
+            <div class="input-group">
+                <label>Height (px)</label>
+                <input type="number" id="heightInput" placeholder="Height">
+            </div>
         </div>
-        <div class="input-group">
-            <label>Height (px)</label>
-            <input type="number" id="heightInput" placeholder="Height">
-        </div>
-        <div class="aspect-ratio-box">
+        
+        <div class="checkbox-group">
             <input type="checkbox" id="aspectRatio" checked>
             <label for="aspectRatio">Lock Aspect Ratio</label>
         </div>
     </div>
 
-    <button id="downloadBtn" disabled>Download Resized Image</button>
+    <button id="downloadBtn" disabled>Download</button>
 
     <div id="preview-container">
-        <img id="previewImg" alt="Preview">
+        <img id="previewImg">
     </div>
 
-    <!-- Hidden Canvas for Processing -->
     <canvas id="canvas" style="display:none;"></canvas>
 </div>
 
 <script>
+    /* ... The JavaScript logic from the previous response remains the same ... */
     const imageInput = document.getElementById('imageInput');
     const widthInput = document.getElementById('widthInput');
     const heightInput = document.getElementById('heightInput');
@@ -142,15 +171,11 @@
     let originalImg = new Image();
     let ratio = 1;
 
-    // Load image
     imageInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
-        reader.onload = (event) => {
-            originalImg.src = event.target.result;
-        };
+        reader.onload = (event) => originalImg.src = event.target.result;
         reader.readAsDataURL(file);
     });
 
@@ -158,39 +183,24 @@
         ratio = originalImg.width / originalImg.height;
         widthInput.value = originalImg.width;
         heightInput.value = originalImg.height;
-        
         previewImg.src = originalImg.src;
         previewImg.style.display = 'block';
         downloadBtn.disabled = false;
     };
 
-    // Maintain aspect ratio logic
     widthInput.addEventListener('input', () => {
-        if (aspectRatio.checked) {
-            heightInput.value = Math.round(widthInput.value / ratio);
-        }
+        if (aspectRatio.checked) heightInput.value = Math.round(widthInput.value / ratio);
     });
 
     heightInput.addEventListener('input', () => {
-        if (aspectRatio.checked) {
-            widthInput.value = Math.round(heightInput.value * ratio);
-        }
+        if (aspectRatio.checked) widthInput.value = Math.round(heightInput.value * ratio);
     });
 
-    // Process and Download
     downloadBtn.addEventListener('click', () => {
         const w = parseInt(widthInput.value);
         const h = parseInt(heightInput.value);
-
-        if (!w || !h) return alert("Please enter valid dimensions");
-
-        canvas.width = w;
-        canvas.height = h;
-
-        // Use drawImage to scale
+        canvas.width = w; canvas.height = h;
         ctx.drawImage(originalImg, 0, 0, w, h);
-
-        // Download
         const link = document.createElement('a');
         link.download = `resized-${Date.now()}.png`;
         link.href = canvas.toDataURL('image/png', 1.0);
