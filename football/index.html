@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FootBall - Live Streaming</title>
+    <title>SATU PRO TV - Live Streaming (satu.pro.bd)</title>
+    <!-- Tailwind CSS for Responsive Layout & Styling -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- HLS.js Library to support live television stream (.m3u8) playback -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         /* Custom scrollbar matching the dark theme */
@@ -15,86 +17,73 @@
 </head>
 <body class="bg-gray-950 text-gray-100 font-sans min-h-screen flex flex-col">
 
+    <!-- Header Banner -->
     <header class="bg-gray-900 border-b border-gray-800 p-4 sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <div class="bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider animate-pulse">LIVE</div>
-                <h1 class="text-2xl font-black text-red-500 tracking-tight">MB TV <span class="text-white font-light">FREE</span></h1>
+                <h1 class="text-2xl font-black text-red-500 tracking-tight">SATU PRO <span class="text-white font-light">TV</span></h1>
             </div>
             <div class="text-xs text-gray-400 bg-gray-800 px-4 py-2 rounded-lg border border-gray-750 max-w-sm text-center sm:text-right">
-                <span class="text-red-400 font-semibold">Promo Banner:</span> Enjoy 90+ Free Premium HD Channels
+                <span class="text-red-400 font-semibold">Official Portal:</span> satu.pro.bd Live IPTV Service
             </div>
         </div>
     </header>
 
+    <!-- Main Content Grid -->
     <main class="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow w-full">
         
+        <!-- Left/Top Section: Video Player & Current Info -->
         <div class="lg:col-span-2 flex flex-col gap-4">
             <div class="bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 aspect-video relative group">
                 <video id="video-player" controls autoplay class="w-full h-full object-contain"></video>
             </div>
             
+            <!-- Player Controller Panel Details -->
             <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <p class="text-xs text-gray-400 uppercase font-semibold tracking-wider">Now Playing</p>
                     <h2 id="current-channel-title" class="text-xl font-bold text-white mt-1">Select a Channel</h2>
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
-                    <button id="prev-btn" class="flex-1 sm:flex-initial bg-gray-800 hover:bg-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition border border-gray-700">◀ Prev</button>
-                    <button id="next-btn" class="flex-1 sm:flex-initial bg-gray-800 hover:bg-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition border border-gray-700">Next ▶</button>
+                    <button id="prev-btn" class="flex-1 sm:flex-initial bg-gray-800 hover:bg-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition border border-gray-700 cursor-pointer">◀ Prev</button>
+                    <button id="next-btn" class="flex-1 sm:flex-initial bg-gray-800 hover:bg-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition border border-gray-700 cursor-pointer">Next ▶</button>
                 </div>
             </div>
         </div>
 
+        <!-- Right Section: Categories & Channel List -->
         <div class="flex flex-col bg-gray-900 rounded-xl border border-gray-800 overflow-hidden h-[calc(100vh-180px)] lg:h-[600px]">
+            <!-- Category Selection Row -->
             <div id="category-container" class="flex gap-2 overflow-x-auto p-3 bg-gray-950 border-b border-gray-800 whitespace-nowrap">
-                </div>
+                <!-- Categories injected dynamically via JS -->
+            </div>
 
+            <!-- Dynamic Channel Listing Grid -->
             <div id="channels-grid" class="grid grid-cols-2 gap-2.5 p-3 overflow-y-auto flex-grow content-start">
-                </div>
+                <!-- Channel Items injected dynamically via JS -->
+            </div>
         </div>
 
     </main>
 
+    <!-- Footer -->
     <footer class="bg-gray-950 border-t border-gray-900 p-4 text-center text-xs text-gray-500 mt-auto">
-        <p>Developed by <span class="text-gray-300 font-medium">SATU</span> &copy; 2026 SATU. All streams are collected publicly.</p>
+        <p>&copy; 2026 <a href="https://satu.pro.bd" class="text-red-400 hover:underline font-medium">satu.pro.bd</a>. All rights reserved. Powered by Satu Pro IPTV.</p>
     </footer>
 
+    <!-- Frontend Core Application Script -->
     <script>
-        // Comprehensive Dataset mirroring MB TV Application Categories & Channels
-        // (Note: Replace .m3u8 streaming links with valid stream sources)
+        // Working Dataset (Replace URLs with your own premium .m3u8 streams if needed)
         const channelData = [
-            { id: 1, name: "Rajdhani TV", category: "Bangla", logo: "📺", url: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" },
-            { id: 2, name: "ATN Bangla", category: "Bangla", logo: "🇧🇩", url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8" },
-            { id: 3, name: "Banglavision", category: "Bangla", logo: "📺", url: "" },
-            { id: 4, name: "Somoy News", category: "Bangla", logo: "🔥", url: "" },
-            { id: 5, name: "GTV", category: "Bangla", logo: "🏏", url: "" },
-            { id: 6, name: "Channel 24", category: "Bangla", logo: "📰", url: "" },
-            
-            { id: 7, name: "FIFA World Cup Live", category: "Sports", logo: "⚽", url: "https://bitdash-a.akamaihd.net/content/MI201109250017_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8" },
-            { id: 8, name: "T Sports Live", category: "Sports", logo: "🏆", url: "" },
-            { id: 9, name: "Sony Sports 1", category: "Sports", logo: "🏏", url: "" },
-            { id: 10, name: "Bein Sports 1", category: "Sports", logo: "⚽", url: "" },
-
-            { id: 11, name: "Star Jalsha", category: "India", logo: "✨", url: "" },
-            { id: 12, name: "Zee Bangla", category: "India", logo: "🎭", url: "" },
-            { id: 13, name: "Sony Aath", category: "India", logo: "🐯", url: "" },
-            { id: 14, name: "Sony Max", category: "India", logo: "🍿", url: "" },
-
-            { id: 15, name: "Sangeet Bangla", category: "Music", logo: "🎵", url: "" },
-            { id: 16, name: "9xm", category: "Music", logo: "🎸", url: "" },
-
-            { id: 17, name: "Duronto TV", category: "Kids", logo: "🧸", url: "" },
-            { id: 18, name: "Sony Yay Bangla", category: "Kids", logo: "🐱", url: "" },
-
-            { id: 19, name: "Discovery HD", category: "Infotainment", logo: "🌍", url: "" },
-            { id: 20, name: "Animal Planet HD", category: "Infotainment", logo: "🦁", url: "" },
-
-            { id: 21, name: "Saudi Quran HD", category: "Religious", logo: "🕋", url: "" },
-            { id: 22, name: "Peace TV Bangla", category: "Religious", logo: "🕌", url: "" }
+            { id: 1, name: "Somoy TV (Test)", category: "Bangla", logo: "🔥", url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8" },
+            { id: 2, name: "Jamuna TV (Test)", category: "Bangla", logo: "📺", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
+            { id: 3, name: "T Sports (Test)", category: "Sports", logo: "⚽", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" },
+            { id: 4, name: "Sony Sports (Test)", category: "Sports", logo: "🏏", url: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" },
+            { id: 5, name: "Discovery (Test)", category: "Infotainment", logo: "🌍", url: "https://test-streams.mux.dev/pts_live/playlist.m3u8" }
         ];
 
-        const categories = ["All", "Bangla", "Sports", "Music", "Kids", "India", "Religious", "Infotainment"];
+        const categories = ["All", "Bangla", "Sports", "Infotainment"];
         
         let currentCategory = "All";
         let activeChannelIndex = 0;
@@ -105,7 +94,6 @@
         const categoryContainer = document.getElementById('category-container');
         const channelsGrid = document.getElementById('channels-grid');
 
-        // Initialize Core Components
         function initApp() {
             renderCategories();
             renderChannels();
@@ -114,7 +102,6 @@
             }
         }
 
-        // Render Top horizontal Category Selector tabs
         function renderCategories() {
             categoryContainer.innerHTML = categories.map(cat => {
                 const count = cat === "All" ? channelData.length : channelData.filter(c => c.category === cat).length;
@@ -131,7 +118,6 @@
             }).join('');
         }
 
-        // Filter and display channel grids dynamically
         function renderChannels() {
             filteredChannels = currentCategory === "All" 
                 ? [...channelData] 
@@ -157,10 +143,9 @@
             }).join('');
         }
 
-        // Handle shifting the UI when a category tab is clicked
         window.setCategory = function(category) {
             currentCategory = category;
-            activeChannelIndex = 0; // Reset index window view
+            activeChannelIndex = 0; 
             renderCategories();
             renderChannels();
             if(filteredChannels.length > 0) {
@@ -168,12 +153,10 @@
             }
         };
 
-        // Interface card selector routing wrapper
         window.selectChannelCard = function(idx) {
             loadChannel(idx);
         };
 
-        // Unified Engine pipeline to switch and configure playback for selected stream channel
         function loadChannel(index) {
             if (index < 0 || index >= filteredChannels.length) return;
             
@@ -181,25 +164,18 @@
             const channel = filteredChannels[index];
             channelTitle.textContent = channel.name;
 
-            // Rerender elements to project the accurate border "Now Playing" tracking glow
             renderChannels();
 
-            // Guard Statement check if the streaming stream data contains functional configuration
-            if (!channel.url) {
-                console.warn("No active stream string source available for this mock sample container node.");
-                return;
-            }
+            if (!channel.url) return;
 
-            // HLS Stream Playback Logic Engine
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hls.loadSource(channel.url);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.play().catch(e => console.log("Autoplay blocked, waiting for user trigger context..."));
+                    video.play().catch(e => console.log("Autoplay waiting for trigger..."));
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                // Built-in Native fallback parser support layer (Safari iOS/macOS environment)
                 video.src = channel.url;
                 video.addEventListener('loadedmetadata', function() {
                     video.play();
@@ -207,12 +183,11 @@
             }
         }
 
-        // Action Trigger Button Mappings
         document.getElementById('prev-btn').addEventListener('click', () => {
             if (activeChannelIndex > 0) {
                 loadChannel(activeChannelIndex - 1);
             } else {
-                loadChannel(filteredChannels.length - 1); // Loop to end
+                loadChannel(filteredChannels.length - 1);
             }
         });
 
@@ -220,11 +195,10 @@
             if (activeChannelIndex < filteredChannels.length - 1) {
                 loadChannel(activeChannelIndex + 1);
             } else {
-                loadChannel(0); // Loop to start
+                loadChannel(0);
             }
         });
 
-        // Initialize App on load execution anchor
         window.onload = initApp;
     </script>
 </body>
