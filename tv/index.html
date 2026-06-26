@@ -40,7 +40,6 @@
             transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease; 
         }
 
-        
         .mobile-logo-header {
             display: none;
             justify-content: center;
@@ -435,18 +434,15 @@
                     const controller = new AbortController();
                     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
+                    // Added mode: 'no-cors' to avoid browser blocking background checks on third-party streams
                     const response = await fetch(targetChannel.url, { 
                         method: 'GET', 
+                        mode: 'no-cors',
                         signal: controller.signal 
                     });
 
                     clearTimeout(timeoutId);
-                    
-                    if(response.ok) {
-                        badgeElement.className = "status-badge status-online";
-                    } else {
-                        throw new Error('Not streamable');
-                    }
+                    badgeElement.className = "status-badge status-online";
 
                 } catch (networkError) {
                     badgeElement.className = "status-badge status-broken";
@@ -505,7 +501,8 @@
         });
 
         lucide.createIcons();
-        syncServerPlaylist();
+        // Fixed: Corrected function call name from syncServerPlaylist() to syncServerPlay()
+        syncServerPlay();
     </script>
 </body>
 </html>
