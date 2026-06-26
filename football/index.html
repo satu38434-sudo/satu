@@ -3,203 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SATU PRO TV - Live Streaming (satu.pro.bd)</title>
-    <!-- Tailwind CSS for Responsive Layout & Styling -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- HLS.js Library to support live television stream (.m3u8) playback -->
+    <title>PlayZ TV Portal</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        /* Custom scrollbar matching the dark theme */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #1f2937; }
-        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        :root {
+            --bg-color: #0f172a;
+            --sidebar-bg: #1e293b;
+            --accent-color: #3b82f6;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-hover: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--sidebar-bg);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2e3e56;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .search-box {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #475569;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            width: 250px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent-color);
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 70px);
+            overflow: hidden;
+        }
+
+        .player-section {
+            flex: 3;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .sidebar {
+            flex: 1;
+            min-width: 320px;
+            max-width: 400px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #2e3e56;
+        }
+
+        .filter-container {
+            padding: 10px;
+            border-bottom: 1px solid #2e3e56;
+        }
+
+        .category-select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid #475569;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .channel-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .channel-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.02);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .channel-item:hover {
+            background-color: var(--card-hover);
+            transform: translateX(2px);
+        }
+
+        .channel-item.active {
+            background-color: var(--accent-color);
+        }
+
+        .channel-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 6px;
+            object-fit: contain;
+            background-color: #1e293b;
+            margin-right: 15px;
+            border: 1px solid #334155;
+        }
+
+        .channel-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .channel-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .channel-group {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .channel-item.active .channel-group {
+            color: #e2e8f0;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--sidebar-bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+                overflow-y: auto;
+            }
+            .player-section {
+                flex: none;
+                height: 56.25vw; /* 16:9 Aspect Ratio */
+            }
+            .sidebar {
+                flex: 1;
+                max-width: 100%;
+                min-width: 100%;
+                height: auto;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-100 font-sans min-h-screen flex flex-col">
+<body>
 
-    <!-- Header Banner -->
-    <header class="bg-gray-900 border-b border-gray-800 p-4 sticky top-0 z-50 shadow-md">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-sm uppercase tracking-wider animate-pulse">LIVE</div>
-                <h1 class="text-2xl font-black text-red-500 tracking-tight">SATU PRO <span class="text-white font-light">TV</span></h1>
-            </div>
-            <div class="text-xs text-gray-400 bg-gray-800 px-4 py-2 rounded-lg border border-gray-750 max-w-sm text-center sm:text-right">
-                <span class="text-red-400 font-semibold">Official Portal:</span> satu.pro.bd Live IPTV Service
-            </div>
-        </div>
+    <header>
+        <h1>PlayZ TV Portal</h1>
+        <input type="text" id="search" class="search-box" placeholder="Search channels...">
     </header>
 
-    <!-- Main Content Grid -->
-    <main class="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow w-full">
-        
-        <!-- Left/Top Section: Video Player & Current Info -->
-        <div class="lg:col-span-2 flex flex-col gap-4">
-            <div class="bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800 aspect-video relative group">
-                <video id="video-player" controls autoplay class="w-full h-full object-contain"></video>
+    <div class="main-container">
+        <section class="player-section">
+            <video id="video" controls autoplay playsinline></video>
+        </section>
+
+        <aside class="sidebar">
+            <div class="filter-container">
+                <select id="categoryFilter" class="category-select">
+                    <option value="all">All Categories</option>
+                </select>
             </div>
-            
-            <!-- Player Controller Panel Details -->
-            <div class="bg-gray-900 p-4 rounded-xl border border-gray-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <p class="text-xs text-gray-400 uppercase font-semibold tracking-wider">Now Playing</p>
-                    <h2 id="current-channel-title" class="text-xl font-bold text-white mt-1">Select a Channel</h2>
+            <div id="channelList" class="channel-list">
                 </div>
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <button id="prev-btn" class="flex-1 sm:flex-initial bg-gray-800 hover:bg-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition border border-gray-700 cursor-pointer">◀ Prev</button>
-                    <button id="next-btn" class="flex-1 sm:flex-initial bg-gray-800 hover:bg-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition border border-gray-700 cursor-pointer">Next ▶</button>
-                </div>
-            </div>
-        </div>
+        </aside>
+    </div>
 
-        <!-- Right Section: Categories & Channel List -->
-        <div class="flex flex-col bg-gray-900 rounded-xl border border-gray-800 overflow-hidden h-[calc(100vh-180px)] lg:h-[600px]">
-            <!-- Category Selection Row -->
-            <div id="category-container" class="flex gap-2 overflow-x-auto p-3 bg-gray-950 border-b border-gray-800 whitespace-nowrap">
-                <!-- Categories injected dynamically via JS -->
-            </div>
-
-            <!-- Dynamic Channel Listing Grid -->
-            <div id="channels-grid" class="grid grid-cols-2 gap-2.5 p-3 overflow-y-auto flex-grow content-start">
-                <!-- Channel Items injected dynamically via JS -->
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-950 border-t border-gray-900 p-4 text-center text-xs text-gray-500 mt-auto">
-        <p>&copy; 2026 <a href="https://satu.pro.bd" class="text-red-400 hover:underline font-medium">satu.pro.bd</a>. All rights reserved. Powered by Satu Pro IPTV.</p>
-    </footer>
-
-    <!-- Frontend Core Application Script -->
     <script>
-        // Working Dataset (Replace URLs with your own premium .m3u8 streams if needed)
-        const channelData = [
-            { id: 1, name: "Somoy TV (Test)", category: "Bangla", logo: "🔥", url: "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8" },
-            { id: 2, name: "Jamuna TV (Test)", category: "Bangla", logo: "📺", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
-            { id: 3, name: "T Sports (Test)", category: "Sports", logo: "⚽", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" },
-            { id: 4, name: "Sony Sports (Test)", category: "Sports", logo: "🏏", url: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8" },
-            { id: 5, name: "Discovery (Test)", category: "Infotainment", logo: "🌍", url: "https://test-streams.mux.dev/pts_live/playlist.m3u8" }
-        ];
-
-        const categories = ["All", "Bangla", "Sports", "Infotainment"];
-        
-        let currentCategory = "All";
-        let activeChannelIndex = 0;
-        let filteredChannels = [...channelData];
-
-        const video = document.getElementById('video-player');
-        const channelTitle = document.getElementById('current-channel-title');
-        const categoryContainer = document.getElementById('category-container');
-        const channelsGrid = document.getElementById('channels-grid');
-
-        function initApp() {
-            renderCategories();
-            renderChannels();
-            if(filteredChannels.length > 0) {
-                loadChannel(0);
-            }
-        }
-
-        function renderCategories() {
-            categoryContainer.innerHTML = categories.map(cat => {
-                const count = cat === "All" ? channelData.length : channelData.filter(c => c.category === cat).length;
-                const isActive = cat === currentCategory;
-                return `
-                    <button onclick="setCategory('${cat}')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold tracking-wide border transition duration-200 cursor-pointer ${
-                        isActive 
-                        ? 'bg-red-600 text-white border-red-500 shadow-md shadow-red-900/20' 
-                        : 'bg-gray-900 text-gray-400 border-gray-800 hover:bg-gray-800 hover:text-white'
-                    }">
-                        ${cat} (${count})
-                    </button>
-                `;
-            }).join('');
-        }
-
-        function renderChannels() {
-            filteredChannels = currentCategory === "All" 
-                ? [...channelData] 
-                : channelData.filter(c => c.category === currentCategory);
-
-            channelsGrid.innerHTML = filteredChannels.map((channel, idx) => {
-                const isPlaying = filteredChannels[activeChannelIndex]?.id === channel.id;
-                return `
-                    <div onclick="selectChannelCard(${idx})" class="group p-3 rounded-xl border transition-all duration-200 cursor-pointer flex items-center gap-3 ${
-                        isPlaying 
-                        ? 'bg-red-950/40 border-red-600 shadow-sm' 
-                        : 'bg-gray-850 border-gray-800 hover:border-gray-700 hover:bg-gray-800'
-                    }">
-                        <div class="w-10 h-10 rounded-lg bg-gray-900 flex items-center justify-center text-lg shadow-inner group-hover:scale-105 transition-transform duration-200">
-                            ${channel.logo}
-                        </div>
-                        <div class="overflow-hidden">
-                            <h4 class="text-xs font-bold truncate text-gray-100">${channel.name}</h4>
-                            <p class="text-[10px] text-gray-400 font-medium tracking-wide mt-0.5">${channel.category}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        window.setCategory = function(category) {
-            currentCategory = category;
-            activeChannelIndex = 0; 
-            renderCategories();
-            renderChannels();
-            if(filteredChannels.length > 0) {
-                loadChannel(0);
-            }
-        };
-
-        window.selectChannelCard = function(idx) {
-            loadChannel(idx);
-        };
-
-        function loadChannel(index) {
-            if (index < 0 || index >= filteredChannels.length) return;
-            
-            activeChannelIndex = index;
-            const channel = filteredChannels[index];
-            channelTitle.textContent = channel.name;
-
-            renderChannels();
-
-            if (!channel.url) return;
-
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(channel.url);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.play().catch(e => console.log("Autoplay waiting for trigger..."));
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = channel.url;
-                video.addEventListener('loadedmetadata', function() {
-                    video.play();
-                });
-            }
-        }
-
-        document.getElementById('prev-btn').addEventListener('click', () => {
-            if (activeChannelIndex > 0) {
-                loadChannel(activeChannelIndex - 1);
-            } else {
-                loadChannel(filteredChannels.length - 1);
-            }
-        });
-
-        document.getElementById('next-btn').addEventListener('click', () => {
-            if (activeChannelIndex < filteredChannels.length - 1) {
-                loadChannel(activeChannelIndex + 1);
-            } else {
-                loadChannel(0);
-            }
-        });
-
-        window.onload = initApp;
-    </script>
-</body>
-</html>
+        // Raw M3U Data string injected directly into the script
+        const m3uRawData = `#EXTM3U
+#EXTINF:-1 tvg-name="Welcome to PlayZ TV" group-title="Welcome to PlayZ TV | New App" tvg-logo="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyniKyW9pUz1OKx5bgzLASwGVSuP0e7hX9FxVMTJMHxhu8X0tpucgSplBZgM8pCYrJJH0P2_dTC1-wzp4mMUU4sKnOzghGPCwWdbYOOa4jTyhpr7ydNj-UK-bc56IMsk2H3WZJ-SzSZIk0dTpyABCFR2_zjC2_c86W1pv7odFBT_Y-hyJs62g-3zCJkPGd/s1024/1000398131.png",Welcome to PlayZ TV
+https://playztv.pages.dev/promo/master.m3u8
+#EXTINF:-1 tvg-logo="https://s4.gifyu.com/images/image534fa27d7683f33d.png" group-title="Akash Go",Ekushey TV
+http://210.4.72.204/hls-live/livepkgr/_definst_/liveevent/livestream3.m3u8
+#EXTINF:-1 tvg-logo="https://upload.wikimedia.org/wikipedia/en/3/31/Deepto_TV_logo.png" group-title="Akash Go",Deepto TV
+https://byphdgllyk.gpcdn.net/hls/deeptotv/0_1/index.m3u8
+#EXTINF:-1 tvg-logo="https://pbs.twimg.com/profile_images/739539785304281088/zMwNO936_400x400.jpg" group-title="BANGLA",Deshe Bideshe
+https://dbcanada.sonarbanglatv.com/deshebideshe/dbtv/index.m3u8
+#EXTINF:-1 tvg-logo="https://seeklogo.com/images/B/bbc-news-logo-8648ABD044-seeklogo.com.png" group-title="Akash Go",BBC News
+https://cdn4.skygo.mn/live/disk1/BBC_News/HLSv3-FTA/BBC_News-avc1_3000000=8-mp4a_208000_eng=2.m3u8
+#EXTINF:-1 group-title="Bangla" tvg-id="MUSICBANGLA" tvg-logo="https://static.wikia.nocookie.net/logopedia/images/7/75/Music_Bangla_new.jpeg",MUSIC BANGLA
+http://live.matribhumitv.com/music-bangla/index.m3u8
+#EXTINF:-1 group-title="Bangla" tvg-id="deshitv.bd" tvg-logo="https://raw.githubusercontent.com/subirkumarpaul/Logo/main/My%20TV.svg.png",MY TV
+https://mytvbangla.com/0.m3u8
+#EXTINF:-1 group-title="Bangla" tvg-id="MAASRANGA.bd" tvg-logo="https://static.wikia.nocookie.net/etv-gspn-bangla/images/a/a3/Maasranga_TV_HD_logo.png",MAASRANGA HD
+http://mtv.sunplex.live/MAASRANGA-TV/index.m3u8
+#EXTINF:-1 tvg-id="98000" tvg-name="Somoy TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560559088.png" group-title="News",Somoy TV
+https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/index.m3u8
+#EXTINF:-1 tvg-id="97000" tvg-name="Jamuna TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735560213832.png" group-title="News",Jamuna TV
+https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/index.m3u8
+#EXTINF:-1 tvg-id="185000" tvg-name="DBC News HD" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1770186306600.png" group-title="News",DBC News HD
+https://owrcovcrpy.gpcdn.net/bpk-tv/1728/output/index.m3u8
+#EXTINF:-1 tvg-id="229000" tvg-name="Maasranga TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1773680325498.png" group-title="Entertainment",Maasranga TV
+https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/index.m3u8
+#EXTINF:-1 tvg-id="102000" tvg-name="Ekattor HD" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1739963327549.png" group-title="News",Ekattor HD
+https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/index.m3u8
+#EXTINF:-1 tvg-id="94000" tvg-name="Channel 24 HD" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1735556516924.png" group-title="News",Channel 24 HD
+https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/index.m3u8
+#EXTINF:-1 tvg-id="93000" tvg-name="ATN News" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1739962961772.png" group-title="News",ATN News
+https://owrcovcrpy.gpcdn.net/bpk-tv/1706/output/index.m3u8
+#EXTINF:-1 tvg-id="186000" tvgo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1770186895850.png" group-title="News",News 24 HD
+https://owrcovcrpy.gpcdn.net/bpk-tv/1708/output/index.m3u8
+#EXTINF:-1 tvg-id="191000" tvg-name="Star News" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1770189826301.png" group-title="News",Star News
+https://owrcovcrpy.gpcdn.net/bpk-tv/1710/output/index.m3u8
+#EXTINF:-1 tvg-id="223000" tvg-name="Islamic TV" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1772728412891.png" group-title="Infotainment",Islamic TV
+https://owrcovcrpy.gpcdn.net/bpk-tv/1724/output/index.m3u8
+#EXTINF:-1 tvg-id="134000" tvg-name="Deepto TV HD" tvg-logo="https://tstatic.akash-go.com/cms-ui/images/custom-content/1742713000749.png" group-title="Entertainment",Deepto TV HD
+https://owrcovcrpy.gpcdn.net/bpk-tv/1711/output/index.m3u8
+#EXTINF:-1 tvg-id="188000" tvg-name="Channel 9 HD" tvg-logo="
