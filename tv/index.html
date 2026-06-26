@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Live TV | satu.pro.bd</title> 
-    <link rel="icon" type="image/svg+xml" href="/icon.svg">
+    <title>satu.pro.bd | Live TV</title>
+    <link class="icon" type="image/svg+xml" href="/icon.svg"> 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> 
@@ -41,7 +41,7 @@
             transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease; 
         }
 
-        /* মোবাইল লোগো হেডার (শুধুমাত্র মোবাইলের জন্য) */
+        /* মোবাইল লোগো হেডার (ডিফল্টভাবে হাইড থাকবে) */
         .mobile-logo-header {
             display: none;
             justify-content: center;
@@ -57,7 +57,7 @@
             margin: 0 auto;
             min-height: calc(100vh - 60px);
             display: flex;
-            align-items: flex-start; /* অতিরিক্ত ফাঁকা জায়গা দূর করার জন্য ঠিক করা হয়েছে */
+            align-items: flex-start; /* অতিরিক্ত ফাঁকা জায়গা দূর করা হয়েছে */
         }
 
         .tv-grid {
@@ -72,16 +72,6 @@
                 grid-template-columns: 1fr 310px;
                 height: calc(100vh - 120px);
                 max-height: 720px;
-            }
-        }
-
-        /* রেসপনসিভ লোগো ম্যানেজমেন্ট */
-        @media (max-width: 991px) {
-            .mobile-logo-header {
-                display: flex;
-            }
-            .sidebar-logo {
-                display: none;
             }
         }
 
@@ -305,6 +295,16 @@
             color: var(--text-dim);
             background: rgba(7, 10, 19, 0.8);
         }
+
+        /* --- রেসপনসিভ লোগো মিডিয়া কোয়েরি (সঠিক ক্রমানুসারে নিচে রাখা হয়েছে) --- */
+        @media (max-width: 991px) {
+            .mobile-logo-header {
+                display: flex !important;
+            }
+            .sidebar-logo {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -435,7 +435,7 @@
             });
         }
 
-        // --- ব্যাকগ্রاؤنড হেলথ চেকার (শুধুমাত্র কালার ডট আপডেট করবে) ---
+        // --- ব্যাকগ্রাউনড হেলথ চেকার (শুধুমাত্র কালার ডট আপডেট করবে) ---
         async function autoCheckLinksHealth() {
             for (let i = 0; i < coreRegistry.length; i++) {
                 const targetChannel = coreRegistry[i];
