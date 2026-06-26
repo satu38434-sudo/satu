@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>satu.pro.bd | Live TV</title>
-    <link rel="icon" type="image/svg+xml" href="/icon.svg"> 
+    <link class="icon" type="image/svg+xml" href="/icon.svg"> 
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> 
     
     <style>
         :root {
-            /* --- Dark Premium Mode (Default) --- */
+            /* --- Dark Premium Mode --- */
             --bg-main: #070a13;
             --bg-gradient: radial-gradient(circle at top left, #111827, #070a13);
             --glass: rgba(17, 24, 39, 0.7);
@@ -58,7 +58,6 @@
             width: 100%;
         }
 
-        /* ডেক্সটপে চ্যানেল লিস্টের জায়গা কমিয়ে প্লেয়ার বড় করা হয়েছে */
         @media (min-width: 992px) {
             .tv-grid {
                 grid-template-columns: 1fr 310px;
@@ -264,7 +263,6 @@
         .status-online { color: #10b981; background: rgba(16, 185, 129, 0.1); }
         .status-broken { color: var(--accent-red); background: rgba(239, 68, 68, 0.1); }
 
-        /* Active Glow Animation */
         .ch-item.active .status-online::after {
             content: '';
             width: 5px;
@@ -296,6 +294,7 @@
     <main>
         <div class="tv-grid">
             
+            <!-- Left: Premium Video Player -->
             <div class="player-wrapper">
                 <div class="video-container">
                     <video id="tv-screen" controls autoplay playsinline></video>
@@ -306,6 +305,7 @@
                 </div>
             </div>
 
+            <!-- Right: Sidebar Console -->
             <div class="sidebar-deck">
                 <div class="sidebar-logo">
                     <a href="/">
@@ -413,6 +413,7 @@
             });
         }
 
+        // --- উন্নত ব্যাকগ্রাউন্ড হেলথ চেকার (CORS পলিসি চেকসহ) ---
         async function autoCheckLinksHealth() {
             for (let i = 0; i < coreRegistry.length; i++) {
                 const targetChannel = coreRegistry[i];
@@ -422,17 +423,22 @@
 
                 try {
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 sec timeout
+                    const timeoutId = setTimeout(() => controller.abort(), 5000); // ৫ সেকেন্ড টাইমআউট
 
-                    await fetch(targetChannel.url, { 
+                    // mode: 'no-cors' রিমুভ করা হয়েছে যাতে সঠিক কানেকশন ও CORS এরর ধরা পড়ে
+                    const response = await fetch(targetChannel.url, { 
                         method: 'GET', 
-                        mode: 'no-cors',
                         signal: controller.signal 
                     });
 
                     clearTimeout(timeoutId);
-                    badgeElement.textContent = "সচল";
-                    badgeElement.className = "status-badge status-online";
+                    
+                    if(response.ok) {
+                        badgeElement.textContent = "সচল";
+                        badgeElement.className = "status-badge status-online";
+                    } else {
+                        throw new Error('Not streamable');
+                    }
 
                 } catch (networkError) {
                     badgeElement.textContent = "অচল";
@@ -441,9 +447,25 @@
             }
         }
 
+        // --- প্লেয়ার কন্ট্রোল এবং রিয়েল-টাইম অচল ব্যাজ সিঙ্ক ---
         function mountLivePlayback(url, name) {
             streamTitle.textContent = name;
             if (activeHls) activeHls.destroy();
+
+            // বর্তমান চ্যানেলের ইন্ডেক্স খুঁজে বের করা
+            const currentIndex = coreRegistry.findIndex(item => item.url === url);
+
+            // প্লেয়ারে কোনো এরর আসলে এই ফাংশনটি ডানপাশের লিস্টের ব্যাজও অচল করে দেবে
+            function markCurrentAsBroken() {
+                streamTitle.textContent = `⚠️ অফলাইন: ${name}`;
+                if (currentIndex !== -1) {
+                    const badgeElement = document.getElementById(`status-${currentIndex}`);
+                    if (badgeElement) {
+                        badgeElement.textContent = "অচল";
+                        badgeElement.className = "status-badge status-broken";
+                    }
+                }
+            }
 
             if (Hls.isSupported()) {
                 activeHls = new Hls();
@@ -451,11 +473,23 @@
                 activeHls.attachMedia(tvScreen);
                 activeHls.on(Hls.Events.MANIFEST_PARSED, () => tvScreen.play());
                 activeHls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) streamTitle.textContent = `⚠️ অফলাইন: ${name}`;
+                    if (data.fatal) {
+                        markCurrentAsBroken();
+                    }
                 });
             } else if (tvScreen.canPlayType('application/vnd.apple.mpegurl')) {
                 tvScreen.src = url;
-                tvScreen.addEventListener('loadedmetadata', () => tvScreen.play());
+                
+                const nativeErrorHandler = () => {
+                    markCurrentAsBroken();
+                    tvScreen.removeEventListener('error', nativeErrorHandler);
+                };
+                
+                tvScreen.addEventListener('error', nativeErrorHandler);
+                tvScreen.addEventListener('loadedmetadata', () => {
+                    tvScreen.play();
+                    tvScreen.removeEventListener('error', nativeErrorHandler);
+                });
             }
         }
 
