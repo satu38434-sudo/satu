@@ -349,16 +349,42 @@
         const defaultLogo = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239ca3af'><path d='M21 6H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 14H3V8h18v12zM8.5 17l6-5-6-5v10z'/></svg>`;
 
         async function syncServerPlay() {
-            try {
-                // FIXED: Changed from '/play.m3u' to 'play.m3u' to target the current /tv/ directory
-                const response = await fetch(`play.m3u?t=${Date.now()}`);
-                if (!response.ok) throw new Error('Offline');
-                const rawData = await response.text();
-                compileM3URegistry(rawData);
-            } catch (err) {
-                streamTitle.textContent = "প্লে-লিস্ট ফাইল পাওয়া যায়নি";
-                deckContainer.innerHTML = `<div style="text-align:center; padding:30px; color:var(--accent-red); font-size:0.9rem;">সঠিক ফোল্ডারে play.m3u ফাইলটি পাওয়া যায়নি।</div>`;
+            // AUTOMATED PATH SCANNER: Tests all possible directory & extension rules automatically
+            const possiblePaths = [
+                'play.m3u',              // Path Variant 1: Relative Directory M3U
+                'play.txt',              // Path Variant 2: Relative Directory TXT (Highly recommended)
+                '/tv/play.m3u',          // Path Variant 3: Absolute Subfolder M3U
+                '/tv/play.txt',          // Path Variant 4: Absolute Subfolder TXT
+                '/play.m3u',             // Path Variant 5: Global Root M3U
+                '/play.txt'              // Path Variant 6: Global Root TXT
+            ];
+
+            for (const path of possiblePaths) {
+                try {
+                    const response = await fetch(`${path}?t=${Date.now()}`);
+                    if (response.ok) {
+                        const rawData = await response.text();
+                        // Verify content structural validity
+                        if (rawData.includes('#EXTM3U') || rawData.includes('#EXTINF:')) {
+                            console.log(`Playlist compiled smoothly from folder endpoint: [${path}]`);
+                            compileM3URegistry(rawData);
+                            return; // Success, break operational fallback loops
+                        }
+                    }
+                } catch (err) {
+                    // Fail silently to evaluate next structural index position
+                }
             }
+
+            // Fallback render error trigger if every network block drops completely
+            streamTitle.textContent = "প্লে-লিস্ট ফাইল পাওয়া যায়নি";
+            deckContainer.innerHTML = `
+                <div style="text-align:center; padding:30px; color:var(--accent-red); font-size:0.9rem;">
+                    play.m3u বা play.txt ফাইলটি খুঁজে পাওয়া যায়নি।<br>
+                    <span style="color:var(--text-dim); font-size:0.8rem; display:block; margin-top:10px;">
+                        দয়া করে /tv/ ফোল্ডারে ফাইলটি আপলোড করুন অথবা এক্সটেনশন পরিবর্তন করে play.txt করে দেখুন।
+                    </span>
+                </div>`;
         }
 
         function compileM3URegistry(text) {
@@ -409,101 +435,4 @@
 
                 row.innerHTML = `
                     <span class="ch-num">${paddedIndex}</span>
-                    <img class="ch-img" src="${logoSrc}" alt="" onerror="this.src='${defaultLogo}'">
-                    <span class="ch-title">${item.name}</span>
-                    <span class="status-badge status-checking" id="status-${index}"></span>
-                `;
-
-                row.addEventListener('click', () => {
-                    document.querySelectorAll('.ch-item').forEach(el => el.classList.remove('active'));
-                    row.classList.add('active');
-                    mountLivePlayback(item.url, item.name);
-                });
-
-                deckContainer.appendChild(row);
-            });
-        }
-
-        async function autoCheckLinksHealth() {
-            for (let i = 0; i < coreRegistry.length; i++) {
-                const targetChannel = coreRegistry[i];
-                const badgeElement = document.getElementById(`status-${i}`);
-                
-                if (!badgeElement) continue;
-
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-                    // FIXED: Configured mode: 'no-cors' to support stream validation without strict domain matching rules
-                    const response = await fetch(targetChannel.url, { 
-                        method: 'GET', 
-                        mode: 'no-cors',
-                        signal: controller.signal 
-                    });
-
-                    clearTimeout(timeoutId);
-                    badgeElement.className = "status-badge status-online";
-
-                } catch (networkError) {
-                    badgeElement.className = "status-badge status-broken";
-                }
-            }
-        }
-
-        function mountLivePlayback(url, name) {
-            streamTitle.textContent = name;
-            if (activeHls) activeHls.destroy();
-
-            const currentIndex = coreRegistry.findIndex(item => item.url === url);
-
-            function markCurrentAsBroken() {
-                streamTitle.textContent = `⚠️ অফলাইন: ${name}`;
-                if (currentIndex !== -1) {
-                    const badgeElement = document.getElementById(`status-${currentIndex}`);
-                    if (badgeElement) {
-                        badgeElement.className = "status-badge status-broken";
-                    }
-                }
-            }
-
-            if (Hls.isSupported()) {
-                activeHls = new Hls();
-                activeHls.loadSource(url);
-                activeHls.attachMedia(tvScreen);
-                activeHls.on(Hls.Events.MANIFEST_PARSED, () => tvScreen.play());
-                activeHls.on(Hls.Events.ERROR, (event, data) => {
-                    if (data.fatal) {
-                        markCurrentAsBroken();
-                    }
-                });
-            } else if (tvScreen.canPlayType('application/vnd.apple.mpegurl')) {
-                tvScreen.src = url;
-                
-                const nativeErrorHandler = () => {
-                    markCurrentAsBroken();
-                    tvScreen.removeEventListener('error', nativeErrorHandler);
-                };
-                
-                tvScreen.addEventListener('error', nativeErrorHandler);
-                tvScreen.addEventListener('loadedmetadata', () => {
-                    tvScreen.play();
-                    tvScreen.removeEventListener('error', nativeErrorHandler);
-                });
-            }
-        }
-
-        filterInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            document.querySelectorAll('.ch-item').forEach(row => {
-                const title = row.getAttribute('data-target');
-                row.style.display = title.includes(query) ? "flex" : "none";
-            });
-        });
-
-        lucide.createIcons();
-        // FIXED: Corrected running initialization call name to match function definition declaration
-        syncServerPlay();
-    </script>
-</body>
-</html>
+                    <img
