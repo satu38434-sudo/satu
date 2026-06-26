@@ -11,7 +11,6 @@
     
     <style>
         :root {
-            /* --- Dark Premium Mode --- */
             --bg-main: #070a13;
             --bg-gradient: radial-gradient(circle at top left, #111827, #070a13);
             --glass: rgba(17, 24, 39, 0.7);
@@ -41,7 +40,7 @@
             transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease; 
         }
 
-        /* মোবাইল লোগো হেডার (ডিফল্টভাবে হাইড থাকবে) */
+        
         .mobile-logo-header {
             display: none;
             justify-content: center;
@@ -57,7 +56,7 @@
             margin: 0 auto;
             min-height: calc(100vh - 60px);
             display: flex;
-            align-items: flex-start; /* অতিরিক্ত ফাঁকা জায়গা দূর করা হয়েছে */
+            align-items: flex-start;
         }
 
         .tv-grid {
@@ -74,15 +73,13 @@
                 max-height: 720px;
             }
         }
-
-        /* --- Video Player Styles --- */
         .player-wrapper {
             background: var(--glass);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 16px;
+            border-radius: 15px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -133,8 +130,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
-        /* --- Sidebar & Logo Section --- */
         .sidebar-deck {
             display: flex;
             flex-direction: column;
@@ -178,8 +173,6 @@
             background: rgba(255, 255, 255, 0.06);
             box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
         }
-
-        /* --- Channel List Container --- */
         .list-container {
             display: flex;
             flex-direction: column;
@@ -197,8 +190,6 @@
 
         .list-container::-webkit-scrollbar { width: 4px; }
         .list-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-
-        /* --- Modern Channel Item Row --- */
         .ch-item {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.03);
@@ -256,7 +247,6 @@
             padding-right: 35px;
         }
 
-        /* --- Minimal Glowing Dot Badge --- */
         .status-badge {
             position: absolute;
             right: 14px;
@@ -296,7 +286,6 @@
             background: rgba(7, 10, 19, 0.8);
         }
 
-        /* --- রেসপনসিভ লোগো মিডিয়া কোয়েরি (সঠিক ক্রমানুসারে নিচে রাখা হয়েছে) --- */
         @media (max-width: 991px) {
             .mobile-logo-header {
                 display: flex !important;
@@ -435,7 +424,6 @@
             });
         }
 
-        // --- ব্যাকগ্রাউনড হেলথ চেকার (শুধুমাত্র কালার ডট আপডেট করবে) ---
         async function autoCheckLinksHealth() {
             for (let i = 0; i < coreRegistry.length; i++) {
                 const targetChannel = coreRegistry[i];
@@ -466,7 +454,6 @@
             }
         }
 
-        // --- প্লেয়ার কন্ট্রোল এবং রিয়েল-টাইম অচল ডট সিঙ্ক ---
         function mountLivePlayback(url, name) {
             streamTitle.textContent = name;
             if (activeHls) activeHls.destroy();
