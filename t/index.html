@@ -56,7 +56,7 @@
                 Verified Online Channels
             </h3>
             <div id="top-active-deck" class="flex gap-3 overflow-x-auto pb-2 scroll-smooth">
-                <p class="text-xs text-gray-500 italic py-2 px-1">Checking stream diagnostics map...</p>
+                <p class="text-xs text-gray-500 italic py-2 px-1">Awaiting channel data diagnostics sync...</p>
             </div>
         </div>
     </section>
@@ -129,7 +129,9 @@
 
     <!-- Script Runtime Engine Controllers -->
     <script>
-        const PLAYLIST_URL = "https://raw.githubusercontent.com/abusaeeidx/IP-Stream/9e8ecae10122c041ae764cf51ca4e03c4273e8d3/playlist.m3u";
+        // Implements AllOrigins Proxy URL wrapper to seamlessly bypass GitHub's native client CORS blockades
+        const GITHUB_RAW_URL = "https://raw.githubusercontent.com/abusaeeidx/IP-Stream/9e8ecae10122c041ae764cf51ca4e03c4273e8d3/playlist.m3u";
+        const PLAYLIST_URL = "https://api.allorigins.win/raw?url=" + encodeURIComponent(GITHUB_RAW_URL);
         
         let channels = [];
         const video = document.getElementById('video-element');
@@ -155,11 +157,12 @@
         // Fetch & App Lifecycle initialization setup routing configurations
         async function loadPlaylist() {
             try {
-                channelListContainer.innerHTML = `<div class="text-center py-12 text-gray-500 flex flex-col items-center gap-2"><i data-lucide="loader-2" class="animate-spin h-6 w-6 text-indigo-500"></i><p class="text-xs font-mono">Parsing M3U...</p></div>`;
+                channelListContainer.innerHTML = `<div class="text-center py-12 text-gray-500 flex flex-col items-center gap-2"><i data-lucide="loader-2" class="animate-spin h-6 w-6 text-indigo-500"></i><p class="text-xs font-mono">Bypassing CORS & Parsing M3U...</p></div>`;
+                activeDeckContainer.innerHTML = `<p class="text-xs text-gray-500 font-mono tracking-tight py-2 px-1">Awaiting proxy handshake...</p>`;
                 lucide.createIcons();
                 
                 const response = await fetch(PLAYLIST_URL);
-                if (!response.ok) throw new Error('CORS profile network roadblock context failure.');
+                if (!response.ok) throw new Error('CORS profile proxy network roadblock context failure.');
                 const m3uText = await response.text();
                 
                 channels = parseM3U(m3uText);
@@ -172,7 +175,7 @@
                 checkChannelHealth();
             } catch (error) {
                 console.error(error);
-                channelListContainer.innerHTML = `<div class="text-center py-12 text-rose-400 px-4"><i data-lucide="shield-alert" class="mx-auto h-6 w-6 mb-2"></i><p class="text-xs font-mono">Index Sync Interrupted</p></div>`;
+                channelListContainer.innerHTML = `<div class="text-center py-12 text-rose-400 px-4"><i data-lucide="shield-alert" class="mx-auto h-6 w-6 mb-2"></i><p class="text-xs font-mono">Index Sync Interrupted</p><p class="text-[10px] text-gray-500 mt-1">Failed to gather proxy data source feeds.</p></div>`;
                 lucide.createIcons();
             }
         }
@@ -201,11 +204,17 @@
 
         // Asynchronous Channel Status Scanner Pipeline
         async function checkChannelHealth() {
-            // Check headers using parallel worker chunks safely without crashing thread layouts
+            // Check stream viability via explicit asynchronous fetch timeouts
             const checkNode = async (channel) => {
                 try {
-                    // Send lightweight HEAD diagnostic requests to mitigate link bandwidth usages
-                    const res = await fetch(channel.url, { method: 'HEAD', mode: 'cors' });
+                    // Create an abort controller to prevent dead streams from stalling the system thread for 30s
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 4000); 
+
+                    // Use standard fetch configurations with a strict timeout footprint
+                    const res = await fetch(channel.url, { method: 'GET', mode: 'cors', signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    
                     channel.status = res.ok ? 'online' : 'offline';
                 } catch (e) {
                     // Fallback verification mapping checks (catches structural network drops/CORS blockages)
@@ -214,7 +223,7 @@
                 updateChannelElementUI(channel);
             };
 
-            // Execute diagnostics sequentially or in small groups to limit client overhead tracking
+            // Process chunks of 3 parallel validation processes to bypass throttling behaviors
             for (let i = 0; i < channels.length; i += 3) {
                 const chunk = channels.slice(i, i + 3).map(c => checkNode(c));
                 await Promise.all(chunk);
@@ -263,17 +272,17 @@
             const onlineChannels = channels.filter(c => c.status === 'online');
             
             if (onlineChannels.length === 0) {
-                activeDeckContainer.innerHTML = `<p class="text-xs text-gray-500 font-mono tracking-tight py-2 px-1">Analyzing connectivity maps...</p>`;
+                activeDeckContainer.innerHTML = `<p class="text-xs text-gray-500 font-mono tracking-tight py-2 px-1">Analyzing network streams for live nodes...</p>`;
                 return;
             }
 
             activeDeckContainer.innerHTML = onlineChannels.map(c => {
                 return `
                     <button onclick="playStream('${encodeURIComponent(c.url)}', '${encodeURIComponent(c.name)}', '${encodeURIComponent(c.logo || '')}')" 
-                            class="flex items-center space-x-2 px-3 py-2 bg-gradient-to-b from-[#0f172a] to-[#090d1a] border border-emerald-500/20 rounded-xl hover:border-indigo-500/50 hover:from-[#131c33] text-gray-300 transition-all shrink-0 shadow-md">
+                            class="flex items-center space-x-2 px-3 py-2 bg-gradient-to-b from-[#0f172a] to-[#090d1a] border border-emerald-500/20 rounded-xl hover:border-indigo-500/50 hover:from-[#131c33] text-gray-300 transition-all shrink-0 shadow-md group">
                         <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 neon-glow-green animate-pulse"></span>
-                        <span class="text-xs font-semibold max-w-[120px] truncate text-gray-200">${c.name}</span>
-                        <i data-lucide="arrow-up-right" class="h-3 w-3 text-gray-600 group-hover:text-indigo-400"></i>
+                        <span class="text-xs font-semibold max-w-[120px] truncate text-gray-200 group-hover:text-indigo-400 transition-colors">${c.name}</span>
+                        <i data-lucide="arrow-up-right" class="h-3 w-3 text-gray-600 group-hover:text-indigo-400 transition-colors"></i>
                     </button>
                 `;
             }).join('');
@@ -316,7 +325,7 @@
                 hls.loadSource(decodedUrl);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play().catch(() => console.log("Autoplay context restriction holding."));
+                    video.play().catch(() => console.log("Autoplay context restriction holding. Waiting for explicit interface interaction."));
                 });
                 hls.on(Hls.Events.ERROR, (e, data) => {
                     if (data.fatal) updateStatusIndicator('error', `Decoder Error`);
