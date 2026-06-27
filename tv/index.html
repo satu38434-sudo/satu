@@ -323,7 +323,7 @@
                 </div>
                 <div class="meta-container">
                     <span class="live-tag">LIVE</span>
-                    <h1 id="stream-title">চ্যানেল লোড করা হচ্ছে...</h1>
+                    <h1 id="stream-title">চ্যানেল যাচাই করা হচ্ছে...</h1>
                 </div>
             </div>
 
@@ -414,7 +414,6 @@
             }
 
             if (coreRegistry.length > 0) {
-                // পরিবর্তন করা হয়েছে: বাংলাদেশি চ্যানেলগুলোকে সবার উপরে সর্ট করা হচ্ছে
                 coreRegistry.sort((a, b) => {
                     const isABangla = /[\u0980-\u09FF]/.test(a.name) || /\bbd\b|bangla|bangladesh/i.test(a.name);
                     const isBBangla = /[\u0980-\u09FF]/.test(b.name) || /\bbd\b|bangla|bangladesh/i.test(b.name);
@@ -424,8 +423,7 @@
                 });
 
                 buildInterfaceRows(coreRegistry);
-                mountLivePlayback(coreRegistry[0].url, coreRegistry[0].name);
-                document.querySelector('.ch-item').classList.add('active');
+                // ফিক্স: অন্ধের মতো প্রথম চ্যানেল প্লে না করে সরাসরি স্মার্ট হেলথ চেকে পাঠানো হচ্ছে
                 autoCheckLinksHealth();
             } else {
                 streamTitle.textContent = "প্লে-লিস্ট খালি";
@@ -460,39 +458,84 @@
             });
         }
 
+        // নতুন মডিফাইড ফাংশন: যমুনা টিভি অথবা প্রথম সচল চ্যানেল স্বয়ংক্রিয়ভাবে সনাক্ত করবে
         async function autoCheckLinksHealth() {
-            for (let i = 0; i < coreRegistry.length; i++) {
-                const targetChannel = coreRegistry[i];
-                const badgeElement = document.getElementById(`status-${i}`);
-                
-                if (!badgeElement) continue;
-                const rowElement = badgeElement.closest('.ch-item');
+            let initialPlayMounted = false;
 
-                try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-                    const response = await fetch(targetChannel.url, { 
-                        method: 'GET', 
-                        signal: controller.signal 
-                    });
-
-                    clearTimeout(timeoutId);
-                    
-                    if(response.ok) {
-                        badgeElement.className = "status-badge status-online";
-                    } else {
-                        throw new Error('Not streamable');
-                    }
-
-                } catch (networkError) {
-                    badgeElement.className = "status-badge status-broken";
-                    // পরিবর্তন করা হয়েছে: লিংক অচল হলে চ্যানেলটি লিস্ট থেকে হাইড করা হচ্ছে
-                    if (rowElement) {
-                        rowElement.classList.add('is-broken');
-                        rowElement.style.display = 'none';
-                    }
+            // ১. সবার আগে যমুনা টিভি (Jamuna) খুঁজে বের করে তা সচল কিনা চেক করবে
+            const jamunaIndex = coreRegistry.findIndex(item => item.name.toLowerCase().includes('jamuna'));
+            
+            if (jamunaIndex !== -1) {
+                const isOnline = await checkSingleChannel(jamunaIndex);
+                if (isOnline) {
+                    mountLivePlayback(coreRegistry[jamunaIndex].url, coreRegistry[jamunaIndex].name);
+                    setActiveRow(jamunaIndex);
+                    initialPlayMounted = true;
                 }
+            }
+
+            // ২. লুপ চালিয়ে বাকি সব চ্যানেলের হেলথ চেক করা হবে এবং প্রথম অনলাইন চ্যানেলটি অটো-প্লে হবে
+            for (let i = 0; i < coreRegistry.length; i++) {
+                if (i === jamunaIndex && initialPlayMounted) continue; // যমুনা অলরেডি প্লে হয়ে থাকলে স্কিপ করবে
+
+                const isOnline = await checkSingleChannel(i);
+
+                // যদি এখনও কোনো চ্যানেল প্লে না হয়ে থাকে এবং বর্তমান চ্যানেলটি অনলাইন হয়
+                if (!initialPlayMounted && isOnline) {
+                    mountLivePlayback(coreRegistry[i].url, coreRegistry[i].name);
+                    setActiveRow(i);
+                    initialPlayMounted = true;
+                }
+            }
+
+            // ৩. ফলব্যাক: যদি ভাগ্যের ফেরে একটি চ্যানেলও অনলাইন না পাওয়া যায়
+            if (!initialPlayMounted && coreRegistry.length > 0) {
+                mountLivePlayback(coreRegistry[0].url, coreRegistry[0].name);
+                setActiveRow(0);
+            }
+        }
+
+        // নির্দিষ্ট একটি চ্যানেলের হেলথ চেক করার হেল্পার ফাংশন
+        async function checkSingleChannel(i) {
+            const targetChannel = coreRegistry[i];
+            const badgeElement = document.getElementById(`status-${i}`);
+            if (!badgeElement) return false;
+            const rowElement = badgeElement.closest('.ch-item');
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000); // ৪ সেকেন্ড টাইমআউট
+
+                const response = await fetch(targetChannel.url, { 
+                    method: 'GET', 
+                    signal: controller.signal 
+                });
+
+                clearTimeout(timeoutId);
+                
+                if (response.ok) {
+                    badgeElement.className = "status-badge status-online";
+                    return true;
+                } else {
+                    throw new Error('Not streamable');
+                }
+
+            } catch (networkError) {
+                badgeElement.className = "status-badge status-broken";
+                if (rowElement) {
+                    rowElement.classList.add('is-broken');
+                    rowElement.style.display = 'none';
+                }
+                return false;
+            }
+        }
+
+        // ইন্টারফেসে একটিভ ক্লাস টগল করার জন্য ফাংশন
+        function setActiveRow(index) {
+            document.querySelectorAll('.ch-item').forEach(el => el.classList.remove('active'));
+            const rows = document.querySelectorAll('.ch-item');
+            if (rows[index]) {
+                rows[index].classList.add('active');
             }
         }
 
@@ -508,7 +551,6 @@
                     const badgeElement = document.getElementById(`status-${currentIndex}`);
                     if (badgeElement) {
                         badgeElement.className = "status-badge status-broken";
-                        // পরিবর্তন করা হয়েছে: প্লে করার সময় লিংক ফেইল করলেও সাথে সাথে লিস্ট থেকে হাইড হবে
                         const rowElement = badgeElement.closest('.ch-item');
                         if (rowElement) {
                             rowElement.classList.add('is-broken');
@@ -547,7 +589,6 @@
         filterInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             document.querySelectorAll('.ch-item').forEach(row => {
-                // পরিবর্তন করা হয়েছে: সার্চ করার সময় অচল (is-broken) চ্যানেলগুলোকে ফিল্টারিং থেকে সম্পূর্ণ বাইরে রাখা হয়েছে
                 if (row.classList.contains('is-broken')) {
                     row.style.display = "none";
                     return;
