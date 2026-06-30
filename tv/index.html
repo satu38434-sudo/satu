@@ -85,10 +85,11 @@
         @media (min-width: 992px) {
             .tv-grid {
                 grid-template-columns: 1fr 320px;
+                align-items: start; /* Fixes layout stretching and removes the blank space */
             }
         }
 
-        /* --- Stabilized Player Layout --- */
+        /* --- Player Layout --- */
         .player-wrapper {
             background: var(--glass);
             backdrop-filter: blur(16px);
