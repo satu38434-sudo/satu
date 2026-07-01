@@ -1,202 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T Sports Live</title>
-    <!-- HLS.js Library for universal .m3u8 playback -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <!-- Premium Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>লাইভ স্ট্রিম প্লেয়ার</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
     
     <style>
-        /* Base Styling & Theme Variables */
-        :root {
-            --bg-main: #0a0b0e;
-            --bg-card: #12141c;
-            --accent: #e50914; /* Dynamic Sports Red */
-            --text-main: #ffffff;
-            --text-muted: #707584;
-            --glow: rgba(229, 9, 20, 0.4);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e24;
+            color: #ffffff;
+            text-align: center;
+            margin: 0;
             padding: 20px;
         }
-
-        /* Header Navigation */
-        header {
-            width: 100%;
-            max-width: 1000px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #1f222e;
-            margin-bottom: 30px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .logo span {
-            color: var(--accent);
-        }
-
-        /* Streaming Player Container */
         .player-container {
-            width: 100%;
-            max-width: 1000px;
-            background: var(--bg-card);
-            border-radius: 16px;
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #000000;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
         }
-
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            background: #000;
-        }
-
         video {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
-            outline: none;
+            height: auto;
+            display: block;
         }
-
-
-
-
-        .channel-meta p {
-            color: var(--text-muted);
+        .status-message {
+            margin-top: 15px;
             font-size: 14px;
-        }
-
-        /* Status Badges */
-        .status-badges {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .badge-live {
-            background: var(--accent);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 0 12px var(--glow);
-        }
-
-        .badge-live::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: white;
-            border-radius: 50%;
-            display: inline-block;
-            animation: blink 1.2s infinite;
-        }
-
-        .badge-category {
-            background: #1f222e;
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Keyframe Animations */
-        @keyframes blink {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            .channel-info {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+            color: #cccccc;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">Satu<span>Pro</span></div>
-        <div class="status-badges">
-                <span class="badge-live">Live</span></div>
-    </header>
-
-    <!-- Main Player Structure -->
+    <h2>লাইভ টিভি স্ট্রিমিং প্লেয়ার</h2>
+    
     <div class="player-container">
-        <div class="video-wrapper">
-            <video id="video" controls autoplay playsinline preload="auto"></video>
-        </div>
-        
-            </div>
-        </div>
+        <video id="videoElement" controls autoplay muted></video>
     </div>
 
-    <!-- HLS Stream Engine Integration -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const video = document.getElementById('video');
-            // Your exact live M3U8 source link
-            const streamUrl = 'https://raw.githubusercontent.com/abusaeeidx/Mrgify-BDIX-IPTV/main/playlist.m3u';
+    <p class="status-message" id="status">প্লেয়ার লোড হচ্ছে...</p>
 
-            if (Hls.isSupported()) {
-                const hls = new Hls({
-                    maxSubtitleBufferSize: 20 * 1024 * 1024,
-                    lowLatencyMode: true,
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // আপনার দেওয়া লাইভ স্ট্রিম লিংক
+            var streamUrl = 'http://fastshare1.com:8080//live/25711345/late8airline/52500.ts';
+            var statusText = document.getElementById('status');
+
+            // ব্রাউজার MSE (Media Source Extensions) সাপোর্ট করে কিনা পরীক্ষা করা
+            if (mpegts.getFeatureList().mseLivePlayback) {
+                var videoElement = document.getElementById('videoElement');
+                
+                // প্লেয়ার কনফিগারেশন
+                var player = mpegts.createPlayer({
+                    type: 'mpegts',  // স্ট্রিম ফরম্যাট .ts এর জন্য
+                    isLive: true,    // লাইভ স্ট্রিমের জন্য true
+                    url: streamUrl
                 });
-                hls.loadSource(streamUrl);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play().catch(() => {
-                        console.log("Autoplay blocked by browser. Awaiting user interaction.");
-                    });
+
+                player.attachMediaElement(videoElement);
+                player.load();
+                
+                // প্লে করার চেষ্টা
+                player.play().then(() => {
+                    statusText.innerText = "লাইভ স্ট্রিম সফলভাবে চলছে।";
+                }).catch(error => {
+                    statusText.innerText = "অটো-প্লে ব্লক হয়েছে। প্লেয়ারের Play বাটনে ক্লিক করুন।";
+                    console.log("Play error:", error);
                 });
-            } 
-            // Fallback for native HLS players (Safari / iOS browsers)
-            else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = streamUrl;
-                video.addEventListener('loadedmetadata', () => {
-                    video.play().catch(() => {
-                        console.log("Autoplay blocked natively.");
-                    });
+
+                // কোনো এরর বা সমস্যা হলে তা হ্যান্ডেল করা
+                player.on(mpegts.Events.ERROR, function(type, detail, info) {
+                    console.error('Player Error:', type, detail, info);
+                    statusText.innerText = "স্ট্রিমটি লোড করা যাচ্ছে না। (CORS বা Mixed Content সমস্যা হতে পারে)";
                 });
+
+            } else {
+                statusText.innerText = "দুঃখিত, আপনার ব্রাউজারটি এই লাইভ স্ট্রিম সাপোর্ট করে না।";
             }
         });
     </script>
